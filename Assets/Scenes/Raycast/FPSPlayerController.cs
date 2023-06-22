@@ -8,7 +8,7 @@ public class FPSPlayerController : MonoBehaviour
 {
     /* properties */
     //MOVE PROPERTIES
-    [SerializeField] float _moveSpd, _lookSpd;
+    [SerializeField] float _moveSpd;
     private Vector2 _moveVel, _lookVel;
 
     //SHOOTING PROPERTIES
@@ -62,6 +62,7 @@ public class FPSPlayerController : MonoBehaviour
         objRot_Z = this.gameObject.transform.rotation.z;
         objRot_W = this.gameObject.transform.rotation.w;
 
+        this.gameObject.transform.forward = this._camera.transform.forward;
         this.gameObject.transform.rotation = new Quaternion(objRot_X,camRot_Y,objRot_Z,objRot_W);
     }
 
