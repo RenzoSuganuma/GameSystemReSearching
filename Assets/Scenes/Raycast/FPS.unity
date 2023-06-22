@@ -2249,9 +2249,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpd: 5
+  _lookSen: 0.1
   _crossHair: {fileID: 886824992}
   _PLAYERINPUTMODULE: {fileID: 118951322}
-  _VIRTUALCAMERA: {fileID: 385255439}
+  _VIRTUALCAMERA: {fileID: 0}
 --- !u!136 &339231554
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2712,7 +2713,7 @@ GameObject:
   - component: {fileID: 385255441}
   m_Layer: 0
   m_Name: Virtual Camera
-  m_TagString: Untagged
+  m_TagString: VirtualCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8744,15 +8745,15 @@ MonoBehaviour:
   m_RecenterTarget: 0
   m_VerticalAxis:
     Value: 0
-    m_SpeedMode: 0
-    m_MaxSpeed: 150
-    m_AccelTime: 0.1
-    m_DecelTime: 0.2
+    m_SpeedMode: 1
+    m_MaxSpeed: 0.1
+    m_AccelTime: 0
+    m_DecelTime: 0.1
     m_InputAxisName: Mouse Y
     m_InputAxisValue: 0
     m_InvertInput: 1
-    m_MinValue: -70
-    m_MaxValue: 70
+    m_MinValue: -60
+    m_MaxValue: 60
     m_Wrap: 0
     m_Recentering:
       m_enabled: 0
@@ -8768,10 +8769,10 @@ MonoBehaviour:
     m_LegacyVelocityFilterStrength: -1
   m_HorizontalAxis:
     Value: 0
-    m_SpeedMode: 0
-    m_MaxSpeed: 300
-    m_AccelTime: 0.1
-    m_DecelTime: 0.2
+    m_SpeedMode: 1
+    m_MaxSpeed: 0.1
+    m_AccelTime: 0
+    m_DecelTime: 0.1
     m_InputAxisName: Mouse X
     m_InputAxisValue: 0
     m_InvertInput: 0
