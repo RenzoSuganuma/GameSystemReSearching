@@ -2249,10 +2249,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpd: 5
-  _lookSen: 0.1
+  _lookSen: 5
   _crossHair: {fileID: 886824992}
   _PLAYERINPUTMODULE: {fileID: 118951322}
   _VIRTUALCAMERA: {fileID: 0}
+  _fov: 60
+  _zoomRaito: 1
 --- !u!136 &339231554
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2739,7 +2741,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 339231557}
   m_Lens:
-    FieldOfView: 60.000004
+    FieldOfView: 60
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -2956,7 +2958,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60.000004
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: 0

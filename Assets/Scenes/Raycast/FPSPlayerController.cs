@@ -24,6 +24,11 @@ public class FPSPlayerController : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera _VIRTUALCAMERA;
     private Camera _camera;
 
+    //FOR CAM DISPLAY
+    [SerializeField] private float _fov = 60;
+    [SerializeField] private float _zoomRaito = 1;
+    //public float 
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -41,23 +46,27 @@ public class FPSPlayerController : MonoBehaviour
 
         //シネマシーン仮想カメラの取得
         this._VIRTUALCAMERA = GameObject.FindGameObjectWithTag("VirtualCamera").GetComponent<CinemachineVirtualCamera>();
+
+        this._lookSen *= Time.deltaTime;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         //マウス感度設定
-        this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_MaxSpeed = this._lookSen;
+        this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_MaxSpeed = this._lookSen;//インすペクタでのプロパティSpeed
         this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_VerticalAxis.m_MaxSpeed = this._lookSen;
 
         //クロスヘア表示非表示
         if (this._PLAYERINPUTMODULE._isAiming && this._crossHair != null)
         {
             this._crossHair.SetActive(true);
+            this._VIRTUALCAMERA.m_Lens.FieldOfView = this._fov / this._zoomRaito;//ズーム
         }
         else
         {
             this._crossHair.SetActive(false);
+            this._VIRTUALCAMERA.m_Lens.FieldOfView = this._fov;//ズームを等倍
         }
 
         //移動、視点移動のベロシティ代入
