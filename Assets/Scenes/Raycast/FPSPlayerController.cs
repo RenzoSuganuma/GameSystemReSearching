@@ -56,17 +56,17 @@ public class FPSPlayerController : MonoBehaviour
         this._lookSen *= Time.deltaTime;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
         #region  プレイヤー操作回り
-
         //マウス感度設定
-        this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_MaxSpeed = this._lookSen;//インすペクタでのプロパティSpeed
+        this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_InputAxisValue = Mathf.Clamp(this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_InputAxisValue, -1, 1);//インスペクタでのプロパティSpeed
+        this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_VerticalAxis.m_MaxSpeed = Mathf.Clamp(this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_VerticalAxis.m_InputAxisValue, -1, 1);
+        this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_MaxSpeed = this._lookSen;//インスペクタでのプロパティSpeed
         this._VIRTUALCAMERA.GetCinemachineComponent<CinemachinePOV>().m_VerticalAxis.m_MaxSpeed = this._lookSen;
 
         //クロスヘア表示非表示
-        if (this._PLAYERINPUTMODULE._isAiming && this._crossHair != null)
+        if (this._PLAYERINPUTMODULE.GetAiming() && this._crossHair != null)
         {
             this._crossHair.SetActive(true);
             this._VIRTUALCAMERA.m_Lens.FieldOfView = this._fov / this._zoomRaito;//ズーム
@@ -78,9 +78,15 @@ public class FPSPlayerController : MonoBehaviour
         }
 
         //移動、視点移動のベロシティ代入
-        this._moveVel = this._PLAYERINPUTMODULE._moveVelocity.normalized;
-        this._lookVel = this._PLAYERINPUTMODULE._lookVelocity;
+        this._moveVel = this._PLAYERINPUTMODULE.GetMoveInput().normalized;
+        this._lookVel = this._PLAYERINPUTMODULE.GetLookInput().normalized;
+        #endregion
+    }
 
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        #region  プレイヤー操作回り
         //キャラ移動
         this._CHARACTERCONTROLLER.Move(this.transform.forward * this._moveVel.y * this._moveSpd * Time.deltaTime);
         this._CHARACTERCONTROLLER.Move(this.transform.right * this._moveVel.x * this._moveSpd * Time.deltaTime);
@@ -109,7 +115,7 @@ public class FPSPlayerController : MonoBehaviour
 
         // 光線との衝突を検出
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, rayDistance) && this._PLAYERINPUTMODULE._isFiring)
+        if (Physics.Raycast(ray, out hit, rayDistance) && this._PLAYERINPUTMODULE.GetFiring())
         {
             // 光線が物体に衝突した場合の処理
             Debug.Log("Hit object: " + hit.collider.gameObject.name);
@@ -125,7 +131,7 @@ public class FPSPlayerController : MonoBehaviour
 
         RaycastHit hitMuzzle;
 
-        if (Physics.Raycast(rayMuzlle, out hitMuzzle, rayDistance) && this._PLAYERINPUTMODULE._isFiring)
+        if (Physics.Raycast(rayMuzlle, out hitMuzzle, rayDistance) && this._PLAYERINPUTMODULE.GetFiring())
         {
             // 光線が物体に衝突した場合の処理
             Debug.Log("Hit object Muzzle: " + hitMuzzle.collider.gameObject.name);

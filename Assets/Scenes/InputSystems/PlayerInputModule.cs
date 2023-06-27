@@ -1,37 +1,19 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/* 情報 */
-/*
- * 単体テスト
- * 作成：R菅沼
- */
-
-/* 仕様構想 */
-/*
- * 最終的にまとめて一つの名前空間に集約する？かもしれないので堅牢で安全性の高いコードにする(1)
- * できるだけシンプルな処理で終わらせる(2)
- * InputSystemのUnityEventからの情報で動くようにしたい。(3)
- */
-
-/* コード説明 */
-/* UnityのInputSystemのInvokeUnityEventsの項目を設定したUnityEventでの入力値の読み込み、受け取りに最適化している
- * -以下入力受け取り関数実装部分-と表記されている所の#region から #endregionの間は改変OKそれ以外はR菅沼以外ダメ
- */
-
-/* 処理フロー */
-/*
- * public void 関数での InputAction.CallbackContext型での入力値から読み込む
- */
-
+/// <summary>
+/// UnityInputSystem向けのデバイス入力モジュールコンポーネント
+/// </summary>
+/// コーダー：菅沼
+/// 備考：UnityInputSystemのBehaviourがInvokeUnityEventになっていることを確認すること。これにしか最適化していない。
 public class PlayerInputModule : MonoBehaviour
 {
     /* プロパティ 必要に応じて行追加行削除するのOK */
     PlayerInput _playerInput;//NULLチェック用
-    public Vector2 _moveVelocity { get; private set; } = Vector2.zero;
-    public Vector2 _lookVelocity { get; private set; } = Vector2.zero;
-    public bool _isFiring { get; private set; } = false;
-    public bool _isAiming { get; private set; } = false;
+    Vector2 _moveInput = Vector2.zero;
+    Vector2 _lookInput = Vector2.zero;
+    bool _isFiring = false;
+    bool _isAiming = false;
 
     private void Awake()
     {
@@ -41,18 +23,18 @@ public class PlayerInputModule : MonoBehaviour
         #endregion
         #region  PlayerInput以外の変数の初期化
         this._isFiring = false;
-        this._moveVelocity = this._lookVelocity = Vector2.zero;
+        this._moveInput = this._lookInput = Vector2.zero;
         #endregion
     }
-    #region  -以下入力受け取り関数実装部分-
+    #region  -入力受け取り関数実装部-
     public void OnMove(InputAction.CallbackContext callbackContext)
     {
-        this._moveVelocity = callbackContext.ReadValue<Vector2>() != null ? callbackContext.ReadValue<Vector2>() : Vector2.zero;
+        this._moveInput = callbackContext.ReadValue<Vector2>() != null ? callbackContext.ReadValue<Vector2>() : Vector2.zero;
         print("MOVE");
     }
     public void OnLook(InputAction.CallbackContext callbackContext)
     {
-        this._lookVelocity = callbackContext.ReadValue<Vector2>() != null ? callbackContext.ReadValue<Vector2>() : Vector2.zero;
+        this._lookInput = callbackContext.ReadValue<Vector2>() != null ? callbackContext.ReadValue<Vector2>() : Vector2.zero;
         print("LOOK");
     }
     public void OnFire(InputAction.CallbackContext callbackContext)
@@ -64,6 +46,41 @@ public class PlayerInputModule : MonoBehaviour
     {
         this._isAiming = callbackContext.ReadValueAsButton();
         print("AIM");
+    }
+    #endregion
+
+    #region  入力値取得用関数
+    /// <summary>
+    /// 移動入力の値を返す
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 GetMoveInput()
+    {
+        return this._moveInput;
+    }
+    /// <summary>
+    /// 視点移動の値を返す
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 GetLookInput()
+    {
+        return this._lookInput;
+    }
+    /// <summary>
+    /// 発射入力の値を返す
+    /// </summary>
+    /// <returns></returns>
+    public bool GetFiring()
+    {
+        return (this._isFiring);
+    }
+    /// <summary>
+    /// エイム入力の値を返す
+    /// </summary>
+    /// <returns></returns>
+    public bool GetAiming()
+    {
+        return (this._isAiming);
     }
     #endregion
 }
