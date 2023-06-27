@@ -1,84 +1,79 @@
 using UnityEngine;
 using System;
 
-/* î•ñ */
+/* æƒ…å ± */
 /*
- * ì¬FR›À
+ * ä½œæˆï¼šRè…æ²¼
  */
 
-/* d—l\‘z */
+/* ä»•æ§˜æ§‹æƒ³ */
 /*
- * ÅI“I‚É‚Ü‚Æ‚ß‚Äˆê‚Â‚Ì–¼‘O‹óŠÔ‚ÉW–ñ‚·‚éH‚©‚à‚µ‚ê‚È‚¢‚Ì‚ÅŒ˜˜S‚ÅˆÀ‘S«‚Ì‚‚¢ƒR[ƒh‚É‚·‚é(1)
- * ‚Å‚«‚é‚¾‚¯ƒVƒ“ƒvƒ‹‚Èˆ—‚ÅI‚í‚ç‚¹‚é(2)
+ * æœ€çµ‚çš„ã«ã¾ã¨ã‚ã¦ä¸€ã¤ã®åå‰ç©ºé–“ã«é›†ç´„ã™ã‚‹ï¼Ÿã‹ã‚‚ã—ã‚Œãªã„ã®ã§å …ç‰¢ã§å®‰å…¨æ€§ã®é«˜ã„ã‚³ãƒ¼ãƒ‰ã«ã™ã‚‹(1)
+ * ã§ãã‚‹ã ã‘ã‚·ãƒ³ãƒ—ãƒ«ãªå‡¦ç†ã§çµ‚ã‚ã‚‰ã›ã‚‹(2)
  */
 
-/* ƒR[ƒhà–¾ */
+/* ã‚³ãƒ¼ãƒ‰èª¬æ˜ */
 /* 
- * eqŠÖŒWü‚è‚Ì‘€ì‚ğ‚·‚éƒNƒ‰ƒX
+ * è¦ªå­é–¢ä¿‚å‘¨ã‚Šã®æ“ä½œã‚’ã™ã‚‹ã‚¯ãƒ©ã‚¹
  */
 
-/* ˆ—ƒtƒ[ */
+/* å‡¦ç†ãƒ•ãƒ­ãƒ¼ */
 /*
  * 
  */
 
 /// <summary>
-/// eqŠÖŒWü‚è‚Ì‘€ì‚ğ‚·‚éƒNƒ‰ƒX ver - 1.0.0
+/// è¦ªå­é–¢ä¿‚å‘¨ã‚Šã®æ“ä½œã‚’ã™ã‚‹ã‚¯ãƒ©ã‚¹ ver - 1.0.0
 /// </summary>
 public class ObjectsHierarchyController : MonoBehaviour
 {
-    public GameObject[] _lowerClassObjects;//‰º‘wi”z‰ºjƒIƒuƒWƒFƒNƒg‚ÌŠi”[•Ï”
-
+    public GameObject[] _lowerClassObjects;//ä¸‹å±¤ï¼ˆé…ä¸‹ï¼‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æ ¼ç´å¤‰æ•°
     /// <summary>
-    /// qƒIƒuƒWƒFƒNƒg‚Ìæ“¾‚ğ‚µ‚ÄGameObjectŒ^‚Å•Ô‚·ŠÖ””ñƒAƒNƒeƒBƒu‚Å‚àOK
+    /// å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å–å¾—ã‚’ã—ã¦GameObjectå‹ã§è¿”ã™é–¢æ•°éã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§ã‚‚OK
     /// </summary>
     /// <param name="parentObject"></param>
     /// <returns></returns>
     public GameObject[] GetChildObjects(GameObject parentObject)
     {
-        // qƒIƒuƒWƒFƒNƒg‚ğŠi”[‚·‚é”z—ñì¬
-        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//“Y‚¦š‚ª•Ï“®‚·‚é
-        int arrayIndex = 0;//“Y‚¦š
-
-        // qƒIƒuƒWƒFƒNƒg‚ğ‡”Ô‚É”z—ñ‚ÉŠi”[
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ ¼ç´ã™ã‚‹é…åˆ—ä½œæˆ
+        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//æ·»ãˆå­—ãŒå¤‰å‹•ã™ã‚‹
+        int arrayIndex = 0;//æ·»ãˆå­—
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é †ç•ªã«é…åˆ—ã«æ ¼ç´
         foreach (Transform child in parentObject.transform)
         {
             if (child != null)
             {
-                _returnObjects[arrayIndex++] = child.gameObject;//GameObjectŒ^‚É•ÏŠ·•Ô‚è’l‚ÉŠi”[
+                _returnObjects[arrayIndex++] = child.gameObject;//GameObjectå‹ã«å¤‰æ›è¿”ã‚Šå€¤ã«æ ¼ç´
             }
             //Debug.Log("child index" + childIndex);
         }
         return _returnObjects;
     }
-
     /// <summary>
-    /// qƒIƒuƒWƒFƒNƒg‚ğƒ^ƒO‚ÅŒŸõ‚ğ‚©‚¯‚ÄŒ©‚Â‚©‚Á‚½ƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Ä•Ô‚·
+    /// å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¿ã‚°ã§æ¤œç´¢ã‚’ã‹ã‘ã¦è¦‹ã¤ã‹ã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã™ã¹ã¦è¿”ã™
     /// </summary>
     /// <param name="parentObject"></param>
     /// <param name="objectTag"></param>
     /// <returns></returns>
     public GameObject[] GetChildObjectsWithTag(GameObject parentObject, string objectTag)
     {
-        // qƒIƒuƒWƒFƒNƒg‚ğŠi”[‚·‚é”z—ñì¬
-        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//“Y‚¦š‚ª•Ï“®‚·‚é step2
-        GameObject[] _childObjects = new GameObject[parentObject.transform.childCount];//“Y‚¦š‚ª•Ï“®‚·‚é step1
-        int arrayIndex = 0;//“Y‚¦š
-        int foundObjectCount = 0;//ƒ^ƒOŒŸõ‚Åƒqƒbƒg‚µ‚½ƒIƒuƒWƒFƒNƒg‚Ì‘”‚ğƒJƒEƒ“ƒg‚·‚é
-
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ ¼ç´ã™ã‚‹é…åˆ—ä½œæˆ
+        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//æ·»ãˆå­—ãŒå¤‰å‹•ã™ã‚‹ step2
+        GameObject[] _childObjects = new GameObject[parentObject.transform.childCount];//æ·»ãˆå­—ãŒå¤‰å‹•ã™ã‚‹ step1
+        int arrayIndex = 0;//æ·»ãˆå­—
+        int foundObjectCount = 0;//ã‚¿ã‚°æ¤œç´¢ã§ãƒ’ãƒƒãƒˆã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç·æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
         //int arraySizeCount = 0;
-
-        // qƒIƒuƒWƒFƒNƒg‚ğ‡”Ô‚É”z—ñ‚ÉŠi”[
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é †ç•ªã«é…åˆ—ã«æ ¼ç´
         foreach (Transform child in parentObject.transform)
         {
             if (child != null)
             {
-                _childObjects[arrayIndex++] = child.gameObject;//GameObjectŒ^‚É•ÏŠ·•Ô‚è’l‚ÉŠi”[
+                _childObjects[arrayIndex++] = child.gameObject;//GameObjectå‹ã«å¤‰æ›è¿”ã‚Šå€¤ã«æ ¼ç´
             }
             //Debug.Log("child index" + childIndex);
         }
-        arrayIndex = 0;//’¼‰º‚ÌForeach‚Åg‚¤“Y‚¦š‚Ì‰Šú‰»BÁ‚·‚È‚±‚ê‚ğ
-        //ƒ^ƒO‚Ì•R‚Ã‚¯‚ÌŒŸõ
+        arrayIndex = 0;//ç›´ä¸‹ã®Foreachã§ä½¿ã†æ·»ãˆå­—ã®åˆæœŸåŒ–ã€‚æ¶ˆã™ãªã“ã‚Œã‚’
+        //ã‚¿ã‚°ã®ç´ã¥ã‘ã®æ¤œç´¢
         foreach (GameObject obj in _childObjects)
         {
             if (obj.gameObject.CompareTag(objectTag))
@@ -90,34 +85,31 @@ public class ObjectsHierarchyController : MonoBehaviour
         Array.Resize(ref _returnObjects, foundObjectCount);
         return _returnObjects;
     }
-
     /// <summary>
-    /// qƒIƒuƒWƒFƒNƒg‚ğƒ^ƒO‚ÅŒŸõ‚ğ‚©‚¯‚ÄŒ©‚Â‚©‚Á‚½ƒAƒNƒeƒBƒu‚É‚È‚Á‚Ä‚éƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Ä•Ô‚·activeStatus == true‚ÅactiveSelf‚Ì’l‚ªtrue‚ÌƒIƒuƒWƒFƒNƒg‚ğ’T‚·
+    /// å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¿ã‚°ã§æ¤œç´¢ã‚’ã‹ã‘ã¦è¦‹ã¤ã‹ã£ãŸã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ãªã£ã¦ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã™ã¹ã¦è¿”ã™activeStatus == trueã§activeSelfã®å€¤ãŒtrueã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¢ã™
     /// </summary>
     /// <param name="parentObject"></param>
     /// <param name="objectTag"></param>
     /// <returns></returns>
     public GameObject[] GetChildObjectsWithTag(GameObject parentObject, string objectTag, bool activeStatus)
     {
-        // qƒIƒuƒWƒFƒNƒg‚ğŠi”[‚·‚é”z—ñì¬
-        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//“Y‚¦š‚ª•Ï“®‚·‚é step2
-        GameObject[] _childObjects = new GameObject[parentObject.transform.childCount];//“Y‚¦š‚ª•Ï“®‚·‚é step1
-        int arrayIndex = 0;//“Y‚¦š
-        int foundObjectCount = 0;//ƒ^ƒOŒŸõ‚Åƒqƒbƒg‚µ‚½ƒIƒuƒWƒFƒNƒg‚Ì‘”‚ğƒJƒEƒ“ƒg‚·‚é
-
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ ¼ç´ã™ã‚‹é…åˆ—ä½œæˆ
+        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//æ·»ãˆå­—ãŒå¤‰å‹•ã™ã‚‹ step2
+        GameObject[] _childObjects = new GameObject[parentObject.transform.childCount];//æ·»ãˆå­—ãŒå¤‰å‹•ã™ã‚‹ step1
+        int arrayIndex = 0;//æ·»ãˆå­—
+        int foundObjectCount = 0;//ã‚¿ã‚°æ¤œç´¢ã§ãƒ’ãƒƒãƒˆã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç·æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
         //int arraySizeCount = 0;
-
-        // qƒIƒuƒWƒFƒNƒg‚ğ‡”Ô‚É”z—ñ‚ÉŠi”[
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é †ç•ªã«é…åˆ—ã«æ ¼ç´
         foreach (Transform child in parentObject.transform)
         {
             if (child != null)
             {
-                _childObjects[arrayIndex++] = child.gameObject;//GameObjectŒ^‚É•ÏŠ·•Ô‚è’l‚ÉŠi”[
+                _childObjects[arrayIndex++] = child.gameObject;//GameObjectå‹ã«å¤‰æ›è¿”ã‚Šå€¤ã«æ ¼ç´
             }
             //Debug.Log("child index" + childIndex);
         }
-        arrayIndex = 0;//’¼‰º‚ÌForeach‚Åg‚¤“Y‚¦š‚Ì‰Šú‰»BÁ‚·‚È‚±‚ê‚ğ
-        //ƒ^ƒO‚Ì•R‚Ã‚¯‚ÌŒŸõ
+        arrayIndex = 0;//ç›´ä¸‹ã®Foreachã§ä½¿ã†æ·»ãˆå­—ã®åˆæœŸåŒ–ã€‚æ¶ˆã™ãªã“ã‚Œã‚’
+        //ã‚¿ã‚°ã®ç´ã¥ã‘ã®æ¤œç´¢
         foreach (GameObject obj in _childObjects)
         {
             if (obj.gameObject.CompareTag(objectTag) && obj.activeSelf == activeStatus)
@@ -129,34 +121,31 @@ public class ObjectsHierarchyController : MonoBehaviour
         Array.Resize(ref _returnObjects, foundObjectCount);
         return _returnObjects;
     }
-
     /// <summary>
-    /// qƒIƒuƒWƒFƒNƒg‚ğƒ^ƒO‚ÅŒŸõ‚ğ‚©‚¯‚ÄŒ©‚Â‚©‚Á‚½ƒIƒuƒWƒFƒNƒg”z—ñ‚Ìindex=0‚ÌÀ‘Ì‚ğ•Ô‚·
+    /// å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¿ã‚°ã§æ¤œç´¢ã‚’ã‹ã‘ã¦è¦‹ã¤ã‹ã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆé…åˆ—ã®index=0ã®å®Ÿä½“ã‚’è¿”ã™
     /// </summary>
     /// <param name="parentObject"></param>
     /// <param name="objectTag"></param>
     /// <returns></returns>
     public GameObject GetRandomlyChildObjectWithTag(GameObject parentObject, string objectTag)
     {
-        // qƒIƒuƒWƒFƒNƒg‚ğŠi”[‚·‚é”z—ñì¬
-        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//“Y‚¦š‚ª•Ï“®‚·‚é step2
-        GameObject[] _childObjects = new GameObject[parentObject.transform.childCount];//“Y‚¦š‚ª•Ï“®‚·‚é step1
-        int arrayIndex = 0;//“Y‚¦š
-        int foundObjectCount = 0;//ƒ^ƒOŒŸõ‚Åƒqƒbƒg‚µ‚½ƒIƒuƒWƒFƒNƒg‚Ì‘”‚ğƒJƒEƒ“ƒg‚·‚é
-
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ ¼ç´ã™ã‚‹é…åˆ—ä½œæˆ
+        GameObject[] _returnObjects = new GameObject[parentObject.transform.childCount];//æ·»ãˆå­—ãŒå¤‰å‹•ã™ã‚‹ step2
+        GameObject[] _childObjects = new GameObject[parentObject.transform.childCount];//æ·»ãˆå­—ãŒå¤‰å‹•ã™ã‚‹ step1
+        int arrayIndex = 0;//æ·»ãˆå­—
+        int foundObjectCount = 0;//ã‚¿ã‚°æ¤œç´¢ã§ãƒ’ãƒƒãƒˆã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç·æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
         //int arraySizeCount = 0;
-
-        // qƒIƒuƒWƒFƒNƒg‚ğ‡”Ô‚É”z—ñ‚ÉŠi”[
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é †ç•ªã«é…åˆ—ã«æ ¼ç´
         foreach (Transform child in parentObject.transform)
         {
             if (child != null)
             {
-                _childObjects[arrayIndex++] = child.gameObject;//GameObjectŒ^‚É•ÏŠ·•Ô‚è’l‚ÉŠi”[
+                _childObjects[arrayIndex++] = child.gameObject;//GameObjectå‹ã«å¤‰æ›è¿”ã‚Šå€¤ã«æ ¼ç´
             }
             //Debug.Log("child index" + childIndex);
         }
-        arrayIndex = 0;//’¼‰º‚ÌForeach‚Åg‚¤“Y‚¦š‚Ì‰Šú‰»BÁ‚·‚È‚±‚ê‚ğ
-        //ƒ^ƒO‚Ì•R‚Ã‚¯‚ÌŒŸõ
+        arrayIndex = 0;//ç›´ä¸‹ã®Foreachã§ä½¿ã†æ·»ãˆå­—ã®åˆæœŸåŒ–ã€‚æ¶ˆã™ãªã“ã‚Œã‚’
+        //ã‚¿ã‚°ã®ç´ã¥ã‘ã®æ¤œç´¢
         foreach (GameObject obj in _childObjects)
         {
             if (obj.gameObject.CompareTag(objectTag))
@@ -166,33 +155,31 @@ public class ObjectsHierarchyController : MonoBehaviour
             }
         }
         Debug.Log("Found Object Is" + foundObjectCount);
-        if(foundObjectCount > 0)//”z—ñ‚ÌƒTƒCƒY‚ğÅ’á‚Å‚à1Šm•Û‚·‚é
+        if(foundObjectCount > 0)//é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’æœ€ä½ã§ã‚‚1ç¢ºä¿ã™ã‚‹
         {
             Array.Resize(ref _returnObjects, foundObjectCount);
-            return _returnObjects[0];//null‚ª•Ô‚é‚Æ‚«‚à‚ ‚éƒˆ
+            return _returnObjects[0];//nullãŒè¿”ã‚‹ã¨ãã‚‚ã‚ã‚‹ãƒ¨
         }
         return null;
     }
-
     /// <summary>
-    /// eqŠÖŒW‚ğØ‚éŠÖ” ˆø”‚ÍGameObjectŒ^
+    /// è¦ªå­é–¢ä¿‚ã‚’åˆ‡ã‚‹é–¢æ•° å¼•æ•°ã¯GameObjectå‹
     /// </summary>
     /// <param name="childObject"></param>
     public void MakeChildToParent(GameObject childObject)
     {
-        if (childObject != null)//ƒIƒuƒWƒFƒNƒg‚Ì’†g‚Ìƒ`ƒFƒbƒN
+        if (childObject != null)//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸­èº«ã®ãƒã‚§ãƒƒã‚¯
         {
             childObject.gameObject.transform.parent = null;
         }
     }
-
     /// <summary>
-    /// eqŠÖŒW‚ğØ‚éŠÖ” ˆø”‚ÍGameObject[]Œ^
+    /// è¦ªå­é–¢ä¿‚ã‚’åˆ‡ã‚‹é–¢æ•° å¼•æ•°ã¯GameObject[]å‹
     /// </summary>
     /// <param name="childObjects"></param>
     public void MakeChildToParent(GameObject[] childObjects)
     {
-        if (childObjects != null)//ƒIƒuƒWƒFƒNƒg‚Ì’†g‚Ìƒ`ƒFƒbƒN
+        if (childObjects != null)//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸­èº«ã®ãƒã‚§ãƒƒã‚¯
         {
             for (int i = 0; i < childObjects.Length; i++)
             {
@@ -200,9 +187,8 @@ public class ObjectsHierarchyController : MonoBehaviour
             }
         }
     }
-
     /// <summary>
-    /// qƒIƒuƒWƒFƒNƒg‚É”CˆÓ‚ÌƒIƒuƒWƒFƒNƒg‚ğ•Ï‚¦‚Ä‚µ‚Ü‚¤ŠÖ”
+    /// å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ä»»æ„ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å¤‰ãˆã¦ã—ã¾ã†é–¢æ•°
     /// </summary>
     /// <param name="object2Child"></param>
     /// <param name="transform2Child"></param>
@@ -210,14 +196,13 @@ public class ObjectsHierarchyController : MonoBehaviour
     {
         if (object2Child != null && transform2Child != null)//null-check
         {
-            object2Child.gameObject.transform.parent = transform2Child;//eqŠÖŒW•R‚Ã‚¯
-            object2Child.transform.localPosition = Vector3.zero;//ˆÊ’u‚Ì‰Šú‰»
-            object2Child.transform.localEulerAngles = Vector3.zero;//‰ñ“]‚Ì‰Šú‰»
+            object2Child.gameObject.transform.parent = transform2Child;//è¦ªå­é–¢ä¿‚ç´ã¥ã‘
+            object2Child.transform.localPosition = Vector3.zero;//ä½ç½®ã®åˆæœŸåŒ–
+            object2Child.transform.localEulerAngles = Vector3.zero;//å›è»¢ã®åˆæœŸåŒ–
         }
     }
-
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg‚ÌƒAƒNƒeƒBƒuó‘Ô‚Ì‘€ì
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã®æ“ä½œ
     /// </summary>
     /// <param name="objects"></param>
     /// <param name="activeStatus"></param>
@@ -225,9 +210,8 @@ public class ObjectsHierarchyController : MonoBehaviour
     {
         objects.gameObject.SetActive(activeStatus);
     }
-
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg”z—ñ‚Ì—v‘f‚·‚×‚Ä‚ÌƒAƒNƒeƒBƒuó‘Ô‚Ì‘€ì
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆé…åˆ—ã®è¦ç´ ã™ã¹ã¦ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã®æ“ä½œ
     /// </summary>
     /// <param name="objects"></param>
     /// <param name="activeStatus"></param>
