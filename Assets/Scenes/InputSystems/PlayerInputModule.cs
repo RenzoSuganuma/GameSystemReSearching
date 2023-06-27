@@ -1,33 +1,33 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/* î•ñ */
+/* æƒ…å ± */
 /*
- * ’P‘ÌƒeƒXƒg
- * ì¬FR›À
+ * å˜ä½“ãƒ†ã‚¹ãƒˆ
+ * ä½œæˆï¼šRè…æ²¼
  */
 
-/* d—l\‘z */
+/* ä»•æ§˜æ§‹æƒ³ */
 /*
- * ÅI“I‚É‚Ü‚Æ‚ß‚Äˆê‚Â‚Ì–¼‘O‹óŠÔ‚ÉW–ñ‚·‚éH‚©‚à‚µ‚ê‚È‚¢‚Ì‚ÅŒ˜˜S‚ÅˆÀ‘S«‚Ì‚‚¢ƒR[ƒh‚É‚·‚é(1)
- * ‚Å‚«‚é‚¾‚¯ƒVƒ“ƒvƒ‹‚Èˆ—‚ÅI‚í‚ç‚¹‚é(2)
- * InputSystem‚ÌUnityEvent‚©‚ç‚Ìî•ñ‚Å“®‚­‚æ‚¤‚É‚µ‚½‚¢B(3)
+ * æœ€çµ‚çš„ã«ã¾ã¨ã‚ã¦ä¸€ã¤ã®åå‰ç©ºé–“ã«é›†ç´„ã™ã‚‹ï¼Ÿã‹ã‚‚ã—ã‚Œãªã„ã®ã§å …ç‰¢ã§å®‰å…¨æ€§ã®é«˜ã„ã‚³ãƒ¼ãƒ‰ã«ã™ã‚‹(1)
+ * ã§ãã‚‹ã ã‘ã‚·ãƒ³ãƒ—ãƒ«ãªå‡¦ç†ã§çµ‚ã‚ã‚‰ã›ã‚‹(2)
+ * InputSystemã®UnityEventã‹ã‚‰ã®æƒ…å ±ã§å‹•ãã‚ˆã†ã«ã—ãŸã„ã€‚(3)
  */
 
-/* ƒR[ƒhà–¾ */
-/* Unity‚ÌInputSystem‚ÌInvokeUnityEvents‚Ì€–Ú‚ğİ’è‚µ‚½UnityEvent‚Å‚Ì“ü—Í’l‚Ì“Ç‚İ‚İAó‚¯æ‚è‚ÉÅ“K‰»‚µ‚Ä‚¢‚é
- * -ˆÈ‰º“ü—Íó‚¯æ‚èŠÖ”À‘••”•ª-‚Æ•\‹L‚³‚ê‚Ä‚¢‚éŠ‚Ì#region ‚©‚ç #endregion‚ÌŠÔ‚Í‰ü•ÏOK‚»‚êˆÈŠO‚ÍR›ÀˆÈŠOƒ_ƒ
+/* ã‚³ãƒ¼ãƒ‰èª¬æ˜ */
+/* Unityã®InputSystemã®InvokeUnityEventsã®é …ç›®ã‚’è¨­å®šã—ãŸUnityEventã§ã®å…¥åŠ›å€¤ã®èª­ã¿è¾¼ã¿ã€å—ã‘å–ã‚Šã«æœ€é©åŒ–ã—ã¦ã„ã‚‹
+ * -ä»¥ä¸‹å…¥åŠ›å—ã‘å–ã‚Šé–¢æ•°å®Ÿè£…éƒ¨åˆ†-ã¨è¡¨è¨˜ã•ã‚Œã¦ã„ã‚‹æ‰€ã®#region ã‹ã‚‰ #endregionã®é–“ã¯æ”¹å¤‰OKãã‚Œä»¥å¤–ã¯Rè…æ²¼ä»¥å¤–ãƒ€ãƒ¡
  */
 
-/* ˆ—ƒtƒ[ */
+/* å‡¦ç†ãƒ•ãƒ­ãƒ¼ */
 /*
- * public void ŠÖ”‚Å‚Ì InputAction.CallbackContextŒ^‚Å‚Ì“ü—Í’l‚©‚ç“Ç‚İ‚Ş
+ * public void é–¢æ•°ã§ã® InputAction.CallbackContextå‹ã§ã®å…¥åŠ›å€¤ã‹ã‚‰èª­ã¿è¾¼ã‚€
  */
 
 public class PlayerInputModule : MonoBehaviour
 {
-    /* ƒvƒƒpƒeƒB •K—v‚É‰‚¶‚Äs’Ç‰Ásíœ‚·‚é‚ÌOK */
-    PlayerInput _playerInput;//NULLƒ`ƒFƒbƒN—p
+    /* ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ å¿…è¦ã«å¿œã˜ã¦è¡Œè¿½åŠ è¡Œå‰Šé™¤ã™ã‚‹ã®OK */
+    PlayerInput _playerInput;//NULLãƒã‚§ãƒƒã‚¯ç”¨
     public Vector2 _moveVelocity { get; private set; } = Vector2.zero;
     public Vector2 _lookVelocity { get; private set; } = Vector2.zero;
     public bool _isFiring { get; private set; } = false;
@@ -35,46 +35,35 @@ public class PlayerInputModule : MonoBehaviour
 
     private void Awake()
     {
-        #region  PlayerInput‚Ìƒ`ƒFƒbƒN‚Æ‘ã“ü
-
+        #region  PlayerInputã®ãƒã‚§ãƒƒã‚¯ã¨ä»£å…¥
         this._playerInput
             = this.gameObject.TryGetComponent<PlayerInput>(out PlayerInput playerInput) ? playerInput : null;
-
         #endregion
-
-        #region  PlayerInputˆÈŠO‚Ì•Ï”‚Ì‰Šú‰»
-
+        #region  PlayerInputä»¥å¤–ã®å¤‰æ•°ã®åˆæœŸåŒ–
         this._isFiring = false;
         this._moveVelocity = this._lookVelocity = Vector2.zero;
-
         #endregion
     }
-
-    #region  -ˆÈ‰º“ü—Íó‚¯æ‚èŠÖ”À‘••”•ª-
-
+    #region  -ä»¥ä¸‹å…¥åŠ›å—ã‘å–ã‚Šé–¢æ•°å®Ÿè£…éƒ¨åˆ†-
     public void OnMove(InputAction.CallbackContext callbackContext)
     {
         this._moveVelocity = callbackContext.ReadValue<Vector2>() != null ? callbackContext.ReadValue<Vector2>() : Vector2.zero;
         print("MOVE");
     }
-    
     public void OnLook(InputAction.CallbackContext callbackContext)
     {
         this._lookVelocity = callbackContext.ReadValue<Vector2>() != null ? callbackContext.ReadValue<Vector2>() : Vector2.zero;
         print("LOOK");
     }
-
     public void OnFire(InputAction.CallbackContext callbackContext)
     {
         this._isFiring = callbackContext.ReadValueAsButton();
         print("FIRE");
     }
-    
     public void OnAim(InputAction.CallbackContext callbackContext)
     {
         this._isAiming = callbackContext.ReadValueAsButton();
         print("AIM");
     }
-
     #endregion
 }
