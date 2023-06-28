@@ -14,8 +14,9 @@ public class PlayerInputModule : MonoBehaviour
     Vector2 _lookInput = Vector2.zero;
     bool _isFiring = false;
     bool _isAiming = false;
+    bool _isJumping = false;
 
-    private void Awake()
+    void Awake()
     {
         #region  PlayerInputのチェックと代入
         this._playerInput
@@ -46,6 +47,11 @@ public class PlayerInputModule : MonoBehaviour
     {
         this._isAiming = callbackContext.ReadValueAsButton();
         print("AIM");
+    }
+    public void OnJump(InputAction.CallbackContext callbackContext)
+    {
+        this._isJumping = callbackContext.ReadValueAsButton();
+        print("JUMP");
     }
     #endregion
 
@@ -81,6 +87,14 @@ public class PlayerInputModule : MonoBehaviour
     public bool GetAiming()
     {
         return (this._isAiming);
+    }
+    /// <summary>
+    /// ジャンプの入力値を返す
+    /// </summary>
+    /// <returns></returns>
+    public bool GetJumping()
+    {
+        return (this._isJumping);
     }
     #endregion
 }
