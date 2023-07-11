@@ -662,8 +662,8 @@ MonoBehaviour:
   _playerInputModule: {fileID: 38579486}
   _isDebugging: 1
   _moveSpeed: 50
-  _lookSpeed: 55.6
-  _charaMoveMode: 0
+  _lookSpeed: 100
+  _charaMoveMode: 2
 --- !u!54 &1512267298
 Rigidbody:
   m_ObjectHideFlags: 0

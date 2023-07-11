@@ -8718,10 +8718,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510ac6860322d2747817dbac23160b4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_targets: []
-  m_targetObject: {fileID: 1063721479396113172, guid: 0f7ced8f22cb0a94fac8b26734dbbecd,
-    type: 3}
-  m_targetAmount: 5
+  m_randomXCoordinateRange: 0
+  m_randomYCoordinateRange: 0
+  m_randomZCoordinateRange: 0
 --- !u!4 &1632322350
 Transform:
   m_ObjectHideFlags: 0
