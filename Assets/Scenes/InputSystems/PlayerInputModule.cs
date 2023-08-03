@@ -1,10 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-/// <summary>
-/// UnityInputSystem向けのデバイス入力モジュールコンポーネント
-/// </summary>
-/// コーダー：菅沼
 /// 備考：UnityInputSystemのBehaviourがInvokeUnityEventになっていることを確認すること。これにしか最適化していない。
 public class PlayerInputModule : MonoBehaviour
 {
