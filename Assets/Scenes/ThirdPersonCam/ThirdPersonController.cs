@@ -8,9 +8,14 @@ public class ThirdPersonController : MonoBehaviour
     /// <summary>デバイス入力の値を保持しているクラス</summary>
     [SerializeField, Header("デバイス入力の値を保持しているクラス")] PlayerInputModule _deviceInput;/*自作のクラスに依存している*/
     /// <summary>カメラとプレイヤー間の距離</summary>
-    [SerializeField, Range(2f, 5f), Header("カメラとプレイヤー間の距離")] float _cameraDistance;
+    [SerializeField, Header("カメラとプレイヤー間の距離")] float _cameraDistance;
+    private const float MinCamDistance = 2f, MaxCamDistance = 10f;
     /// <summary>Y軸のカメラオフセット</summary>
-    [SerializeField, Range(-5f, 5f), Header("カメラとプレイヤー間の距離")] float _cameraOffsetY;
+    [SerializeField, Header("カメラとプレイヤー間の距離")] float _cameraOffsetY;
+    private const float MinCamYOffset = 0f, MaxCamYOffset = 10f;
+    /// <summary>プレイヤーの移動速度</summary>
+    [SerializeField, Header("プレイヤー移動速度")] float _playerSpeed;
+    private const float MinPSpeed = 1f, MaxPSpeed = 10f;
     /// <summary>移動ベクトル</summary>
     Vector2 _moveInput = Vector2.zero;
     /// <summary>視点移動ベクトル</summary>
@@ -29,6 +34,10 @@ public class ThirdPersonController : MonoBehaviour
     {
         /*CharacterController が非null の時のみ代入処理*/
         this._charCont = GetComponent<CharacterController>();
+        /*各プロパティの値の設定*/
+        Mathf.Clamp(this._cameraDistance, MinCamDistance, MaxCamDistance);
+        Mathf.Clamp(this._cameraOffsetY, MinCamYOffset, MaxCamYOffset);
+        Mathf.Clamp(this._playerSpeed, MinPSpeed, MaxPSpeed);
     }
     private void Update()
     {
@@ -43,8 +52,8 @@ public class ThirdPersonController : MonoBehaviour
     private void GetInputsVal()
     {
         /*それぞれの入力値の代入*/
-        this._moveInput = this._deviceInput.GetMoveInput();
-        this._lookInput = this._deviceInput.GetLookInput();
+        this._moveInput = this._deviceInput.GetMoveInput().normalized;
+        this._lookInput = this._deviceInput.GetLookInput().normalized;
         this._isFired = this._deviceInput.GetFiring();
         this._isAimed = this._deviceInput.GetAiming();
         this._isJumped = this._deviceInput.GetJumping();
@@ -54,14 +63,22 @@ public class ThirdPersonController : MonoBehaviour
     private void CharacterMoveSequence()
     {
 
-        //入力値に応じて移動、カメラの向いている方向が正面でカメラはフリールック
+        /*入力値に応じて移動、カメラの向いている方向が正面でカメラはフリールック*/
+        /*移動時の正面のベクトル*/
         Vector3 moveVecFrwrd = new Vector3(this._playerCamera.transform.forward.x, 0, this._playerCamera.transform.forward.z);
+        /*移動時の右方向のベクトル*/
         Vector3 moveVecR = new Vector3(this._playerCamera.transform.right.x, 0, this._playerCamera.transform.right.z);
+        /*移動のベクトル*/
         Vector3 vMove = moveVecFrwrd * this._moveInput.y + moveVecR * this._moveInput.x;
+        /*移動ベクトルの正規化*/
+        vMove = vMove.normalized;
+        vMove *= this._playerSpeed;
+        /*移動入力があったならその方向を向く*/
         if (this._moveInput != Vector2.zero)
         {
             this.gameObject.transform.forward = moveVecFrwrd * this._moveInput.y + moveVecR * this._moveInput.x;
         }
+        /*移動する*/
         this._charCont.Move(vMove);
     }
     /// <summary>カメラの視点移動の関数</summary>
@@ -69,11 +86,12 @@ public class ThirdPersonController : MonoBehaviour
     {
         float co_x = 0, co_z = 0;
         this._camRotTheta -= this._lookInput.x * Time.deltaTime;
-        /*X,Z軸での円の軌跡をたどらせる*/
+        /*X,Z軸での円の軌跡をたどらせ、プレイヤーに追従させる。ここでは円の回転の中心の座標にプレイヤーの座標をそれぞれ代入している*/
         co_x = Mathf.Cos(_camRotTheta) * this._cameraDistance + this.gameObject.transform.position.x;
         co_z = Mathf.Sin(_camRotTheta) * this._cameraDistance + this.gameObject.transform.position.z;        
         this._playerCamera.transform.position = new Vector3(co_x, this._cameraOffsetY, co_z);
         /*プレイヤーをカメラは常に向く*/
-        this._playerCamera.transform.LookAt(this.gameObject.transform.position);
+        Vector3 camLookAtVec = this.gameObject.transform.position - this._playerCamera.transform.position;
+        this._playerCamera.transform.forward = camLookAtVec;
     }
 }

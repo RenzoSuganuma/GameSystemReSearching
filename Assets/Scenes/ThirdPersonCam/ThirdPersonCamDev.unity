@@ -556,8 +556,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCamera: {fileID: 922456456}
   _deviceInput: {fileID: 647283061}
-  _cameraDistance: 0
-  _cameraOffsetY: 0
+  _cameraDistance: 5
+  _cameraOffsetY: 2
+  _playerSpeed: 1
 --- !u!1 &1332429958
 GameObject:
   m_ObjectHideFlags: 0
