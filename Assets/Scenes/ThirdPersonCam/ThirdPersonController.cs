@@ -21,22 +21,26 @@ public class ThirdPersonController : MonoBehaviour
     bool _isAimed = false;
     /// <summary>ジャンプフラグ</summary>
     bool _isJumped = false;
+    /// <summary>カメラ回転用の三角関数引数Θに相当</summary>
+    float _camRotTheta = 0;
+    /// <summary>キャラ操作用のコンポーネント</summary>
+    CharacterController _charCont;
     void Start()
     {
-        
+        /*CharacterController が非null の時のみ代入処理*/
+        this._charCont = GetComponent<CharacterController>();
     }
     private void Update()
     {
         GetInputsVal();
-        Vector3 playerForward = this.gameObject.transform.forward;
-        playerForward = playerForward.normalized;
-        playerForward.y = this.gameObject.transform.position.y + this._cameraOffsetY;
-        playerForward.z = -(this.gameObject.transform.position.z + this._cameraDistance);
-        this._playerCamera.transform.position = playerForward;
+        CameraRotationSequence();
     }
+
     void FixedUpdate()
     {
         //入力値に応じて移動、カメラの向いている方向が正面でカメラはフリールック
+        Vector3 vMove = this.gameObject.transform.forward * this._moveInput.y + this.gameObject.transform.right * this._moveInput.x;
+        this._charCont.Move(vMove);
     }
     private void GetInputsVal()
     {
@@ -47,5 +51,17 @@ public class ThirdPersonController : MonoBehaviour
         this._isAimed = this._deviceInput.GetAiming();
         this._isJumped = this._deviceInput.GetJumping();
         print($"M,L,F,A,J => {this._moveInput},{this._lookInput},{this._isFired},{this._isAimed},{this._isJumped}");
+    }
+
+    private void CameraRotationSequence()
+    {
+        float co_x = 0, co_z = 0;
+        this._camRotTheta += this._lookInput.x * Time.deltaTime;
+        /*X,Z軸での円の軌跡をたどらせる*/
+        co_x = Mathf.Cos(_camRotTheta) * this._cameraDistance + this.gameObject.transform.position.x;
+        co_z = Mathf.Sin(_camRotTheta) * this._cameraDistance + this.gameObject.transform.position.z;        
+        this._playerCamera.transform.position = new Vector3(co_x, this._cameraOffsetY, co_z);
+        /*プレイヤーをカメラは常に向く*/
+        this._playerCamera.transform.LookAt(this.gameObject.transform.position);
     }
 }
