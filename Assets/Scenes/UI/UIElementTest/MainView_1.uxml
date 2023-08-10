@@ -1,9 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Scenes/UIElementTest/progressbar_custom.uss?fileID=7433441132597879392&amp;guid=ca1663eb7faa90a499731f50ff4ac632&amp;type=3#progressbar_custom" />
-    <ui:GroupBox>
-        <ui:ProgressBar value="100" name="ProgBar" focusable="true" usage-hints="None" style="-unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgb(0, 0, 0); flex-direction: column; color: rgb(255, 0, 0); font-size: 16px;" />
-        <ui:Button text="TestButtonPressed" display-tooltip-when-elided="true" name="TestButton" />
-        <ui:Label text="MagicPoint" display-tooltip-when-elided="true" name="MP" tooltip="MagicPoint" />
-        <ui:Label text="Healthpoint" display-tooltip-when-elided="true" name="HP" tooltip="Healthpoint" />
-    </ui:GroupBox>
-</ui:UXML>
