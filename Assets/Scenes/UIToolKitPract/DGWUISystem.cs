@@ -8,7 +8,6 @@ namespace DiscoveryGamesUISystem
         public void SetVisible(bool visible);
         public bool GetVisible();
     }
-
     public class DGWUISystem { }
     /// <summary>
     /// UIToolKitのLabelを扱うときにインスタンス化して使う
@@ -93,7 +92,178 @@ namespace DiscoveryGamesUISystem
             return (_toggle.value);
         }
     }
-
+    /// <summary>
+    /// UIToolKitのScrollerを扱うときにインスタンス化して使う
+    /// </summary>
+    public class UIScroller : IInterface
+    {
+        /// <summary> UIToolKit.Scroller をつかって初期化する </summary>
+        Scroller _scroller;
+        public UIScroller(VisualElement root, string uiName)
+        {
+            _scroller = root.Q<Scroller>(uiName);
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _scroller.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_scroller.visible);
+        }
+        /// <summary> 値のとる範囲の設定 </summary>
+        public void SetRangeOfValue(int start, int end)
+        {
+            _scroller.lowValue = start;
+            _scroller.highValue = end;
+        }
+        /// <summary> 値の設定 </summary>
+        public void SetScrollValue(int value)
+        {
+            _scroller.value = value;
+        }
+    }
+    /// <summary>
+    /// UIToolKitのTextFeildを扱うときにインスタンス化して使う
+    /// </summary>
+    public class UITextFeild : IInterface
+    {
+        /// <summary> UIToolKit.TextFeild をつかって初期化する </summary>
+        TextField _textField;
+        public UITextFeild(VisualElement root, string uiName)
+        {
+            _textField = root.Q<TextField>(uiName);
+            _textField.label = "TFEILD...";
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _textField.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_textField.visible);
+        }
+        /// <summary> ラベルの設定 </summary>
+        public void SetLabel(string label)
+        {
+            _textField.label = label;
+        }
+        /// <summary> 入力値の取得 </summary>
+        public string GetValue()
+        {
+            return (_textField.value);
+        }
+    }
+    /// <summary>
+    /// UIToolKitのFoldoutを扱うときにインスタンス化して使う
+    /// </summary>
+    public class UIFoldOut : IInterface
+    {
+        /// <summary> UIToolKit.TextFeild をつかって初期化する </summary>
+        Foldout _foldout;
+        public UIFoldOut(VisualElement root,string uiName)
+        {
+            _foldout = root.Q<Foldout>(uiName);
+            _foldout.text = "TFOLD...";
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _foldout.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_foldout.visible);
+        }
+        /// <summary> 値の設定 </summary>
+        public void SetValue(bool value)
+        {
+            _foldout.value = value;
+        }
+    }
+    /// <summary>
+    /// UIToolKitのSliderを扱うときにインスタンス化して使う
+    /// </summary>
+    public class UISlider : IInterface
+    {
+        /// <summary> UIToolKit.TextFeild をつかって初期化する </summary>
+        Slider _slider;
+        public UISlider(VisualElement root,string uiName)
+        {
+            _slider = root.Q<Slider>(uiName);
+            _slider.label = "SLIDER...";
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _slider.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_slider.visible);
+        }
+        /// <summary> 値のとる範囲の設定 </summary>
+        public void SetRangeOfValue(float start, float end)
+        {
+            _slider.lowValue = start;
+            _slider.highValue = end;
+        }
+        /// <summary> 値の設定 </summary>
+        public void SetSliderValue(float value)
+        {
+            _slider.value = value;
+        }
+        /// <summary> 値の取得 </summary>
+        public float GetSliderValue()
+        {
+            return (_slider.value);
+        }
+    }
+    /// <summary>
+    /// UIToolKitのSlider(Int)を扱うときにインスタンス化して使う
+    /// </summary>
+    public class UISliderInt : IInterface
+    {
+        /// <summary> UIToolKit.TextFeild をつかって初期化する </summary>
+        SliderInt _slider;
+        public UISliderInt(VisualElement root,string uiName)
+        {
+            _slider = root.Q<SliderInt>(uiName);
+            _slider.label = "SLIDERINT...";
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _slider.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_slider.visible);
+        }
+        /// <summary> 値のとる範囲の設定 </summary>
+        public void SetRangeOfValue(int start, int end)
+        {
+            _slider.lowValue = start;
+            _slider.highValue = end;
+        }
+        /// <summary> 値の設定 </summary>
+        public void SetSliderValue(int value)
+        {
+            _slider.value = value;
+        }
+        /// <summary> 値の取得 </summary>
+        public int GetSliderValue()
+        {
+            return (_slider.value);
+        }
+    }
     /// <summary>
     /// UIToolKitのProgressBarを扱うときにインスタンス化して使う
     /// </summary>
@@ -114,7 +284,7 @@ namespace DiscoveryGamesUISystem
         /// <summary> 可視性の取得 </summary>
         public bool GetVisible()
         {
-            return _bar.visible;
+            return (_bar.visible);
         }
         /// <summary> 値のとる範囲の設定 </summary>
         public void SetRangeOfValue(int start, int end)

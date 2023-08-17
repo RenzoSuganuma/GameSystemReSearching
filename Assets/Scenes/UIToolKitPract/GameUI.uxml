@@ -2,4 +2,11 @@
     <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="TextLabel" />
     <ui:Button text="Button" display-tooltip-when-elided="true" name="TestButton" />
     <ui:ProgressBar value="22" title="my-progress" name="ProgbarT" style="cursor: initial;" />
+    <ui:Scroller high-value="100" direction="Horizontal" value="42" />
+    <ui:TextField picking-mode="Ignore" label="Text Field" value="filler text" />
+    <ui:Foldout text="Foldout" value="false">
+        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" />
+        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" />
+    </ui:Foldout>
+    <ui:Slider picking-mode="Ignore" label="Slider" value="42" high-value="100" />
 </ui:UXML>
