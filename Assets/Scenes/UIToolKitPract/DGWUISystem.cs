@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 namespace DiscoveryGamesUISystem
@@ -28,10 +29,6 @@ namespace DiscoveryGamesUISystem
         public bool GetVisible()
         {
             return (_label.visible);
-        }
-        public void SetText(string text)
-        {
-            _label.text = text;
         }
     }
     /// <summary>
@@ -262,6 +259,98 @@ namespace DiscoveryGamesUISystem
         public int GetSliderValue()
         {
             return (_slider.value);
+        }
+    }
+    /// <summary>
+    /// UIToolKitのMinMaxSliderを扱うときにインスタンス化して使う
+    /// </summary>
+    public class UIMinMaxSlider : IInterface
+    {
+        /// <summary> UIToolKit.MinMaxSlider をつかって初期化する </summary>
+        MinMaxSlider _slider;
+        public UIMinMaxSlider(VisualElement root,string uiName)
+        {
+            _slider = root.Q<MinMaxSlider>(uiName);
+            _slider.label = "MinMaxSLIDER...";
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _slider.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_slider.visible);
+        }
+        /// <summary> 値のとる範囲の設定 </summary>
+        public void SetRangeOfValueLimit(float start, float end)
+        {
+            _slider.lowLimit = start;
+            _slider.highLimit = end;
+        }
+        /// <summary> 値の設定 </summary>
+        public void SetRangeOfValue(float start, float end)
+        {
+            _slider.minValue = start;
+            _slider.maxValue = end;
+        }
+        /// <summary> 値の取得 </summary>
+        public void GetSliderValue(ref float minV,ref float maxV)
+        {
+            minV = _slider.minValue;
+            maxV = _slider.maxValue;
+        }
+    }
+    /// <summary>
+    /// UIToolKitのDropdownを扱うときにインスタンス化して使う
+    /// </summary>
+    public class UIDropDown : IInterface
+    {
+        DropdownField _dropFeild;
+        Action valueChangedEvent;
+        public UIDropDown(VisualElement root,string uiName)
+        {
+            _dropFeild = root.Q<DropdownField>(uiName);
+            _dropFeild.RegisterValueChangedCallback((evt) => { ValueChangedEvent(); });
+            _dropFeild.label = "DROPDOWN...";
+        }
+        /// <summary> ドロップダウンの値は選択された時に呼び出される </summary>
+        void ValueChangedEvent() { valueChangedEvent?.Invoke(); }
+        /// <summary> ドロップダウンの値は選択された時に呼び出される関数の登録 </summary>
+        public void AddEventHandler(Action handler)
+        {
+            valueChangedEvent += handler;
+        }
+        /// <summary> ドロップダウンの値は選択された時に呼び出される関数の登録解除 </summary>
+        public void RemoveEventHandler(Action handler)
+        {
+            valueChangedEvent -= handler;
+        }
+        /// <summary> リスト値の設定 </summary>
+        public void SetChoices(List<string> list)
+        {
+            _dropFeild.choices = list;
+        }
+        /// <summary> リスト値の取得 </summary>
+        public List<string> GetChoices()
+        {
+            return (_dropFeild.choices);
+        }
+        /// <summary> 値の取得 </summary>
+        public string GetValue()
+        {
+            return (_dropFeild.value);
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _dropFeild.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_dropFeild.visible);
         }
     }
     /// <summary>

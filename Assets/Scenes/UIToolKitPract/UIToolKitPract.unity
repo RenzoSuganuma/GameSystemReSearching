@@ -189,6 +189,7 @@ MonoBehaviour:
   _uinameText: TextLabel
   _uinameButton: TestButton
   _uinameProg: ProgbarT
+  _uinameDropDown: TestDropDownMenu
 --- !u!1 &1443579643
 GameObject:
   m_ObjectHideFlags: 0
