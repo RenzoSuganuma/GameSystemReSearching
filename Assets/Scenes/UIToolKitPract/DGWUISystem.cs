@@ -2,14 +2,20 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+#region README
+//Unity UIToolKitを活用したゲーム開発を補助するものとして本スクリプトを書きました。
+//UIToolKitのControlsのRadioButton,Group以外の要素なら扱えます
+//Ver 1.0.0
+#endregion
 namespace DiscoveryGamesUISystem
 {
+    public class DGWUISystem { }
+    #region UIToolKit_Controls
     interface IInterface
     {
         public void SetVisible(bool visible);
         public bool GetVisible();
     }
-    public class DGWUISystem { }
     /// <summary>
     /// UIToolKitのLabelを扱うときにインスタンス化して使う
     /// </summary>
@@ -303,6 +309,40 @@ namespace DiscoveryGamesUISystem
         }
     }
     /// <summary>
+    /// UIToolKitのProgressBarを扱うときにインスタンス化して使う
+    /// </summary>
+    public class UIProgBar : IInterface
+    {
+        /// <summary> UIToolKit.ProgressBar をつかって初期化する </summary>
+        ProgressBar _bar;
+        public UIProgBar(VisualElement root, string uiName)
+        {
+            _bar = root.Q<ProgressBar>(uiName);
+            _bar.title = "PROGBAR...";
+        }
+        /// <summary> 可視性の設定 </summary>
+        public void SetVisible(bool visible)
+        {
+            _bar.visible = visible;
+        }
+        /// <summary> 可視性の取得 </summary>
+        public bool GetVisible()
+        {
+            return (_bar.visible);
+        }
+        /// <summary> 値のとる範囲の設定 </summary>
+        public void SetRangeOfValue(int start, int end)
+        {
+            _bar.lowValue = start;
+            _bar.highValue = end;
+        }
+        /// <summary> 値の設定 </summary>
+        public void SetProgValue(int value)
+        {
+            _bar.value = value;
+        }
+    }
+    /// <summary>
     /// UIToolKitのDropdownを扱うときにインスタンス化して使う
     /// </summary>
     public class UIDropDown : IInterface
@@ -354,37 +394,45 @@ namespace DiscoveryGamesUISystem
         }
     }
     /// <summary>
-    /// UIToolKitのProgressBarを扱うときにインスタンス化して使う
+    /// UIToolKitのEnumを扱うときにインスタンス化して使う
     /// </summary>
-    public class UIProgBar : IInterface
+    public class UIEnumFeild : IInterface
     {
-        /// <summary> UIToolKit.ProgressBar をつかって初期化する </summary>
-        ProgressBar _bar;
-        public UIProgBar(VisualElement root, string uiName)
+        EnumField _enumFeild;
+        Action valueChangedEvent;
+        public UIEnumFeild(VisualElement root,string uiName)
         {
-            _bar = root.Q<ProgressBar>(uiName);
-            _bar.title = "PROGBAR...";
+            _enumFeild = root.Q<EnumField>(uiName);
+            _enumFeild.RegisterValueChangedCallback((evt) => { ValueChangedEvent(); });
+            _enumFeild.label = "ENUM...";
+        }
+        /// <summary> ドロップダウンの値は選択された時に呼び出される </summary>
+        void ValueChangedEvent() { valueChangedEvent?.Invoke(); }
+        /// <summary> ドロップダウンの値は選択された時に呼び出される関数の登録 </summary>
+        public void AddEventHandler(Action handler)
+        {
+            valueChangedEvent += handler;
+        }
+        /// <summary> ドロップダウンの値は選択された時に呼び出される関数の登録解除 </summary>
+        public void RemoveEventHandler(Action handler)
+        {
+            valueChangedEvent -= handler;
+        }
+        /// <summary> 値の取得 </summary>
+        public Enum GetValue()
+        {
+            return (_enumFeild.value);
         }
         /// <summary> 可視性の設定 </summary>
         public void SetVisible(bool visible)
         {
-            _bar.visible = visible;
+            _enumFeild.visible = visible;
         }
         /// <summary> 可視性の取得 </summary>
         public bool GetVisible()
         {
-            return (_bar.visible);
-        }
-        /// <summary> 値のとる範囲の設定 </summary>
-        public void SetRangeOfValue(int start, int end)
-        {
-            _bar.lowValue = start;
-            _bar.highValue = end;
-        }
-        /// <summary> 値の設定 </summary>
-        public void SetProgValue(int value)
-        {
-            _bar.value = value;
+            return (_enumFeild.visible);
         }
     }
+    #endregion
 }

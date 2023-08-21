@@ -12,4 +12,5 @@
     <ui:SliderInt picking-mode="Ignore" label="SliderInt" value="42" high-value="100" name="TestISlider" />
     <ui:MinMaxSlider picking-mode="Ignore" label="Min/Max Slider" min-value="-1" max-value="12" low-limit="-10" high-limit="40" name="MMSlider" />
     <ui:DropdownField label="Dropdown" index="-1" name="TestDropDownMenu" />
+    <ui:EnumField label="Enum" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Right" name="TEnumFeild" />
 </ui:UXML>
