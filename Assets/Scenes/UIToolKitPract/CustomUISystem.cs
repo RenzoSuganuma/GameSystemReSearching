@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,9 +8,9 @@ using UnityEngine.UIElements;
 //UIToolKitのControlsのRadioButton,Group以外の要素なら扱えます
 //Ver 1.0.0
 #endregion
-namespace DiscoveryGamesUISystem
+namespace CustomGamesUISystem
 {
-    public class DGWUISystem { }
+    public class CustomUISystem { }
     #region UIToolKit_Controls
     interface IInterface
     {
@@ -441,6 +442,21 @@ namespace DiscoveryGamesUISystem
     /// </summary>
     public class MakeConversationWindow
     {
+        //グループボックスのインスタンス化
+        GroupBox window = new GroupBox();
+        //プロパティ初期化の可読性のためIstyleの宣言と格納
+        IStyle windowStyle;
+        //話者ラベルのインスタンス化
+        Label speakerNameLabel = new Label();
+        //プロパティ初期化の可読性のためIstyleの宣言と格納
+        IStyle speakerLabStyle;
+        //会話ラベルのインスタンス化
+        Label conversationTextLabel = new Label();
+        //プロパティ初期化の可読性のためIstyleの宣言と格納
+        IStyle convLabStyle;
+        //rootをコンストラクタ外からでもいじりたいため宣言
+        VisualElement root;
+        Action Spread = default;
         /// <summary>
         /// 会話のテキストウィンドウ生成クラス
         /// </summary>
@@ -453,17 +469,9 @@ namespace DiscoveryGamesUISystem
         /// <param name="height_percent"> 画面の何パーセントの高さか</param>
         public MakeConversationWindow(VisualElement root, string uiName, string content, int left_percent, int top_percent, int width_percent, int height_percent)
         {
-            //ウィンドウの伸縮用プロパティ
-            int w, h;
-            w = h = 1;
-            for(int i = 1; i < width_percent; i++) { w = i; }
-            for(int j = 1; j < height_percent; j++) { h = j; }
-            //グループボックスのインスタンス化
-            GroupBox window = new GroupBox();
-            //プロパティ初期化の可読性のためIstyleの宣言と格納
-            IStyle windowStyle;
+            this.root = root;
             //UIに新しく追加
-            root.Add(window);
+            this.root.Add(window);
             //Grouboxの各プロパティの初期化
             window.name = uiName;
             windowStyle = window.style;
@@ -476,10 +484,6 @@ namespace DiscoveryGamesUISystem
             windowStyle.borderLeftWidth = windowStyle.borderRightWidth = windowStyle.borderTopWidth = windowStyle.borderBottomWidth = 3;
             windowStyle.borderTopLeftRadius = windowStyle.borderTopRightRadius = windowStyle.borderBottomLeftRadius = windowStyle.borderBottomRightRadius = 3;
             windowStyle.borderLeftColor = windowStyle.borderRightColor = windowStyle.borderTopColor = windowStyle.borderBottomColor = Color.black;
-                //ラベルのインスタンス化
-                Label speakerNameLabel = new Label();
-                //プロパティ初期化の可読性のためIstyleの宣言と格納
-                IStyle speakerLabStyle;
                 //UIに新しく追加
                 window.Add(speakerNameLabel);
                 //Labelの各プロパティの初期化
@@ -493,10 +497,6 @@ namespace DiscoveryGamesUISystem
                 speakerLabStyle.borderLeftWidth = speakerLabStyle.borderRightWidth = speakerLabStyle.borderTopWidth = speakerLabStyle.borderBottomWidth = 3;
                 speakerLabStyle.borderTopLeftRadius = speakerLabStyle.borderTopRightRadius = speakerLabStyle.borderBottomLeftRadius = speakerLabStyle.borderBottomRightRadius = 3;
                 speakerLabStyle.borderLeftColor = speakerLabStyle.borderRightColor = speakerLabStyle.borderTopColor = speakerLabStyle.borderBottomColor = Color.white;                                                                                                                                                   //ラベルのインスタンス化                                                                                                                                                      //ラベルのインスタンス化
-                    //ラベルのインスタンス化
-                    Label conversationTextLabel = new Label();
-                    //プロパティ初期化の可読性のためIstyleの宣言と格納
-                    IStyle convLabStyle;
                     //UIに新しく追加
                     window.Add(conversationTextLabel);
                     //Labelの各プロパティの初期化
@@ -506,6 +506,37 @@ namespace DiscoveryGamesUISystem
                     convLabStyle.fontSize = 24;
                     convLabStyle.color = Color.black;
                     convLabStyle.position = Position.Relative;
+            //ウィンドウは生成してもポップアップしないと見えない
+            window.transform.scale = Vector2.zero;
+        }
+        /// <summary>
+        /// 呼び出しのタイミングで会話ウィンドウのスケールを初期化
+        /// </summary>
+        /// <param name="scale2D"></param>
+        public void SetWindowScale(Vector2 scale2D)
+        {
+            window.transform.scale = scale2D;
+        }
+        /// <summary>
+        /// UpdateまたはFixedUpdate内で呼び出すこと。会話のウィンドウのポップアップ処理
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void SpreadWindow(ref float width,ref float height)
+        {
+            if (width < 1f) width += Time.deltaTime;
+            if (height < 1f) height += Time.deltaTime;
+            SetWindowScale(new Vector2(width, height));
+        }
+        public void CloseWindow(ref float width, ref float height)
+        {
+            if (width > 0f) width -= Time.deltaTime;
+            if (height > 0f) height -= Time.deltaTime;
+            SetWindowScale(new Vector2(width, height));
+        }
+        public void Dispose()
+        {
+            window.RemoveFromHierarchy();
         }
     }
     #endregion

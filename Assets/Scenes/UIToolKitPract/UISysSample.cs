@@ -1,8 +1,8 @@
 using UnityEngine;
-using DiscoveryGamesUISystem;//é©çÏÇÃñºëOãÛä‘
+using CustomGamesUISystem;//é©çÏÇÃñºëOãÛä‘
 using UnityEngine.UIElements;
 using System;
-using System.Xml.Linq;
+using System.Collections;
 
 public class UISysSample : MonoBehaviour
 {
@@ -19,12 +19,13 @@ public class UISysSample : MonoBehaviour
 
     MakeConversationWindow _win;
     string _content = "aaaaaaa\naaaaaaaaaaa\naaaaaaaaaaaa\nsdadasdasdas\nasdasda\nasdasdasdasda";
-    int x, y;
+    bool _isspread = false, _isclose = false;
+    float w, h;
     private void Start()
     {
-        x = y = 1;
         this._uIDocument = GetComponent<UIDocument>();
-        _win = new MakeConversationWindow(_uIDocument.rootVisualElement, "BOSS", _content, 25, 25, x, y);        
+        _win = new MakeConversationWindow(_uIDocument.rootVisualElement, "BOSS", _content, 25, 25, 50, 50);
+        _win.SetWindowScale(new Vector2(0f, 0f));
         //this._uiLabel = new UILabel(this._uIDocument.rootVisualElement,this._uinameText);
         //this._uiButton = new UIButton(this._uIDocument.rootVisualElement,this._uinameButton);
         //this._uiButton.AddButtonHandler(() => { Debug.Log("ButtonHandleTest"); });
@@ -32,16 +33,30 @@ public class UISysSample : MonoBehaviour
         //this._uiProgBar.SetRangeOfValue(0, 100);
         //this._uiProgBar.SetProgValue(50);
         //this._uiEnumFeild = new UIEnumFeild(this._uIDocument.rootVisualElement, this._uinameEnum);
+        w = h = 0f;
     }
-    private void Update()
+    private void FixedUpdate()
     {
-        for (int i = 1; i < 20; ++i)
+        if (this._isspread)
         {
-            x++;
+            _win.SpreadWindow(ref w,ref h);
         }
-        for (int j = 1; j < 20; ++j)
+        if(this._isclose)
         {
-            y++;
+            _win.CloseWindow(ref w, ref h);
+        }
+        Debug.Log(_isclose);
+    }
+    private void OnGUI()
+    { 
+        if (GUI.Button(new Rect(1, 1, 100, 100), "BUTTON"))
+        {
+            _isspread = true;
+        }
+        if (GUI.Button(new Rect(100, 500, 100, 100), "DIP"))
+        {
+            _isspread = false;
+            _isclose = true;
         }
     }
 }
