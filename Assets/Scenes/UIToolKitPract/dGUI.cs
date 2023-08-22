@@ -15,6 +15,7 @@ public class dGUI : MonoBehaviour
     string[] _tooltips = { "a", "b", "c" };
     int _selectedToolbarButton = 0;
     float _sliderValue;
+    Vector2 _sliderPosition;
     private void OnGUI()
     {
         _defaultStyle.normal.textColor = Color.cyan;
@@ -22,7 +23,9 @@ public class dGUI : MonoBehaviour
         _defaultStyle.fontSize = 36;
         GUILayout.BeginArea(new Rect(cx, cy, w,h), _defaultStyle);
         _selectedToolbarButton = GUILayout.Toolbar(_selectedToolbarButton, _tooltips);
-        _sliderValue = GUILayout.HorizontalSlider(_sliderValue, 0f, 100f);
+        //_sliderValue = GUILayout.VerticalSlider(_sliderValue, 0f, 100f);
+        _sliderValue = GUILayout.VerticalScrollbar(_sliderValue, 1f, 0f, 100f);
+        GUILayout.Space(w);
         GUILayout.EndArea();
     }
 }

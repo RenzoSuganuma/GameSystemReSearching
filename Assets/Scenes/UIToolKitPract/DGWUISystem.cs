@@ -435,4 +435,78 @@ namespace DiscoveryGamesUISystem
         }
     }
     #endregion
+    #region カスタムのUI
+    /// <summary>
+    /// 会話ウィンドウを扱うときにインスタンス化して使う
+    /// </summary>
+    public class MakeConversationWindow
+    {
+        /// <summary>
+        /// 会話のテキストウィンドウ生成クラス
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="uiName"></param>
+        /// <param name="content"></param>
+        /// <param name="left_percent"> 左から画面の何パーセントにあるか</param>
+        /// <param name="top_percent"> 上から画面の何パーセントにあるか</param>
+        /// <param name="width_percent"> 画面の何パーセントの幅か</param>
+        /// <param name="height_percent"> 画面の何パーセントの高さか</param>
+        public MakeConversationWindow(VisualElement root, string uiName, string content, int left_percent, int top_percent, int width_percent, int height_percent)
+        {
+            //ウィンドウの伸縮用プロパティ
+            int w, h;
+            w = h = 1;
+            for(int i = 1; i < width_percent; i++) { w = i; }
+            for(int j = 1; j < height_percent; j++) { h = j; }
+            //グループボックスのインスタンス化
+            GroupBox window = new GroupBox();
+            //プロパティ初期化の可読性のためIstyleの宣言と格納
+            IStyle windowStyle;
+            //UIに新しく追加
+            root.Add(window);
+            //Grouboxの各プロパティの初期化
+            window.name = uiName;
+            windowStyle = window.style;
+            windowStyle.position = Position.Absolute;
+            windowStyle.left = Screen.width * (left_percent / 100f);
+            windowStyle.top = Screen.height * (top_percent / 100f);
+            windowStyle.width = Screen.width * (width_percent / 100f);
+            windowStyle.height = Screen.height * (height_percent / 100f);
+            windowStyle.backgroundColor = new Color(.5f, .5f, .5f, .5f);
+            windowStyle.borderLeftWidth = windowStyle.borderRightWidth = windowStyle.borderTopWidth = windowStyle.borderBottomWidth = 3;
+            windowStyle.borderTopLeftRadius = windowStyle.borderTopRightRadius = windowStyle.borderBottomLeftRadius = windowStyle.borderBottomRightRadius = 3;
+            windowStyle.borderLeftColor = windowStyle.borderRightColor = windowStyle.borderTopColor = windowStyle.borderBottomColor = Color.black;
+                //ラベルのインスタンス化
+                Label speakerNameLabel = new Label();
+                //プロパティ初期化の可読性のためIstyleの宣言と格納
+                IStyle speakerLabStyle;
+                //UIに新しく追加
+                window.Add(speakerNameLabel);
+                //Labelの各プロパティの初期化
+                speakerNameLabel.text = uiName;
+                speakerLabStyle = speakerNameLabel.style;
+                speakerLabStyle.unityTextAlign = TextAnchor.LowerLeft;
+                speakerLabStyle.fontSize = 36;
+                speakerLabStyle.color = Color.white;
+                speakerLabStyle.position = Position.Relative;
+                speakerLabStyle.backgroundColor = new Color(.3f, .3f, .3f, 1f);
+                speakerLabStyle.borderLeftWidth = speakerLabStyle.borderRightWidth = speakerLabStyle.borderTopWidth = speakerLabStyle.borderBottomWidth = 3;
+                speakerLabStyle.borderTopLeftRadius = speakerLabStyle.borderTopRightRadius = speakerLabStyle.borderBottomLeftRadius = speakerLabStyle.borderBottomRightRadius = 3;
+                speakerLabStyle.borderLeftColor = speakerLabStyle.borderRightColor = speakerLabStyle.borderTopColor = speakerLabStyle.borderBottomColor = Color.white;                                                                                                                                                   //ラベルのインスタンス化                                                                                                                                                      //ラベルのインスタンス化
+                    //ラベルのインスタンス化
+                    Label conversationTextLabel = new Label();
+                    //プロパティ初期化の可読性のためIstyleの宣言と格納
+                    IStyle convLabStyle;
+                    //UIに新しく追加
+                    window.Add(conversationTextLabel);
+                    //Labelの各プロパティの初期化
+                    conversationTextLabel.text = content;
+                    convLabStyle = conversationTextLabel.style;
+                    convLabStyle.unityTextAlign = TextAnchor.MiddleLeft;
+                    convLabStyle.fontSize = 24;
+                    convLabStyle.color = Color.black;
+                    convLabStyle.position = Position.Relative;
+        }
+    }
+    #endregion
 }
