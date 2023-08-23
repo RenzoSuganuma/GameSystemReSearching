@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 #region README
 //Unity UIToolKitを活用したゲーム開発を補助するものとして本スクリプトを書きました。
 //UIToolKitのControlsのRadioButton,Group以外の要素なら扱えます
-//Ver 1.0.0
+//Ver 1.0.1
 #endregion
 namespace CustomGamesUISystem
 {

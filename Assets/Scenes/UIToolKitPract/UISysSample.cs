@@ -20,20 +20,18 @@ public class UISysSample : MonoBehaviour
     MakeConversationWindow _win;
     string _content = "aaaaaaa\naaaaaaaaaaa\naaaaaaaaaaaa\nsdadasdasdas\nasdasda\nasdasdasdasda";
     bool _isspread = false, _isclose = false;
-    //float w, h;
     private void Start()
     {
         this._uIDocument = GetComponent<UIDocument>();
         _win = new MakeConversationWindow(_uIDocument.rootVisualElement, "BOSS", _content, 25, 25, 50, 50);
         _win.SetWindowScale(new Vector2(0f, 0f));
-        //this._uiLabel = new UILabel(this._uIDocument.rootVisualElement,this._uinameText);
-        //this._uiButton = new UIButton(this._uIDocument.rootVisualElement,this._uinameButton);
-        //this._uiButton.AddButtonHandler(() => { Debug.Log("ButtonHandleTest"); });
-        //this._uiProgBar = new UIProgBar(this._uIDocument.rootVisualElement, this._uinameProg);
-        //this._uiProgBar.SetRangeOfValue(0, 100);
-        //this._uiProgBar.SetProgValue(50);
-        //this._uiEnumFeild = new UIEnumFeild(this._uIDocument.rootVisualElement, this._uinameEnum);
-        //w = h = 0f;
+        this._uiLabel = new UILabel(this._uIDocument.rootVisualElement, this._uinameText);
+        this._uiButton = new UIButton(this._uIDocument.rootVisualElement, this._uinameButton);
+        this._uiButton.AddButtonHandler(() => { Debug.Log("ButtonHandleTest"); });
+        this._uiProgBar = new UIProgBar(this._uIDocument.rootVisualElement, this._uinameProg);
+        this._uiProgBar.SetRangeOfValue(0, 100);
+        this._uiProgBar.SetProgValue(50);
+        this._uiEnumFeild = new UIEnumFeild(this._uIDocument.rootVisualElement, this._uinameEnum);
     }
     private void FixedUpdate()
     {
