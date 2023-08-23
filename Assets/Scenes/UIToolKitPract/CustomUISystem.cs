@@ -456,7 +456,12 @@ namespace CustomGamesUISystem
         IStyle convLabStyle;
         //rootをコンストラクタ外からでもいじりたいため宣言
         VisualElement root;
-        Action Spread = default;
+        //ウィンドウが開かれたときに呼び出される
+        public Action WindowOpened = default;
+        //ウィンドウが閉じられたとき呼び出される
+        public Action WindowClosed = default;
+        //会話ウィンドウの幅と高さ
+        float _convWindowWinWidth, _convWindowWinHeight;
         /// <summary>
         /// 会話のテキストウィンドウ生成クラス
         /// </summary>
@@ -508,6 +513,12 @@ namespace CustomGamesUISystem
                     convLabStyle.position = Position.Relative;
             //ウィンドウは生成してもポップアップしないと見えない
             window.transform.scale = Vector2.zero;
+            //スケールの各成分を代入
+            _convWindowWinWidth = window.transform.scale.x;
+            _convWindowWinHeight = window.transform.scale.y;
+            //ダミーの処理を登録
+            WindowOpened += () => { Debug.Log("Constructor_Window-Opened"); };
+            WindowClosed += () => { Debug.Log("Constructor_Window-Opened"); };
         }
         /// <summary>
         /// 呼び出しのタイミングで会話ウィンドウのスケールを初期化
@@ -522,20 +533,38 @@ namespace CustomGamesUISystem
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public void SpreadWindow(ref float width,ref float height)
+        public void OpenWindow()
         {
-            if (width < 1f) width += Time.deltaTime;
-            if (height < 1f) height += Time.deltaTime;
-            SetWindowScale(new Vector2(width, height));
+            //以下ウィンドウ拡大処理
+            if (_convWindowWinWidth < 1f) _convWindowWinWidth += Time.deltaTime;
+            if (_convWindowWinHeight < 1f) _convWindowWinHeight += Time.deltaTime;
+            SetWindowScale(new Vector2(_convWindowWinWidth, _convWindowWinHeight));
+            //これが呼び出された時のデリゲート
+            WindowOpened();
         }
-        public void CloseWindow(ref float width, ref float height)
+        /// <summary>
+        /// UpdateまたはFixedUpdate内で呼び出すこと。会話のウィンドウのポップアップ処理
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void CloseWindow()
         {
-            if (width > 0f) width -= Time.deltaTime;
-            if (height > 0f) height -= Time.deltaTime;
-            SetWindowScale(new Vector2(width, height));
+            //以下ウィンドウ縮小処理
+            if (_convWindowWinWidth >= 0f) _convWindowWinWidth -= Time.deltaTime;
+            else Dispose();
+            if (_convWindowWinHeight >= 0f) _convWindowWinHeight -= Time.deltaTime;
+            else Dispose();
+            SetWindowScale(new Vector2(_convWindowWinWidth, _convWindowWinHeight));
+            //これが呼び出された時のデリゲート
+            WindowClosed();
         }
-        public void Dispose()
+        /// <summary>
+        /// 使わなくなったウィンドウは破棄するのでこれを呼び出す
+        /// </summary>
+        void Dispose()
         {
+            //破棄するのでデリゲートはnull代入して中身をなくす
+            WindowOpened = WindowClosed = () => { Debug.Log("ThisIsDiposed"); };
             window.RemoveFromHierarchy();
         }
     }

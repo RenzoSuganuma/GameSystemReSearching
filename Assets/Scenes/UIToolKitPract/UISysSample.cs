@@ -20,7 +20,7 @@ public class UISysSample : MonoBehaviour
     MakeConversationWindow _win;
     string _content = "aaaaaaa\naaaaaaaaaaa\naaaaaaaaaaaa\nsdadasdasdas\nasdasda\nasdasdasdasda";
     bool _isspread = false, _isclose = false;
-    float w, h;
+    //float w, h;
     private void Start()
     {
         this._uIDocument = GetComponent<UIDocument>();
@@ -33,25 +33,27 @@ public class UISysSample : MonoBehaviour
         //this._uiProgBar.SetRangeOfValue(0, 100);
         //this._uiProgBar.SetProgValue(50);
         //this._uiEnumFeild = new UIEnumFeild(this._uIDocument.rootVisualElement, this._uinameEnum);
-        w = h = 0f;
+        //w = h = 0f;
     }
     private void FixedUpdate()
     {
         if (this._isspread)
         {
-            _win.SpreadWindow(ref w,ref h);
+            if (_win != null)
+                _win.OpenWindow();
         }
         if(this._isclose)
         {
-            _win.CloseWindow(ref w, ref h);
+            if(_win != null)
+                _win.CloseWindow();
         }
-        Debug.Log(_isclose);
     }
     private void OnGUI()
     { 
         if (GUI.Button(new Rect(1, 1, 100, 100), "BUTTON"))
         {
             _isspread = true;
+            _isclose = false;
         }
         if (GUI.Button(new Rect(100, 500, 100, 100), "DIP"))
         {
