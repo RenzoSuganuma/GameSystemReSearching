@@ -23,8 +23,6 @@ public class UISysSample : MonoBehaviour
     private void Start()
     {
         this._uIDocument = GetComponent<UIDocument>();
-        _win = new MakeConversationWindow(_uIDocument.rootVisualElement, "BOSS", _content, 25, 25, 50, 50);
-        _win.SetWindowScale(new Vector2(0f, 0f));
         this._uiLabel = new UILabel(this._uIDocument.rootVisualElement, this._uinameText);
         this._uiButton = new UIButton(this._uIDocument.rootVisualElement, this._uinameButton);
         this._uiButton.AddButtonHandler(() => { Debug.Log("ButtonHandleTest"); });
@@ -37,13 +35,13 @@ public class UISysSample : MonoBehaviour
     {
         if (this._isspread)
         {
-            if (_win != null)
-                _win.OpenWindow();
+            //if (_win != null)
+            //    _win.OpenWindow();
         }
         if(this._isclose)
         {
-            if (_win != null)
-                _win.CloseWindow();
+            //if (_win != null)
+            //    _win.CloseWindow();
         }
     }
     private void OnGUI()
@@ -51,13 +49,17 @@ public class UISysSample : MonoBehaviour
         if (GUI.Button(new Rect(1, 1, 100, 100), "BUTTON"))
         {
             Debug.Log("会話ウィンドウ開く");
+            _win = new MakeConversationWindow(_uIDocument.rootVisualElement, "BOSS", _content, 25, 25, 50, 50);
+            _win.SetWindowScale(new Vector2(0f, 0f));
             _isspread = true;
             _isclose = false;
+            _win.OpenWindow();
         }
         if (GUI.Button(new Rect(100, 500, 100, 100), "DIP"))
         {
             _isspread = false;
             _isclose = true;
+            _win.CloseWindow();
         }
     }
 }
