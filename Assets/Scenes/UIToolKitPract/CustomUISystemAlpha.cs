@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,9 +7,9 @@ using UnityEngine.UIElements;
 //UIToolKitのControlsのRadioButton,Group以外の要素なら扱えます
 //Ver 1.0.1
 #endregion
-namespace CustomGamesUISystem
+namespace CustomGamesUISystemAlpha
 {
-    public class CustomUISystem { }
+    public class CustomUISystemAlpha { }
     #region UIToolKit_Controls
     interface IInterface
     {
@@ -563,11 +562,11 @@ namespace CustomGamesUISystem
         /// <summary>ウィンドウを開くコルーチン</summary>
         void WindowSpreadRoutine()
         { 
-            while (_convWindowWinWidth < 1f)
+            if (_convWindowWinWidth < 1f)
             {
                 _convWindowWinWidth += Time.deltaTime;
             }
-            while (_convWindowWinHeight < 1f)
+            if (_convWindowWinHeight < 1f)
             {
                 _convWindowWinHeight += Time.deltaTime;
             }
@@ -575,15 +574,18 @@ namespace CustomGamesUISystem
         /// <summary>ウィンドウを閉じるコルーチン</summary>
         void WindowCloseRoutine()
         {
-            while (_convWindowWinWidth >= 0f)
+            if (_convWindowWinWidth >= 0f)
             {
                 _convWindowWinWidth -= Time.deltaTime;
             }
-            while (_convWindowWinHeight >= 0f)
+            else if (_convWindowWinHeight >= 0f)
             {
                 _convWindowWinHeight -= Time.deltaTime;
             }
-            Dispose();
+            else
+            {
+                Dispose();
+            }
         }
         /// <summary>
         /// 使わなくなったウィンドウは破棄するのでこれを呼び出す
