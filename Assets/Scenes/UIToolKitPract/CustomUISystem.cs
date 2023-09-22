@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -536,8 +536,9 @@ namespace CustomGamesUISystem
         public void OpenWindow()
         {
             //以下ウィンドウ拡大処理
-            if (_convWindowWinWidth < 1f) _convWindowWinWidth += Time.deltaTime;
-            if (_convWindowWinHeight < 1f) _convWindowWinHeight += Time.deltaTime;
+            //if (_convWindowWinWidth < 1f) _convWindowWinWidth += Time.deltaTime;
+            //if (_convWindowWinHeight < 1f) _convWindowWinHeight += Time.deltaTime;
+            WindowSpreadRoutine();
             SetWindowScale(new Vector2(_convWindowWinWidth, _convWindowWinHeight));
             //これが呼び出された時のデリゲート
             WindowOpened();
@@ -550,13 +551,39 @@ namespace CustomGamesUISystem
         public void CloseWindow()
         {
             //以下ウィンドウ縮小処理
-            if (_convWindowWinWidth >= 0f) _convWindowWinWidth -= Time.deltaTime;
-            else Dispose();
-            if (_convWindowWinHeight >= 0f) _convWindowWinHeight -= Time.deltaTime;
-            else Dispose();
+            //if (_convWindowWinWidth >= 0f) _convWindowWinWidth -= Time.deltaTime;
+            //else Dispose();
+            //if (_convWindowWinHeight >= 0f) _convWindowWinHeight -= Time.deltaTime;
+            //else Dispose();
+            WindowCloseRoutine();
             SetWindowScale(new Vector2(_convWindowWinWidth, _convWindowWinHeight));
             //これが呼び出された時のデリゲート
             WindowClosed();
+        }
+        /// <summary>ウィンドウを開くコルーチン</summary>
+        void WindowSpreadRoutine()
+        { 
+            while (_convWindowWinWidth < 1f)
+            {
+                _convWindowWinWidth += Time.deltaTime;
+            }
+            while (_convWindowWinHeight < 1f)
+            {
+                _convWindowWinHeight += Time.deltaTime;
+            }
+        }
+        /// <summary>ウィンドウを閉じるコルーチン</summary>
+        void WindowCloseRoutine()
+        {
+            while (_convWindowWinWidth >= 0f)
+            {
+                _convWindowWinWidth -= Time.deltaTime;
+            }
+            while (_convWindowWinHeight >= 0f)
+            {
+                _convWindowWinHeight -= Time.deltaTime;
+            }
+            Dispose();
         }
         /// <summary>
         /// 使わなくなったウィンドウは破棄するのでこれを呼び出す

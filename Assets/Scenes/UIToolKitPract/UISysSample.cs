@@ -37,26 +37,29 @@ public class UISysSample : MonoBehaviour
     {
         if (this._isspread)
         {
-            if (_win != null)
-                _win.OpenWindow();
+            //if (_win != null)
+                //_win.OpenWindow();
         }
         if(this._isclose)
         {
-            if(_win != null)
-                _win.CloseWindow();
+            //if(_win != null)
+                //_win.CloseWindow();
         }
     }
     private void OnGUI()
     { 
         if (GUI.Button(new Rect(1, 1, 100, 100), "BUTTON"))
         {
+            Debug.Log("会話ウィンドウ開く");
             _isspread = true;
             _isclose = false;
+            _win.OpenWindow();
         }
         if (GUI.Button(new Rect(100, 500, 100, 100), "DIP"))
         {
             _isspread = false;
             _isclose = true;
+            _win.CloseWindow();
         }
     }
 }
