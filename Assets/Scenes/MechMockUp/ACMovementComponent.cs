@@ -13,6 +13,7 @@ public class ACMovementComponent : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         //コンポーネント取得
         _rb = this.GetComponent<Rigidbody>();
+        //入力ハンドラ取得
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
     }
     private void FixedUpdate()
