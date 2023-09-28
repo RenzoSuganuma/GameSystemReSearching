@@ -1,18 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RuntimeLog;
-using Unity.VisualScripting;
-
 [RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(Rigidbody))]
 public class ACCAMComponentAlpha : MonoBehaviour
 {
+    RuntimeLogComponent _logComponent;
     [SerializeField] Transform _target;
     [SerializeField] Vector3 _offset;
     [SerializeField] Vector2 _sencitivity;
     [SerializeField] float _camHeight;
     [SerializeField] float _rotateRadius;
     [SerializeField] float _camLockOnDistance;
-    RuntimeLogComponent _logComponent;
+    [SerializeField] Material _assignTransparentMaterial;
     float _thetaX = 0;
     float _thetaY = 0;
     void Start()
@@ -21,8 +22,13 @@ public class ACCAMComponentAlpha : MonoBehaviour
         _logComponent = new(new Rect(0, 0, 100, 100));
         //NULLだったら警告ログを吐き出す
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
+        if (_target == null) Debug.LogWarning("ターゲットの座標がnullだよ");
+        if (GetComponent<Rigidbody>() == null) Debug.Log("剛体コンポーネントがない");
         //ターゲットを向く
         TargetingSequence();
+        //Rigidbodyプロパティ初期化 これがないと衝突の判定ができない
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        rigidbody.isKinematic = true;
     }
     void Update()
     {
@@ -36,10 +42,9 @@ public class ACCAMComponentAlpha : MonoBehaviour
         //ターゲットを向く
         TargetingSequence();
         //オクルージョン
-        OcculusionSequence();
-        //ロックオン範囲内のオブジェクトを検索
+        OcculusionPrepareSequence();
     }
-    private void OcculusionSequence()
+    private void OcculusionPrepareSequence()
     {
         var dis = Vector3.Distance(_target.position, this.transform.position);
         BoxCollider collider = GetComponent<BoxCollider>();
@@ -47,6 +52,22 @@ public class ACCAMComponentAlpha : MonoBehaviour
         collider.providesContacts = true;
         collider.center = new Vector3(0, 0, dis / 2f);
         collider.size = new Vector3(collider.size.x, collider.size.y, dis);
+    }
+    private void OcculusionSequence(Renderer renderer, OcculutionMode mode)
+    {
+        switch (mode)
+        {
+            case OcculutionMode.Transparent:
+                {
+                    renderer.material = _assignTransparentMaterial;
+                    break;
+                }
+            case OcculutionMode.Normal:
+                {
+                    renderer.material = (renderer.gameObject.TryGetComponent<OcculutionTarget>(out OcculutionTarget oTarget)) ? oTarget.TargetMaterial : null;
+                    break;
+                }
+        }
     }
     private void RotateSequenceX()
     {
@@ -68,9 +89,17 @@ public class ACCAMComponentAlpha : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
+        if (!other.CompareTag("Player"))
+        {
+            OcculusionSequence(other.GetComponent<Renderer>(), OcculutionMode.Transparent);
+        }
     }
     private void OnTriggerExit(Collider other)
     {
+        if (!other.CompareTag("Player"))
+        {
+            OcculusionSequence(other.GetComponent<Renderer>(), OcculutionMode.Normal);
+        }
     }
     private void OnDrawGizmos()
     {
@@ -78,4 +107,9 @@ public class ACCAMComponentAlpha : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(_target.position, _rotateRadius);
     }
+}
+public enum OcculutionMode
+{
+    Normal,
+    Transparent
 }
