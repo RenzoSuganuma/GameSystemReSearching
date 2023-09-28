@@ -20,6 +20,8 @@ public class ACCAMComponentAlpha : MonoBehaviour
     [SerializeField] float _camHeight;
     /// <summary>回転半径</summary>
     [SerializeField] float _rotateRadius;
+    /// <summary>回転半径</summary>
+    [SerializeField, Range(.1f, .5f)] float _xAxisRotateAngleClampAbsoluteValue;
     /// <summary>回転の反転を有効にするかのフラグ</summary>
     [SerializeField] bool _inverseRotation;
     /// <summary>オクルージョンさせるのにアサインする透明の描写をするためのマテリアル</summary>
@@ -40,10 +42,6 @@ public class ACCAMComponentAlpha : MonoBehaviour
         if (GetComponent<Rigidbody>() == null) Debug.LogWarning("剛体コンポーネントがない");
         //ターゲットを向く
         TargettingSequence(_centerTransform);
-        //Rigidbodyプロパティ初期化 これがないと衝突の判定ができない
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
-        rigidbody.isKinematic = true;
-        rigidbody.freezeRotation = true;
     }
     void Update()
     {
@@ -94,6 +92,9 @@ public class ACCAMComponentAlpha : MonoBehaviour
         _thetaX += inputX;
         float inputY = _inputHandler.LookInput.y * _sencitivity.y * .01f;
         _thetaY += inputY;
+        //X軸回転に使う引数の値のクランプ
+        _thetaY = Mathf.Clamp(_thetaY, -_xAxisRotateAngleClampAbsoluteValue, _xAxisRotateAngleClampAbsoluteValue);
+        //回転の反転の符号の初期化
         var sign = (_inverseRotation) ? -1 : 1;
         //座標更新
         this.transform.position =
