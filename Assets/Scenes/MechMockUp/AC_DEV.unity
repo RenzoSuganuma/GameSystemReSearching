@@ -487,8 +487,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeaf276f9869bfb47891d27d84cc9990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _centerTransform: {fileID: 243444312}
-  _offset: {x: 0, y: 0, z: 0}
+  _centerTransform: {fileID: 1296953869}
+  _offset: {x: 0, y: 5, z: 0}
   _sencitivity: {x: 1, y: 1}
   _camHeight: 0
   _rotateRadius: 60
@@ -710,6 +710,12 @@ CapsuleCollider:
   m_Height: 10
   m_Direction: 1
   m_Center: {x: 0, y: 5, z: 0}
+--- !u!4 &1296953869 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4203947529019657629, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2118333452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1995243007
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,7 +895,7 @@ PrefabInstance:
     - target: {fileID: 3350176184377430613, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}
       propertyPath: m_Constraints
-      value: 0
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 4081755312468055902, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}

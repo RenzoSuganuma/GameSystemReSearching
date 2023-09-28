@@ -23,6 +23,7 @@ public class ACCAMComponentAlpha : MonoBehaviour
     [SerializeField] Material _assignTransparentMaterial;
     /// <summary>カメラ移動に必要な三角関数のシータに対応する値X軸</summary>
     float _thetaX = 0;
+    float f = 0;
     /// <summary>カメラ移動に必要な三角関数のシータに対応する値Y軸</summary>
     float _thetaY = 0;
     GameObject _occuludedObject;
@@ -37,7 +38,7 @@ public class ACCAMComponentAlpha : MonoBehaviour
         if (_centerTransform == null) Debug.LogWarning("ターゲットの座標がnullだよ");
         if (GetComponent<Rigidbody>() == null) Debug.LogWarning("剛体コンポーネントがない");
         //ターゲットを向く
-        TargetingSequence(_centerTransform);
+        TargettingSequence(_centerTransform);
         //Rigidbodyプロパティ初期化 これがないと衝突の判定ができない
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.isKinematic = true;
@@ -48,7 +49,7 @@ public class ACCAMComponentAlpha : MonoBehaviour
         //回転処理 横回転
         RotateSequenceX();
         //ターゲットを向く
-        TargetingSequence(_centerTransform);
+        TargettingSequence(_centerTransform);
         //オクルージョン
         OcculusionSequence();
     }
@@ -68,7 +69,7 @@ public class ACCAMComponentAlpha : MonoBehaviour
                 target.OverwriteMaterial(_assignTransparentMaterial);
                 _occuludedObject = target.gameObject;
             }
-            else if(_occuludedObject != null)
+            else if (_occuludedObject != null)
             {
                 if (_occuludedObject.TryGetComponent<OcculutionTarget>(out OcculutionTarget component))
                 {
@@ -86,9 +87,13 @@ public class ACCAMComponentAlpha : MonoBehaviour
         _thetaX += inputX;
         float inputY = _inputHandler.LookInput.y * _sencitivity.y * .01f;
         _thetaY += inputY;
+        //座標更新
+        this.transform.position =
+            new Vector3(Mathf.Cos(_thetaX), Mathf.Sin(_thetaY), Mathf.Sin(_thetaX))
+            * _rotateRadius + _centerTransform.position + _offset;
     }
     /// <summary>捕捉処理</summary>
-    private void TargetingSequence(Transform targetTransform)
+    private void TargettingSequence(Transform targetTransform)
     {
         //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
         this.transform.rotation =
