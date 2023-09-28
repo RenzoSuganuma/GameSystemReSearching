@@ -472,11 +472,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeaf276f9869bfb47891d27d84cc9990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _target: {fileID: 2118333453}
-  _offset: {x: 0, y: 7, z: 0}
+  _target: {fileID: 1593560067}
+  _offset: {x: 0, y: -7, z: 0}
   _sencitivity: {x: 1, y: 1}
-  _camHeight: 4
-  _rotateRadius: 20
+  _camHeight: 0
+  _rotateRadius: 60
   _camLockOnDistance: 50
 --- !u!114 &1217725784
 MonoBehaviour:
@@ -596,8 +596,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1217725788
-SphereCollider:
+--- !u!65 &1217725788
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -615,8 +615,14 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1593560067 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3751426819011207828, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2118333452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1995243007
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,12 +809,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e963d9dd666e694a9bb4e4ca90600b9, type: 3}
---- !u!4 &2118333453 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4203947529019657629, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 2118333452}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

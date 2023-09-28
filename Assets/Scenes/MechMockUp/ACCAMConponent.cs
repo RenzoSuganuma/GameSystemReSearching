@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RuntimeLog;
-[RequireComponent(typeof(SphereCollider))]
+using Unity.VisualScripting;
+
+[RequireComponent(typeof(BoxCollider))]
 public class ACCAMComponentAlpha : MonoBehaviour
 {
     [SerializeField] Transform _target;
@@ -10,7 +12,6 @@ public class ACCAMComponentAlpha : MonoBehaviour
     [SerializeField] float _camHeight;
     [SerializeField] float _rotateRadius;
     [SerializeField] float _camLockOnDistance;
-    SphereCollider _sphereCollider;
     RuntimeLogComponent _logComponent;
     float _thetaX = 0;
     float _thetaY = 0;
@@ -20,15 +21,8 @@ public class ACCAMComponentAlpha : MonoBehaviour
         _logComponent = new(new Rect(0, 0, 100, 100));
         //NULLだったら警告ログを吐き出す
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
-        if (!TryGetComponent<SphereCollider>(out _sphereCollider)) Debug.LogWarning("球コライダーが見つからない");
-        //コンポーネント値初期化(球コライダー)
-        _sphereCollider.isTrigger = true;
-        _sphereCollider.providesContacts = true;
-        _sphereCollider.radius = _camLockOnDistance;
         //ターゲットを向く
-        this.transform.rotation =
-            Quaternion.LookRotation(_target.transform.position - this.transform.position
-            , Vector3.up);
+        TargetingSequence();
     }
     void Update()
     {
@@ -38,15 +32,34 @@ public class ACCAMComponentAlpha : MonoBehaviour
         _thetaY += inputY;
         //ワールドZ軸→sin() ワールドX軸→cos()
         //回転処理 横回転
-        this.transform.position =
-            new Vector3(Mathf.Sin(_thetaX) + _target.position.x
-            , _target.position.y + (_camHeight * .1f)
-            , Mathf.Cos(_thetaX) + _target.position.z) * _rotateRadius;
+        RotateSequenceX();
         //ターゲットを向く
-        this.transform.rotation =
-        Quaternion.LookRotation((_target.transform.position + _offset) - this.transform.position
-        , Vector3.up);
+        TargetingSequence();
+        //オクルージョン
+        OcculusionSequence();
         //ロックオン範囲内のオブジェクトを検索
+    }
+    private void OcculusionSequence()
+    {
+        var dis = Vector3.Distance(_target.position, this.transform.position);
+        BoxCollider collider = GetComponent<BoxCollider>();
+        collider.isTrigger = true;
+        collider.providesContacts = true;
+        collider.center = new Vector3(0, 0, dis / 2f);
+        collider.size = new Vector3(collider.size.x, collider.size.y, dis);
+    }
+    private void RotateSequenceX()
+    {
+        this.transform.position =
+            new Vector3(Mathf.Sin(_thetaX) + _target.position.x + _offset.x
+            , _target.position.y + (_camHeight * .1f) + _offset.y
+            , Mathf.Cos(_thetaX) + _target.position.z + _offset.z) * _rotateRadius;
+    }
+    private void TargetingSequence()
+    {
+        this.transform.rotation =
+            Quaternion.LookRotation(_target.transform.position - this.transform.position
+            , Vector3.up);
     }
     private void OnGUI()
     {
@@ -55,16 +68,14 @@ public class ACCAMComponentAlpha : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if (!other.CompareTag("Player"))
-            other.gameObject.SetActive(false);
     }
     private void OnTriggerExit(Collider other)
     {
     }
     private void OnDrawGizmos()
     {
-        //補足距離の球メッシュ描写
+        //回転半径の球メッシュ描写
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(this.transform.position, _camLockOnDistance);
+        Gizmos.DrawWireSphere(_target.position, _rotateRadius);
     }
 }
