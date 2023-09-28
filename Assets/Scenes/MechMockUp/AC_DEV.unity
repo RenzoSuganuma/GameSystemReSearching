@@ -576,6 +576,35 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &1296953862 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3138216674686642188, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2118333452}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1296953866
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296953862}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 3
+  m_Height: 10
+  m_Direction: 1
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!4 &1593560067 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3751426819011207828, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
@@ -708,6 +737,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+        type: 3}
+      propertyPath: _moveSpeed
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 1344074527997445870, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}
       propertyPath: m_TagString
@@ -752,6 +786,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 3350176184377430613, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4081755312468055902, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}
@@ -866,7 +905,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3138216674686642188, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1296953866}
   m_SourcePrefab: {fileID: 100100000, guid: 9e963d9dd666e694a9bb4e4ca90600b9, type: 3}
 --- !u!1001 &6115289149385246839
 PrefabInstance:

@@ -2,9 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using RuntimeLog;
 /// <summary>ACのカメラ動作コンポーネント</summary>
-[RequireComponent(typeof(BoxCollider))]
-[RequireComponent(typeof(SphereCollider))]
-[RequireComponent(typeof(Rigidbody))]
 public class ACCAMComponentAlpha : MonoBehaviour
 {
     /// <summary>ランタイムログ</summary>
@@ -36,7 +33,7 @@ public class ACCAMComponentAlpha : MonoBehaviour
         //NULLだったら警告ログを吐き出す
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
         if (_centerTransform == null) Debug.LogWarning("ターゲットの座標がnullだよ");
-        if (GetComponent<Rigidbody>() == null) Debug.Log("剛体コンポーネントがない");
+        if (GetComponent<Rigidbody>() == null) Debug.LogWarning("剛体コンポーネントがない");
         //ターゲットを向く
         TargetingSequence(_centerTransform);
         //Rigidbodyプロパティ初期化 これがないと衝突の判定ができない
@@ -51,44 +48,25 @@ public class ACCAMComponentAlpha : MonoBehaviour
         //ターゲットを向く
         TargetingSequence(_centerTransform);
         //オクルージョン
-        OcculusionPrepareSequence();
+        OcculusionSequence();
     }
     #region privateメソッド
-    /// <summary>オクルージョンに必要なプロパティなどの準備</summary>
-    private void OcculusionPrepareSequence()
-    {
-        //中心との距離を算出
-        var dis = Vector3.Distance(_centerTransform.position, this.transform.position);
-        BoxCollider collider = GetComponent<BoxCollider>();
-        //各パラメーターの初期化
-        collider.isTrigger = true;
-        collider.providesContacts = true;
-        collider.center = new Vector3(0, 0, dis / 2f);
-        collider.size = new Vector3(collider.size.x, collider.size.y, dis);
-    }
     /// <summary>オクルージョン処理</summary>
-    private void OcculusionSequence(Renderer renderer, OcculutionMode mode)
+    private void OcculusionSequence()
     {
-        OcculutionTarget occTarget;
-        switch (mode)
+        var dis = Vector3.Distance(_centerTransform.position, this.transform.position);
+        var dir = _centerTransform.position - this.transform.position;
+        Ray ray = new(this.transform.position, dir);
+        RaycastHit hit;
+        Debug.DrawRay(ray.origin, ray.direction, Color.magenta, dis);
+        if (Physics.Raycast(ray, out hit))
         {
-            //透明化処理が指定されてるとき
-            case OcculutionMode.Transparent:
-                {
-                    //透明なもののマテリアル
-                    renderer.material = _assignTransparentMaterial;
-                    break;
-                }
-            //透明化解除処理が指定されてるとき
-            case OcculutionMode.Normal:
-                {
-                    //オクルージョンターゲットにOccukutionTargetコンポーネントがアタッチされていればそれが保持する通常のマテリアルにする
-                    renderer.material = 
-                        (renderer.gameObject.TryGetComponent<OcculutionTarget>(out occTarget))
-                        ? occTarget.TargetMaterial : null;
-                    break;
-                }
+            if (hit.transform.gameObject.TryGetComponent<OcculutionTarget>(out OcculutionTarget target))
+            {
+                target.OverwriteMaterial(_assignTransparentMaterial);
+            }
         }
+        Debug.Log($"{nameof(OcculusionSequence)}:{hit.transform.gameObject.name}");
     }
     /// <summary>Y軸回転処理</summary>
     private void RotateSequenceX()
@@ -109,9 +87,10 @@ public class ACCAMComponentAlpha : MonoBehaviour
     private void TargetingSequence(Transform targetTransform)
     {
         //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
-        this.transform.rotation =
-            Quaternion.LookRotation(targetTransform.position - this.transform.position
-            , Vector3.up);
+        //this.transform.rotation =
+        //    Quaternion.LookRotation(targetTransform.position - this.transform.position
+        //    , Vector3.up);
+        this.transform.LookAt(targetTransform);
     }
     #endregion
     private void OnGUI()
@@ -119,32 +98,10 @@ public class ACCAMComponentAlpha : MonoBehaviour
         //ログの描写表示
         _logComponent.DisplayLog("ログ出力テスト");
     }
-    #region 衝突判定
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.CompareTag("Player"))
-        {
-            OcculusionSequence(other.GetComponent<Renderer>(), OcculutionMode.Transparent);
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("Player"))
-        {
-            OcculusionSequence(other.GetComponent<Renderer>(), OcculutionMode.Normal);
-        }
-    }
-    #endregion
     private void OnDrawGizmos()
     {
         //回転半径の球メッシュ描写
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(_centerTransform.position, _rotateRadius);
     }
-}
-/// <summary>オクルージョンモード</summary>
-public enum OcculutionMode
-{
-    Normal,//もとに戻すときにこれを指定
-    Transparent//透明にするときにこれを指定
 }
