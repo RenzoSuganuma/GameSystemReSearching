@@ -15,7 +15,7 @@ public class OcculutionTarget : MonoBehaviour
     }
     private void Update()
     {
-        _renderer.material = _material;
+        
     }
     public void OverwriteMaterial(Material material)
     {

@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RuntimeLog;
+using DG.Tweening;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class ACCAMComponentAlpha : MonoBehaviour
 {
     /// <summary>ランタイムログ</summary>
     RuntimeLogComponent _logComponent;
+    /// <summary>入力ハンドラー</summary>
+    ACInputHandler _inputHandler;
     /// <summary>カメラの中心座標</summary>
     [SerializeField] Transform _centerTransform;
     /// <summary>カメラ位置のオフセット</summary>
@@ -22,8 +25,7 @@ public class ACCAMComponentAlpha : MonoBehaviour
     float _thetaX = 0;
     /// <summary>カメラ移動に必要な三角関数のシータに対応する値Y軸</summary>
     float _thetaY = 0;
-    /// <summary>入力ハンドラー</summary>
-    ACInputHandler _inputHandler;
+    GameObject _occuludedObject;
     void Start()
     {
         //ログコンポーネントのインスタンス化
@@ -64,9 +66,17 @@ public class ACCAMComponentAlpha : MonoBehaviour
             if (hit.transform.gameObject.TryGetComponent<OcculutionTarget>(out OcculutionTarget target))
             {
                 target.OverwriteMaterial(_assignTransparentMaterial);
+                _occuludedObject = target.gameObject;
             }
+            else if(_occuludedObject != null)
+            {
+                if (_occuludedObject.TryGetComponent<OcculutionTarget>(out OcculutionTarget component))
+                {
+                    component.OverwriteMaterial(component.Material);
+                }
+            }
+            Debug.Log($"{nameof(OcculusionSequence)}:{hit.transform.gameObject.name}");
         }
-        Debug.Log($"{nameof(OcculusionSequence)}:{hit.transform.gameObject.name}");
     }
     /// <summary>Y軸回転処理</summary>
     private void RotateSequenceX()
@@ -76,21 +86,14 @@ public class ACCAMComponentAlpha : MonoBehaviour
         _thetaX += inputX;
         float inputY = _inputHandler.LookInput.y * _sencitivity.y * .01f;
         _thetaY += inputY;
-        //ワールドZ軸→sin() ワールドX軸→cos()
-        //三角関数を使って円の軌跡をたどらせる。各軸の成分にオフセットも掛ける
-        this.transform.position =
-            new Vector3(Mathf.Sin(_thetaX) + _centerTransform.position.x + _offset.x
-            , _centerTransform.position.y + (_camHeight * .1f) + _offset.y
-            , Mathf.Cos(_thetaX) + _centerTransform.position.z + _offset.z) * _rotateRadius;
     }
     /// <summary>捕捉処理</summary>
     private void TargetingSequence(Transform targetTransform)
     {
         //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
-        //this.transform.rotation =
-        //    Quaternion.LookRotation(targetTransform.position - this.transform.position
-        //    , Vector3.up);
-        this.transform.LookAt(targetTransform);
+        this.transform.rotation =
+            Quaternion.LookRotation(targetTransform.position - this.transform.position
+            , Vector3.up);
     }
     #endregion
     private void OnGUI()
