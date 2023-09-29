@@ -6,6 +6,7 @@ TagManager:
   tags:
   - VirtualCamera
   - Shootable
+  - Ground
   layers:
   - Default
   - TransparentFX

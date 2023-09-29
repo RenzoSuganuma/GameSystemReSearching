@@ -10,6 +10,7 @@ public class ACMovementComponent : MonoBehaviour
     ACCAMComponent _acCam;
     [SerializeField] float _moveSpeed;
     [SerializeField] float _jumpForce;
+    bool _isHovering = false;
     private void Awake()
     {
         //ì¸óÕÉnÉìÉhÉâéÊìæ
@@ -18,12 +19,10 @@ public class ACMovementComponent : MonoBehaviour
     private void OnEnable()
     {
         _input.Jump += ACJumpSequence;
-        _input.JumpHold += ACHoverSequence;
     }
     private void OnDisable()
     {
         _input.Jump -= ACJumpSequence;
-        _input.JumpHold -= ACHoverSequence;
     }
     private void Start()
     {
@@ -36,6 +35,11 @@ public class ACMovementComponent : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        ACMoveSequence();
+        ACHoveringSequence(_input.IsJumpHolding);
+    }
+    void ACMoveSequence()
+    {
         //à⁄ìÆèàóù
         _rb.AddForce(this.transform.forward * _moveSpeed * _input.MoveInput.y);
         _rb.AddForce(this.transform.right * _moveSpeed * _input.MoveInput.x);
@@ -43,11 +47,14 @@ public class ACMovementComponent : MonoBehaviour
         this.transform.forward = _acCam.Forward;
     }
     void ACJumpSequence()
-    { 
-        //_rb.AddForce(this.transform.up * _jumpForce, ForceMode.Impulse);
+    {
+        _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Impulse);
     }
-    void ACHoverSequence()
-    { 
-        _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Force);
+    void ACHoveringSequence(bool isHovering)
+    {
+        if(isHovering)
+        {
+            _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Force);
+        }
     }
 }
