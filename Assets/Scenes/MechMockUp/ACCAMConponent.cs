@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using RuntimeLog;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class ACCAMComponent : MonoBehaviour
 {
-    /// <summary>ランタイムログ</summary>
-    RuntimeLogComponent _log;
     /// <summary>入力ハンドラー</summary>
     ACInputHandler _input;
     /// <summary>オクルージョンしたオブジェクトを格納しておく</summary>
@@ -34,8 +31,6 @@ public class ACCAMComponent : MonoBehaviour
     float _thetaY = 0;
     void Start()
     {
-        //ログコンポーネントのインスタンス化
-        _log = new(new Rect(0, 0, 100, 100));
         //入力インスタンス化
         _input = GameObject.FindFirstObjectByType<ACInputHandler>();
         //NULLだったら警告ログを吐き出す
@@ -113,11 +108,6 @@ public class ACCAMComponent : MonoBehaviour
         _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
     }
     #endregion
-    private void OnGUI()
-    {
-        //ログの描写表示
-        _log.DisplayLog("ログ出力テスト");
-    }
     private void OnDrawGizmos()
     {
         //回転半径の球メッシュ描写

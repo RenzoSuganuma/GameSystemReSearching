@@ -21,6 +21,10 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     //公開イベント
     /// <summary>ジャンプ入力時イベント</summary>
     public event Action Jump = () => { Debug.Log("Jump"); };
+    /// <summary>ジャンプ入力ホールド時イベント</summary>
+    public event Action JumpHold = () => { Debug.Log("JumpHold"); };
+    /// <summary>ジャンプ入力ホールド解除時イベント</summary>
+    public event Action JumpHoldQuit = () => { Debug.Log("JumpHoldQuit"); };
     /// <summary>サイドジャンプ入力時イベント</summary>
     public event Action SideJump = () => { Debug.Log("SideJump"); };
     /// <summary>左腕入力イベント</summary>
@@ -95,6 +99,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         if (context.action.name == "JumpHold" && context.ReadValueAsButton())
         {
             Debug.Log("JumpHold");
+            JumpHold();
             _isJumpHolding = true;
         }
     }
@@ -103,6 +108,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         if (context.action.name == "JumpHold" && context.action.WasReleasedThisFrame())
         {
             Debug.Log("JumpHoldQuit");
+            JumpHoldQuit();
             _isJumpHolding = false;
         }
     }
