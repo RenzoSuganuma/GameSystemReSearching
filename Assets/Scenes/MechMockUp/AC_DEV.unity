@@ -485,14 +485,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _centerTransform: {fileID: 1296953869}
-  _offset: {x: 0, y: 5, z: 0}
+  _offset: {x: 0, y: 15, z: 0}
   _sencitivity: {x: 1, y: 0.5}
-  _camHeight: 0
   _rotateRadius: 60
-  _xAxisRotateAngleClampAbsoluteValue: 0.287
+  _rollAngleAbsValue: 0.3
   _inverseRotation: 1
-  _assignTransparentMaterial: {fileID: 2100000, guid: 16ae938cc1d509345bc69bb27e1ae01e,
-    type: 2}
+  _transparentMat: {fileID: 2100000, guid: 16ae938cc1d509345bc69bb27e1ae01e, type: 2}
 --- !u!114 &1217725784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -772,6 +770,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+        type: 3}
+      propertyPath: _jumpForce
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}
       propertyPath: _moveSpeed

@@ -2,30 +2,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using RuntimeLog;
 /// <summary>ACのカメラ動作コンポーネント</summary>
-public class ACCAMComponentAlpha : MonoBehaviour
+public class ACCAMComponent : MonoBehaviour
 {
     /// <summary>ランタイムログ</summary>
-    RuntimeLogComponent _logComponent;
+    RuntimeLogComponent _log;
     /// <summary>入力ハンドラー</summary>
-    ACInputHandler _inputHandler;
+    ACInputHandler _input;
     /// <summary>オクルージョンしたオブジェクトを格納しておく</summary>
     GameObject _occuludedObject;
+    /// <summary>正面の方向のベクトル</summary>
+    Vector3 _direction;
+    /// <summary>正面の方向のベクトル(readonly)</summary>
+    public Vector3 Forward => _direction;
     /// <summary>カメラの中心座標</summary>
     [SerializeField] Transform _centerTransform;
     /// <summary>カメラ位置のオフセット</summary>
-    [SerializeField] Vector3 _offset;
+    [SerializeField] Vector3 _offset = new(0, 15, 0);
     /// <summary>入力感度</summary>
-    [SerializeField] Vector2 _sencitivity;
-    /// <summary>カメラの高さ</summary>
-    [SerializeField] float _camHeight;
+    [SerializeField] Vector2 _sencitivity = new(1, .5f);
     /// <summary>回転半径</summary>
     [SerializeField] float _rotateRadius;
-    /// <summary>回転半径</summary>
-    [SerializeField, Range(.1f, .5f)] float _xAxisRotateAngleClampAbsoluteValue;
+    /// <summary>X軸回転角度のクランプするときの値の絶対値</summary>
+    [SerializeField, Range(.1f, .5f)] float _rollAngleAbsValue = .3f;
     /// <summary>回転の反転を有効にするかのフラグ</summary>
     [SerializeField] bool _inverseRotation;
     /// <summary>オクルージョンさせるのにアサインする透明の描写をするためのマテリアル</summary>
-    [SerializeField] Material _assignTransparentMaterial;
+    [SerializeField] Material _transparentMat;
     /// <summary>カメラ移動に必要な三角関数のシータに対応する値X軸</summary>
     float _thetaX = 0;
     /// <summary>カメラ移動に必要な三角関数のシータに対応する値Y軸</summary>
@@ -33,13 +35,12 @@ public class ACCAMComponentAlpha : MonoBehaviour
     void Start()
     {
         //ログコンポーネントのインスタンス化
-        _logComponent = new(new Rect(0, 0, 100, 100));
+        _log = new(new Rect(0, 0, 100, 100));
         //入力インスタンス化
-        _inputHandler = GameObject.FindFirstObjectByType<ACInputHandler>();
+        _input = GameObject.FindFirstObjectByType<ACInputHandler>();
         //NULLだったら警告ログを吐き出す
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
         if (_centerTransform == null) Debug.LogWarning("ターゲットの座標がnullだよ");
-        if (GetComponent<Rigidbody>() == null) Debug.LogWarning("剛体コンポーネントがない");
         //ターゲットを向く
         TargettingSequence(_centerTransform);
     }
@@ -70,7 +71,7 @@ public class ACCAMComponentAlpha : MonoBehaviour
             //オクルージョン処理
             if (hit.transform.gameObject.TryGetComponent<OcculutionTarget>(out OcculutionTarget target))
             {
-                target.OverwriteMaterial(_assignTransparentMaterial);
+                target.OverwriteMaterial(_transparentMat);
                 _occuludedObject = target.gameObject;
             }
             //オクルージョン解除処理
@@ -88,12 +89,12 @@ public class ACCAMComponentAlpha : MonoBehaviour
     private void RotateSequence()
     {
         //入力処理
-        float inputX = _inputHandler.LookInput.x * _sencitivity.x * .01f;
+        float inputX = _input.LookInput.x * _sencitivity.x * .01f;
         _thetaX += inputX;
-        float inputY = _inputHandler.LookInput.y * _sencitivity.y * .01f;
+        float inputY = _input.LookInput.y * _sencitivity.y * .01f;
         _thetaY += inputY;
         //X軸回転に使う引数の値のクランプ
-        _thetaY = Mathf.Clamp(_thetaY, -_xAxisRotateAngleClampAbsoluteValue, _xAxisRotateAngleClampAbsoluteValue);
+        _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue, _rollAngleAbsValue);
         //回転の反転の符号の初期化
         var sign = (_inverseRotation) ? -1 : 1;
         //座標更新
@@ -108,12 +109,14 @@ public class ACCAMComponentAlpha : MonoBehaviour
         this.transform.rotation =
             Quaternion.LookRotation(targetTransform.position - this.transform.position
             , Vector3.up);
+        //正面ベクトルの初期化
+        _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
     }
     #endregion
     private void OnGUI()
     {
         //ログの描写表示
-        _logComponent.DisplayLog("ログ出力テスト");
+        _log.DisplayLog("ログ出力テスト");
     }
     private void OnDrawGizmos()
     {
