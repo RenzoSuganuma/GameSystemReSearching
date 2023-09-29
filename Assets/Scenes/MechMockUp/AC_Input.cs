@@ -82,6 +82,15 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""SideJump"",
+                    ""type"": ""Button"",
+                    ""id"": ""84e0c98f-8950-4ab7-826c-e7c18e3612ee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""RShift"",
                     ""type"": ""Button"",
                     ""id"": ""183e0310-95b6-4d42-bad6-f9daa10a1051"",
@@ -362,6 +371,28 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""JumpHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6f53318b-066d-459d-8649-4ee9e763b282"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SideJump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88a3b8fc-f2b6-4039-87d3-02e0ed0f1db0"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SideJump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -955,6 +986,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         m_Player_LFire = m_Player.FindAction("LFire", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_JumpHold = m_Player.FindAction("JumpHold", throwIfNotFound: true);
+        m_Player_SideJump = m_Player.FindAction("SideJump", throwIfNotFound: true);
         m_Player_RShift = m_Player.FindAction("RShift", throwIfNotFound: true);
         m_Player_LShift = m_Player.FindAction("LShift", throwIfNotFound: true);
         // UI
@@ -1036,6 +1068,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_LFire;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_JumpHold;
+    private readonly InputAction m_Player_SideJump;
     private readonly InputAction m_Player_RShift;
     private readonly InputAction m_Player_LShift;
     public struct PlayerActions
@@ -1048,6 +1081,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         public InputAction @LFire => m_Wrapper.m_Player_LFire;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @JumpHold => m_Wrapper.m_Player_JumpHold;
+        public InputAction @SideJump => m_Wrapper.m_Player_SideJump;
         public InputAction @RShift => m_Wrapper.m_Player_RShift;
         public InputAction @LShift => m_Wrapper.m_Player_LShift;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1077,6 +1111,9 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
             @JumpHold.started += instance.OnJumpHold;
             @JumpHold.performed += instance.OnJumpHold;
             @JumpHold.canceled += instance.OnJumpHold;
+            @SideJump.started += instance.OnSideJump;
+            @SideJump.performed += instance.OnSideJump;
+            @SideJump.canceled += instance.OnSideJump;
             @RShift.started += instance.OnRShift;
             @RShift.performed += instance.OnRShift;
             @RShift.canceled += instance.OnRShift;
@@ -1105,6 +1142,9 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
             @JumpHold.started -= instance.OnJumpHold;
             @JumpHold.performed -= instance.OnJumpHold;
             @JumpHold.canceled -= instance.OnJumpHold;
+            @SideJump.started -= instance.OnSideJump;
+            @SideJump.performed -= instance.OnSideJump;
+            @SideJump.canceled -= instance.OnSideJump;
             @RShift.started -= instance.OnRShift;
             @RShift.performed -= instance.OnRShift;
             @RShift.canceled -= instance.OnRShift;
@@ -1299,6 +1339,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         void OnLFire(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnJumpHold(InputAction.CallbackContext context);
+        void OnSideJump(InputAction.CallbackContext context);
         void OnRShift(InputAction.CallbackContext context);
         void OnLShift(InputAction.CallbackContext context);
     }

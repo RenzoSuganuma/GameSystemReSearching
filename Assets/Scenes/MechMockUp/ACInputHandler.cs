@@ -18,8 +18,11 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     public Vector2 LookInput => _look;
     /// <summary>ジャンプホールド入力</summary>
     public bool IsJumpHolding => _isJumpHolding;
+    //公開イベント
     /// <summary>ジャンプ入力時イベント</summary>
     public event Action Jump = () => { Debug.Log("Jump"); };
+    /// <summary>サイドジャンプ入力時イベント</summary>
+    public event Action SideJump = () => { Debug.Log("SideJump"); };
     /// <summary>左腕入力イベント</summary>
     public event Action LFire = () => { Debug.Log("LFire"); };
     /// <summary>左肩入力イベント</summary>
@@ -38,6 +41,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         _input.onActionTriggered += OnMove;
         _input.onActionTriggered += OnLook;
         _input.onActionTriggered += OnJump;
+        _input.onActionTriggered += OnSideJump;
         _input.actions.FindAction("JumpHold").performed += OnJumpHold;
         _input.actions.FindAction("JumpHold").canceled += OnJumpHoldQuit;
         _input.onActionTriggered += OnLFire;
@@ -50,6 +54,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         _input.onActionTriggered -= OnMove;
         _input.onActionTriggered -= OnLook;
         _input.onActionTriggered -= OnJump;
+        _input.onActionTriggered -= OnSideJump;
         _input.actions.FindAction("JumpHold").performed -= OnJumpHold;
         _input.actions.FindAction("JumpHold").canceled -= OnJumpHoldQuit;
         _input.onActionTriggered -= OnLFire;
@@ -76,6 +81,13 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         if (context.action.name == "Jump" && context.ReadValueAsButton())
         {
             Jump();
+        }
+    }
+    public void OnSideJump(InputAction.CallbackContext context)
+    {
+        if (context.action.name == "SideJump" && context.ReadValueAsButton())
+        {
+            SideJump();
         }
     }
     public void OnJumpHold(InputAction.CallbackContext context)

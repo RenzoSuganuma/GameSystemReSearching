@@ -11,6 +11,7 @@ public class ACMovementComponent : MonoBehaviour
     [SerializeField] float _moveSpeed;
     [SerializeField] float _jumpForce;
     bool _isHovering = false;
+    bool _isGrounded = true;
     private void Awake()
     {
         //入力ハンドラ取得
@@ -19,10 +20,12 @@ public class ACMovementComponent : MonoBehaviour
     private void OnEnable()
     {
         _input.Jump += ACJumpSequence;
+        _input.SideJump += ACSideJumpSequence;
     }
     private void OnDisable()
     {
         _input.Jump -= ACJumpSequence;
+        _input.SideJump -= ACSideJumpSequence;
     }
     private void Start()
     {
@@ -38,6 +41,7 @@ public class ACMovementComponent : MonoBehaviour
         ACMoveSequence();
         ACHoveringSequence(_input.IsJumpHolding);
     }
+    #region FixedUpdate内で呼び出し
     void ACMoveSequence()
     {
         //移動処理
@@ -46,15 +50,47 @@ public class ACMovementComponent : MonoBehaviour
         //カメラの正面を向く
         this.transform.forward = _acCam.Forward;
     }
-    void ACJumpSequence()
-    {
-        _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Impulse);
-    }
     void ACHoveringSequence(bool isHovering)
     {
-        if(isHovering)
+        _isHovering = isHovering;
+        if (isHovering)
         {
             _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Force);
+        }
+    }
+    #endregion
+    #region デバイス入力イベント
+    void ACJumpSequence()
+    {
+        if (_isGrounded)
+        {
+            _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Impulse);
+        }
+    }
+    void ACSideJumpSequence()
+    {
+        _rb.AddForce(this.transform.right * _input.MoveInput.x * _jumpForce, ForceMode.Impulse);
+    }
+    #endregion
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _isGrounded = true;
+        }
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _isGrounded = true;
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _isGrounded = false;
         }
     }
 }
