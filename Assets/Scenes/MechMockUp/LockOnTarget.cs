@@ -1,6 +1,4 @@
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-
 public class LockOnTarget : MonoBehaviour
 {
     GameObject _targetPoint;

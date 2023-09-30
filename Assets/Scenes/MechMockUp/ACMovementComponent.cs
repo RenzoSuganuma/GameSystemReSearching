@@ -54,19 +54,27 @@ public class ACMovementComponent : MonoBehaviour
     private void FixedUpdate()
     {
         ACMoveSequence();
-        ACMassIncreseSequence();
+        ACAddGravityAccelaration();
         ACHoveringSequence(_input.IsJumpHolding);
     }
     #region FixedUpdate内で呼び出し
     void ACMoveSequence()
     {
-        _rb.AddForce(this.transform.forward * _moveSpeed * _input.MoveInput.y);
-        _rb.AddForce(this.transform.right * _moveSpeed * _input.MoveInput.x);
+        this.transform.forward = _acCam.Forward;
         if (_rb.velocity.magnitude > _velocityLim)
         {
             _rb.velocity = _rb.velocity.normalized * _velocityLim;
         }
-        this.transform.forward = _acCam.Forward;
+        if (!_acCam.IsTargetAssisting)
+        {
+            _rb.AddForce(this.transform.forward * _moveSpeed * _input.MoveInput.y);
+            _rb.AddForce(this.transform.right * _moveSpeed * _input.MoveInput.x);
+        }
+        else
+        {
+            _rb.AddForce(_acCam.Forward * _moveSpeed * _input.MoveInput.y);
+            _rb.AddForce(_acCam.transform.right * _moveSpeed * _input.MoveInput.x);
+        }
     }
     void ACHoveringSequence(bool isHovering)
     {
@@ -82,15 +90,12 @@ public class ACMovementComponent : MonoBehaviour
         _rb.velocity = _rb.velocity * -.75f;
         _rb.WakeUp();
     }
-    void ACMassIncreseSequence()
+    void ACAddGravityAccelaration()
     {
-        if (_rb.velocity.y < -9.81f * _hoveringTime)
+        if (!_isGrounded && !_isHovering && _rb.velocity.y < -9.81f * _hoveringTime)
         {
-            _rb.mass = 300f;
-        }
-        else
-        {
-            _rb.mass = 1;
+            _rb.velocity += (-this.transform.up) * _jumpForce;
+            Debug.Log("重力加速度あげちゃうよ！？");
         }
     }
     #endregion
@@ -104,9 +109,9 @@ public class ACMovementComponent : MonoBehaviour
     }
     void ACSideJumpSequence()
     {
-        _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Impulse);
-        _rb.AddForce(this.transform.right * _input.MoveInput.x * _jumpForce, ForceMode.Impulse);
-        _rb.AddForce(this.transform.forward * _input.MoveInput.y * _jumpForce, ForceMode.Impulse);
+        _rb.AddForce(this.transform.up * _jumpForce * 2.5f, ForceMode.Impulse);
+        _rb.AddForce(this.transform.right * _input.MoveInput.x * _jumpForce * 5, ForceMode.Impulse);
+        _rb.AddForce(this.transform.forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
     }
     #endregion
     private void OnGUI()

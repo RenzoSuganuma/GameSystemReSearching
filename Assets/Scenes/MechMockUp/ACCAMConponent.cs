@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DebugLogRecorder;
-using System.Linq;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class ACCAMComponent : MonoBehaviour
 {
@@ -40,6 +39,7 @@ public class ACCAMComponent : MonoBehaviour
     float _thetaY = 0;
     /// <summary>照準アシストするかのフラグ</summary>
     bool _isTargetAssisting = false;
+    public bool IsTargetAssisting => _isTargetAssisting;
     private void Awake()
     {
         _input = GameObject.FindFirstObjectByType<ACInputHandler>();
@@ -64,7 +64,7 @@ public class ACCAMComponent : MonoBehaviour
     }
     void Update()
     {
-        RotateSequence();
+        RotateSequence(_isTargetAssisting);
         TargettingSequence(_centerTransform
             , _isTargetAssisting
             && (_lockOnTargetTransform[0] != null
@@ -104,31 +104,37 @@ public class ACCAMComponent : MonoBehaviour
         }
     }
     /// <summary>Y軸回転処理</summary>
-    private void RotateSequence()
+    private void RotateSequence(bool isTargetAssisting)
     {
-        float inputX = _input.LookInput.x * _sencitivity.x * .01f;
-        _thetaX += inputX;
-        float inputY = _input.LookInput.y * _sencitivity.y * .01f;
-        _thetaY += inputY;
-        //X軸回転に使う引数の値のクランプ
-        if (_acMove.IsGrounded)//接地時
+        if (!isTargetAssisting)
         {
-            _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue, _rollAngleAbsValue);
+            float inputX = _input.LookInput.x * _sencitivity.x * .01f;
+            _thetaX += inputX;
+            float inputY = _input.LookInput.y * _sencitivity.y * .01f;
+            _thetaY += inputY;
         }
-        else if (_acMove.IsHovering)//滞空時
-        {
-            _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue * 2, _rollAngleAbsValue * 2);
-        }
-        //回転の反転の符号の初期化
-        var sign = (_inverseRotation) ? -1 : 1;
-        //座標更新
-        this.transform.position =
-            new Vector3(Mathf.Cos(_thetaX) * sign, Mathf.Sin(_thetaY) * sign, Mathf.Sin(_thetaX) * sign)
-            * _rotateRadius + _centerTransform.position + _offset;
+            //X軸回転に使う引数の値のクランプ
+            if (_acMove.IsGrounded)//接地時
+            {
+                _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue, _rollAngleAbsValue);
+            }
+            else if (_acMove.IsHovering)//滞空時
+            {
+                _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue * 2, _rollAngleAbsValue * 2);
+            }
+            //回転の反転の符号の初期化
+            var sign = (_inverseRotation) ? -1 : 1;
+            //座標更新
+            this.transform.position =
+                new Vector3(Mathf.Cos(_thetaX) * sign, Mathf.Sin(_thetaY) * sign, Mathf.Sin(_thetaX) * sign)
+                * _rotateRadius + _centerTransform.position + _offset;
     }
     private void StartTargetAssist()
     {
-        _isTargetAssisting = !_isTargetAssisting;
+        if (_lockOnTargetTransform[0] != null)
+        {
+            _isTargetAssisting = !_isTargetAssisting;
+        }
     }
     /// <summary>捕捉処理</summary>
     private void TargettingSequence(Transform followTransform, bool isAssistingAim)
