@@ -500,7 +500,7 @@ MonoBehaviour:
   _centerTransform: {fileID: 1296953869}
   _offset: {x: 1, y: 15, z: 0}
   _sencitivity: {x: 1, y: 0.5}
-  _rotateRadius: 60
+  _rotateRadius: 40
   _rollAngleAbsValue: 0.3
   _inverseRotation: 1
   _transparentMat: {fileID: 2100000, guid: 16ae938cc1d509345bc69bb27e1ae01e, type: 2}

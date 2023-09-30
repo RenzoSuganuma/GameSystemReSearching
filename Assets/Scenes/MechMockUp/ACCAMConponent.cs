@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DebugLogRecorder;
-using UnityEngine.Rendering;
+using System.Linq;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class ACCAMComponent : MonoBehaviour
 {
@@ -10,7 +10,7 @@ public class ACCAMComponent : MonoBehaviour
     /// <summary>オクルージョンしたオブジェクトを格納しておく</summary>
     GameObject _occuludedObject;
     /// <summary>カメラ捕捉内のゲームオブジェクト</summary>
-    List<GameObject> _visibleTargets = new();
+    List<LockOnTarget> _canLockOnTargets = new();
     /// <summary>ランライムログ</summary>
     RuntimeLogComponent _log;
     /// <summary>プレイヤー</summary>
@@ -59,13 +59,13 @@ public class ACCAMComponent : MonoBehaviour
         this.gameObject.tag = "MainCamera";
         _acMove = GameObject.FindFirstObjectByType<ACMovementComponent>();
         _log = new(new Rect(0, 500, 300, 300));
-        TargettingSequence(_centerTransform);
+        TargettingSequence(_centerTransform, _isTargetAssisting);
     }
     void Update()
     {
         RotateSequence();
-        TargettingSequence(_centerTransform);
-        TargettignAssistSequence(_isTargetAssisting);
+        FindCanLockOnSequence();
+        TargettingSequence(_centerTransform, _isTargetAssisting && _canLockOnTargets[0].IsCanLockOn);
         OcculusionSequence();
     }
     #region privateメソッド
@@ -103,7 +103,6 @@ public class ACCAMComponent : MonoBehaviour
     /// <summary>Y軸回転処理</summary>
     private void RotateSequence()
     {
-        //入力処理
         float inputX = _input.LookInput.x * _sencitivity.x * .01f;
         _thetaX += inputX;
         float inputY = _input.LookInput.y * _sencitivity.y * .01f;
@@ -124,37 +123,38 @@ public class ACCAMComponent : MonoBehaviour
             new Vector3(Mathf.Cos(_thetaX) * sign, Mathf.Sin(_thetaY) * sign, Mathf.Sin(_thetaX) * sign)
             * _rotateRadius + _centerTransform.position + _offset;
     }
-    /// <summary>捕捉処理</summary>
-    private void TargettingSequence(Transform targetTransform)
-    {
-        //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
-        this.transform.rotation =
-            Quaternion.LookRotation(targetTransform.position - this.transform.position
-            , Vector3.up);
-        //正面ベクトルの初期化
-        _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
-    }
     private void StartTargetAssist()
     {
         _isTargetAssisting = !_isTargetAssisting;
     }
-    private void TargettignAssistSequence(bool isActive)
+    /// <summary>捕捉処理</summary>
+    private void TargettingSequence(Transform targetTransform, bool isAssistingAim)
     {
-
+        if (isAssistingAim)
+        {
+            //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
+            this.transform.rotation =
+                Quaternion.LookRotation(_canLockOnTargets[0].transform.position - this.transform.position
+                , Vector3.up);
+            //正面ベクトルの初期化
+            _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
+        }
+        else
+        {
+            //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
+            this.transform.rotation =
+                Quaternion.LookRotation(targetTransform.position - this.transform.position
+                , Vector3.up);
+            //正面ベクトルの初期化
+            _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
+        }
+    }
+    private void FindCanLockOnSequence()
+    {
+        _canLockOnTargets = GameObject.FindObjectsByType<LockOnTarget>(FindObjectsSortMode.None).ToList();
     }
     #endregion
     #region publicメソッド
-    /// <summary>カメラ捕捉内のオブジェクトを登録する</summary>
-    /// <param name="target"></param>
-    public void AddVisibleObjectInList(GameObject target)
-    {
-        _visibleTargets.Add(target);
-    }
-    /// <summary>カメラ捕捉内のオブジェクトを登録解除する</summary>
-    public void RemoveVisibleObjectInList(GameObject target)
-    {
-        _visibleTargets.Remove(target);
-    }
     #endregion
     private void OnDrawGizmos()
     {
