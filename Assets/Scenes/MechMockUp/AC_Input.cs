@@ -107,6 +107,15 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LockOn"",
+                    ""type"": ""Button"",
+                    ""id"": ""41b22a3d-1399-4a3d-beb5-845b120fcb04"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -393,6 +402,28 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""SideJump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a673c313-3721-4e17-b2dd-6e43fc3abfeb"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""LockOn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7731a049-e4b5-47cb-b791-54fc4350ebf5"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""LockOn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -989,6 +1020,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         m_Player_SideJump = m_Player.FindAction("SideJump", throwIfNotFound: true);
         m_Player_RShift = m_Player.FindAction("RShift", throwIfNotFound: true);
         m_Player_LShift = m_Player.FindAction("LShift", throwIfNotFound: true);
+        m_Player_LockOn = m_Player.FindAction("LockOn", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1071,6 +1103,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SideJump;
     private readonly InputAction m_Player_RShift;
     private readonly InputAction m_Player_LShift;
+    private readonly InputAction m_Player_LockOn;
     public struct PlayerActions
     {
         private @AC_Input m_Wrapper;
@@ -1084,6 +1117,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         public InputAction @SideJump => m_Wrapper.m_Player_SideJump;
         public InputAction @RShift => m_Wrapper.m_Player_RShift;
         public InputAction @LShift => m_Wrapper.m_Player_LShift;
+        public InputAction @LockOn => m_Wrapper.m_Player_LockOn;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1120,6 +1154,9 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
             @LShift.started += instance.OnLShift;
             @LShift.performed += instance.OnLShift;
             @LShift.canceled += instance.OnLShift;
+            @LockOn.started += instance.OnLockOn;
+            @LockOn.performed += instance.OnLockOn;
+            @LockOn.canceled += instance.OnLockOn;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1151,6 +1188,9 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
             @LShift.started -= instance.OnLShift;
             @LShift.performed -= instance.OnLShift;
             @LShift.canceled -= instance.OnLShift;
+            @LockOn.started -= instance.OnLockOn;
+            @LockOn.performed -= instance.OnLockOn;
+            @LockOn.canceled -= instance.OnLockOn;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1342,6 +1382,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         void OnSideJump(InputAction.CallbackContext context);
         void OnRShift(InputAction.CallbackContext context);
         void OnLShift(InputAction.CallbackContext context);
+        void OnLockOn(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

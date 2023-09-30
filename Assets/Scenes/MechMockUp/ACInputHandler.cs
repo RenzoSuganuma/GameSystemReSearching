@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
@@ -35,6 +33,8 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     public event Action RFire = () => { Debug.Log("RFire"); };
     /// <summary>右肩入力イベント</summary>
     public event Action RShift = () => { Debug.Log("RShift"); };
+    /// <summary>ロックオン入力イベント</summary>
+    public event Action LockOnAssist = () => { Debug.Log("LockOnAssist"); };
     private void Awake()
     {
         _input = GetComponent<PlayerInput>();
@@ -52,6 +52,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         _input.onActionTriggered += OnLShift;
         _input.onActionTriggered += OnRFire;
         _input.onActionTriggered += OnRShift;
+        _input.actions.FindAction("LockOn").performed += OnLockOn;
     }
     private void OnDisable()
     {
@@ -65,6 +66,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         _input.onActionTriggered -= OnLShift;
         _input.onActionTriggered -= OnRFire;
         _input.onActionTriggered -= OnRShift;
+        _input.actions.FindAction("LockOn").performed -= OnLockOn;
     }
     public void OnMove(InputAction.CallbackContext context)//移動
     {
@@ -87,14 +89,14 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
             Jump();
         }
     }
-    public void OnSideJump(InputAction.CallbackContext context)
+    public void OnSideJump(InputAction.CallbackContext context)//サイドジャンプ
     {
         if (context.action.name == "SideJump" && context.ReadValueAsButton())
         {
             SideJump();
         }
     }
-    public void OnJumpHold(InputAction.CallbackContext context)
+    public void OnJumpHold(InputAction.CallbackContext context)//ホバリング
     {
         if (context.action.name == "JumpHold" && context.ReadValueAsButton())
         {
@@ -103,7 +105,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
             _isJumpHolding = true;
         }
     }
-    public void OnJumpHoldQuit(InputAction.CallbackContext context)
+    public void OnJumpHoldQuit(InputAction.CallbackContext context)//ホバリング解除
     {
         if (context.action.name == "JumpHold" && context.action.WasReleasedThisFrame())
         {
@@ -138,6 +140,13 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         if (context.action.name == "RShift" && context.ReadValueAsButton())
         {
             RShift();
+        }
+    }
+    public void OnLockOn(InputAction.CallbackContext context)//ロックオン ターゲットアシスト 長押し
+    {
+        if (context.action.name == "LockOn" && context.ReadValueAsButton())
+        {
+            LockOnAssist();
         }
     }
 }

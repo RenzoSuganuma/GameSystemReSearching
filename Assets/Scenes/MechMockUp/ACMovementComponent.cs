@@ -1,24 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using RuntimeLog;
+using DebugLogRecorder;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
 public class ACMovementComponent : MonoBehaviour
 {
     Rigidbody _rb;
+    /// <summary>入力ハンドラー</summary>
     ACInputHandler _input;
+    /// <summary>カメラ</summary>
     ACCAMComponent _acCam;
+    /// <summary>ランタイムログ</summary>
     RuntimeLogComponent _log;
+    /// <summary>移動速度</summary>
     [SerializeField] float _moveSpeed;
+    /// <summary>ジャンプ力</summary>
     [SerializeField] float _jumpForce;
+    /// <summary>速度最大値</summary>
     [SerializeField] float _velocityLim;
+    /// <summary>滞空時間</summary>
     [SerializeField] float _hoveringTime;
+    /// <summary>滞空してるかのフラグ</summary>
     bool _isHovering = false;
+    /// <summary>滞空してるかのフラグ</summary>>
+    public bool IsHovering => _isHovering;
+    /// <summary>接地してるかのフラグ</summary>
     bool _isGrounded = true;
+    /// <summary>接地してるかのフラグ</summary>
+    public bool IsGrounded => _isGrounded;
     private void Awake()
     {
-        //入力ハンドラ取得
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
     }
     private void OnEnable()
@@ -33,33 +45,27 @@ public class ACMovementComponent : MonoBehaviour
     }
     private void Start()
     {
-        //カーソルロック
+        this.gameObject.tag = "Player";
         Cursor.lockState = CursorLockMode.Locked;
-        //コンポーネント取得
         _rb = this.GetComponent<Rigidbody>();
-        //カメラコンポーネント取得
         _acCam = GameObject.FindAnyObjectByType<ACCAMComponent>();
-        //ログコンポーネントインスタンス化
         _log = new(new Rect(0, 0, 500, 250));
     }
     private void FixedUpdate()
     {
         ACMoveSequence();
-        ACGravityIncSequence();
+        ACMassIncreseSequence();
         ACHoveringSequence(_input.IsJumpHolding);
     }
     #region FixedUpdate内で呼び出し
     void ACMoveSequence()
     {
-        //移動処理
         _rb.AddForce(this.transform.forward * _moveSpeed * _input.MoveInput.y);
         _rb.AddForce(this.transform.right * _moveSpeed * _input.MoveInput.x);
-        //速度制限
         if (_rb.velocity.magnitude > _velocityLim)
         {
             _rb.velocity = _rb.velocity.normalized * _velocityLim;
         }
-        //カメラの正面を向く
         this.transform.forward = _acCam.Forward;
     }
     void ACHoveringSequence(bool isHovering)
@@ -76,11 +82,11 @@ public class ACMovementComponent : MonoBehaviour
         _rb.velocity = _rb.velocity * -.75f;
         _rb.WakeUp();
     }
-    void ACGravityIncSequence()
+    void ACMassIncreseSequence()
     {
         if (_rb.velocity.y < -9.81f * _hoveringTime)
         {
-            _rb.mass = 100f;
+            _rb.mass = 300f;
         }
         else
         {

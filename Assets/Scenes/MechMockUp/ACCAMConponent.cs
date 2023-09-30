@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using DebugLogRecorder;
+using UnityEngine.Rendering;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class ACCAMComponent : MonoBehaviour
 {
@@ -7,6 +9,12 @@ public class ACCAMComponent : MonoBehaviour
     ACInputHandler _input;
     /// <summary>オクルージョンしたオブジェクトを格納しておく</summary>
     GameObject _occuludedObject;
+    /// <summary>カメラ捕捉内のゲームオブジェクト</summary>
+    List<GameObject> _visibleTargets = new();
+    /// <summary>ランライムログ</summary>
+    RuntimeLogComponent _log;
+    /// <summary>プレイヤー</summary>
+    ACMovementComponent _acMove;
     /// <summary>正面の方向のベクトル</summary>
     Vector3 _direction;
     /// <summary>正面の方向のベクトル(readonly)</summary>
@@ -29,23 +37,35 @@ public class ACCAMComponent : MonoBehaviour
     float _thetaX = 0;
     /// <summary>カメラ移動に必要な三角関数のシータに対応する値Y軸</summary>
     float _thetaY = 0;
+    /// <summary>照準アシストするかのフラグ</summary>
+    bool _isTargetAssisting = false;
+    private void Awake()
+    {
+        _input = GameObject.FindFirstObjectByType<ACInputHandler>();
+    }
+    private void OnEnable()
+    {
+        _input.LockOnAssist += StartTargetAssist;
+    }
+    private void OnDisable()
+    {
+        _input.LockOnAssist -= StartTargetAssist;
+    }
     void Start()
     {
-        //入力インスタンス化
-        _input = GameObject.FindFirstObjectByType<ACInputHandler>();
         //NULLだったら警告ログを吐き出す
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
         if (_centerTransform == null) Debug.LogWarning("ターゲットの座標がnullだよ");
-        //ターゲットを向く
+        this.gameObject.tag = "MainCamera";
+        _acMove = GameObject.FindFirstObjectByType<ACMovementComponent>();
+        _log = new(new Rect(0, 500, 300, 300));
         TargettingSequence(_centerTransform);
     }
     void Update()
     {
-        //回転処理 横回転
         RotateSequence();
-        //ターゲットを向く
         TargettingSequence(_centerTransform);
-        //オクルージョン
+        TargettignAssistSequence(_isTargetAssisting);
         OcculusionSequence();
     }
     #region privateメソッド
@@ -89,7 +109,14 @@ public class ACCAMComponent : MonoBehaviour
         float inputY = _input.LookInput.y * _sencitivity.y * .01f;
         _thetaY += inputY;
         //X軸回転に使う引数の値のクランプ
-        _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue, _rollAngleAbsValue);
+        if (_acMove.IsGrounded)//接地時
+        {
+            _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue, _rollAngleAbsValue);
+        }
+        else if (_acMove.IsHovering)//滞空時
+        {
+            _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue * 2, _rollAngleAbsValue * 2);
+        }
         //回転の反転の符号の初期化
         var sign = (_inverseRotation) ? -1 : 1;
         //座標更新
@@ -107,11 +134,36 @@ public class ACCAMComponent : MonoBehaviour
         //正面ベクトルの初期化
         _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
     }
+    private void StartTargetAssist()
+    {
+        _isTargetAssisting = !_isTargetAssisting;
+    }
+    private void TargettignAssistSequence(bool isActive)
+    {
+
+    }
+    #endregion
+    #region publicメソッド
+    /// <summary>カメラ捕捉内のオブジェクトを登録する</summary>
+    /// <param name="target"></param>
+    public void AddVisibleObjectInList(GameObject target)
+    {
+        _visibleTargets.Add(target);
+    }
+    /// <summary>カメラ捕捉内のオブジェクトを登録解除する</summary>
+    public void RemoveVisibleObjectInList(GameObject target)
+    {
+        _visibleTargets.Remove(target);
+    }
     #endregion
     private void OnDrawGizmos()
     {
         //回転半径の球メッシュ描写
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(_centerTransform.position, _rotateRadius);
+    }
+    private void OnGUI()
+    {
+        //_log.DisplayLog($"{_visibleTargets[0].name}");
     }
 }
