@@ -23,6 +23,23 @@ public class LockOnTarget : MonoBehaviour
         float dx2 = dx * dx;
         float dy2 = dy * dy;
         _isCanLockOn = (dx2 < .05f) && (dy2 < .05f);
+        if (_isCanLockOn)
+        {
+            var component = GameObject.FindAnyObjectByType<ACCAMComponent>();
+            if (!component.LockOnTargetList.Contains(this.transform))
+            {
+                component.AddLockOnTargetToList(this.transform);
+            }
+        }
+        else
+        {
+
+            var component = GameObject.FindAnyObjectByType<ACCAMComponent>();
+            if (component.LockOnTargetList.Contains(this.transform))
+            {
+                component.RemoveLockOnTargetToList(this.transform);
+            }
+        }
         Debug.Log($"dx2:{dx2},dy2:{dy2}");
     }
 }

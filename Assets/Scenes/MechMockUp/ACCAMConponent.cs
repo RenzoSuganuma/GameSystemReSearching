@@ -9,8 +9,9 @@ public class ACCAMComponent : MonoBehaviour
     ACInputHandler _input;
     /// <summary>オクルージョンしたオブジェクトを格納しておく</summary>
     GameObject _occuludedObject;
-    /// <summary>カメラ捕捉内のゲームオブジェクト</summary>
-    List<LockOnTarget> _canLockOnTargets = new();
+    /// <summary>ロックオン可能なオブジェクトを格納しておく</summary>
+    List<Transform> _lockOnTargetTransform  = new();
+    public List<Transform> LockOnTargetList => _lockOnTargetTransform;
     /// <summary>ランライムログ</summary>
     RuntimeLogComponent _log;
     /// <summary>プレイヤー</summary>
@@ -64,8 +65,10 @@ public class ACCAMComponent : MonoBehaviour
     void Update()
     {
         RotateSequence();
-        FindCanLockOnSequence();
-        TargettingSequence(_centerTransform, _isTargetAssisting && _canLockOnTargets[0].IsCanLockOn);
+        TargettingSequence(_centerTransform
+            , _isTargetAssisting
+            && (_lockOnTargetTransform[0] != null
+            && _lockOnTargetTransform[0].GetComponent<LockOnTarget>().IsCanLockOn));
         OcculusionSequence();
     }
     #region privateメソッド
@@ -128,13 +131,13 @@ public class ACCAMComponent : MonoBehaviour
         _isTargetAssisting = !_isTargetAssisting;
     }
     /// <summary>捕捉処理</summary>
-    private void TargettingSequence(Transform targetTransform, bool isAssistingAim)
+    private void TargettingSequence(Transform followTransform, bool isAssistingAim)
     {
-        if (isAssistingAim)
+        if (isAssistingAim && _lockOnTargetTransform != null)
         {
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
             this.transform.rotation =
-                Quaternion.LookRotation(_canLockOnTargets[0].transform.position - this.transform.position
+                Quaternion.LookRotation(_lockOnTargetTransform[0].position - this.transform.position
                 , Vector3.up);
             //正面ベクトルの初期化
             _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
@@ -143,18 +146,22 @@ public class ACCAMComponent : MonoBehaviour
         {
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
             this.transform.rotation =
-                Quaternion.LookRotation(targetTransform.position - this.transform.position
+                Quaternion.LookRotation(followTransform.position - this.transform.position
                 , Vector3.up);
             //正面ベクトルの初期化
             _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
         }
     }
-    private void FindCanLockOnSequence()
-    {
-        _canLockOnTargets = GameObject.FindObjectsByType<LockOnTarget>(FindObjectsSortMode.None).ToList();
-    }
     #endregion
     #region publicメソッド
+    public void AddLockOnTargetToList(Transform target)
+    {
+        _lockOnTargetTransform.Add(target);
+    }
+    public void RemoveLockOnTargetToList(Transform target)
+    {
+        _lockOnTargetTransform.Remove(target);
+    }
     #endregion
     private void OnDrawGizmos()
     {
