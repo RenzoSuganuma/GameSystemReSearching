@@ -69,19 +69,19 @@ public class ACCAMComponent : MonoBehaviour
         this.gameObject.tag = "MainCamera";
         _acMove = GameObject.FindFirstObjectByType<ACMovementComponent>();
         _log = new(new Rect(0, 500, 300, 300));
-        TargettingSequence(_centerTransform, _isTargetAssisting);
         _parentObject = new GameObject("CameraPositionReference");
         this.transform.parent = _parentObject.transform;
         this.transform.localPosition = Vector3.zero;
+        ACLookSequence(_centerTransform);
     }
     void Update()
     {
         RotateSequence(_isTargetAssisting, (_isTargetAssisting) ? _rotateRadius / 2 : _rotateRadius);
-        TargettingSequence(_centerTransform
-            , _isTargetAssisting
-            && (_lockOnTargetTransform[0] != null
-            && _lockOnTargetTransform[0].GetComponent<LockOnTarget>().IsCanLockOn));
+        ACLookSequence(_centerTransform);
         OcculusionSequence();
+        var lockOnPermitState = (_lockOnTargetTransform != null && _lockOnTargetTransform.Count > 0)
+            ? _lockOnTargetTransform[0].GetComponent<LockOnTarget>().IsCanLockOn : false;
+        LockOnSequence(_isTargetAssisting, lockOnPermitState);
     }
     #region privateメソッド
     /// <summary>オクルージョン処理</summary>
@@ -163,9 +163,18 @@ public class ACCAMComponent : MonoBehaviour
         }
     }
     /// <summary>捕捉処理</summary>
-    private void TargettingSequence(Transform followTransform, bool isAssistingAim)
+    private void ACLookSequence(Transform followTransform)
     {
-        if (isAssistingAim && _lockOnTargetTransform[0] != null)
+        //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
+        this.transform.rotation =
+        Quaternion.LookRotation((followTransform.position - this.transform.position) + _lookOffset + _offset
+        , Vector3.up);
+        //正面ベクトルの初期化
+        _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
+    }
+    private void LockOnSequence(bool isAssistingAim, bool isCanLockOn)
+    {
+        if (isAssistingAim && _lockOnTargetTransform[0] != null && isCanLockOn)
         {
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
             this.transform.rotation =
@@ -173,15 +182,10 @@ public class ACCAMComponent : MonoBehaviour
                 , Vector3.up);
             //正面ベクトルの初期化
             _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
-        }
-        else
-        {
-            //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
-            this.transform.rotation =
-            Quaternion.LookRotation((followTransform.position - this.transform.position) + _lookOffset + _offset
-            , Vector3.up);
-            //正面ベクトルの初期化
-            _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
+            if (Vector3.Distance(_lockOnTargetTransform[0].position, this.transform.position) > _targettingLimitDistance)
+            {
+                _isTargetAssisting = false;
+            }
         }
     }
     #endregion
