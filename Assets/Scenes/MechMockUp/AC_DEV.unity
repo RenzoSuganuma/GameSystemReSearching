@@ -517,7 +517,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _centerTransform: {fileID: 752400107}
-  _offset: {x: 0, y: 15, z: 0}
+  _offset: {x: 0, y: 0, z: 0}
   _lookOffset: {x: 0, y: 0, z: 0}
   _sencitivity: {x: 1, y: 0.5}
   _rotateRadius: 40

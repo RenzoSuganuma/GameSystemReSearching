@@ -11,7 +11,7 @@ public class ACCAMComponent : MonoBehaviour
     /// <summary>カメラのオブジェクト</summary>
     GameObject _parentObject;
     /// <summary>ロックオン可能なオブジェクトを格納しておく</summary>
-    List<Transform> _lockOnTargetTransform  = new();
+    List<Transform> _lockOnTargetTransform = new();
     public List<Transform> LockOnTargetList => _lockOnTargetTransform;
     /// <summary>ランライムログ</summary>
     RuntimeLogComponent _log;
@@ -23,9 +23,9 @@ public class ACCAMComponent : MonoBehaviour
     public Vector3 Forward => _direction;
     /// <summary>カメラの中心座標</summary>
     [SerializeField] Transform _centerTransform;
-    /// <summary>カメラ位置のオフセット</summary>
-    [SerializeField] Vector3 _offset = new(0, 15, 0);
-    /// <summary>ターゲッティングの点のオフセット</summary>
+    /// <summary>カメラオフセット</summary>
+    [SerializeField] Vector3 _offset;
+    /// <summary>カメラオフセット</summary>
     [SerializeField] Vector3 _lookOffset;
     /// <summary>入力感度</summary>
     [SerializeField] Vector2 _sencitivity = new(1, .5f);
@@ -69,6 +69,7 @@ public class ACCAMComponent : MonoBehaviour
         TargettingSequence(_centerTransform, _isTargetAssisting);
         _parentObject = new GameObject("CameraPositionReference");
         this.transform.parent = _parentObject.transform;
+        this.transform.localPosition = Vector3.zero;
     }
     void Update()
     {
@@ -121,28 +122,29 @@ public class ACCAMComponent : MonoBehaviour
             float inputY = _input.LookInput.y * _sencitivity.y * .01f;
             _thetaY += inputY;
         }
-            //X軸回転に使う引数の値のクランプ
-            if (_acMove.IsGrounded)//接地時
-            {
-                _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue, _rollAngleAbsValue);
-            }
-            else if (_acMove.IsHovering)//滞空時
-            {
-                _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue * 2, _rollAngleAbsValue * 2);
-            }
-            //回転の反転の符号の初期化
-            var signX = (_inverseRotationX) ? -1 : 1;
-            var signY = (_inverseRotationY) ? -1 : 1;
-            //座標更新
-            _parentObject.transform.position =//::
-                new Vector3(Mathf.Cos(_thetaX) * signX
-                , Mathf.Sin(_thetaY) * signY
-                , Mathf.Sin(_thetaX) * signX)
-                * _rotateRadius
-                + _centerTransform.position
-                + (this.transform.forward * _offset.z)
-                + (this.transform.right * _offset.x)
-                + (this.transform.up * _offset.y);
+        //X軸回転に使う引数の値のクランプ
+        if (_acMove.IsGrounded)//接地時
+        {
+            _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue, _rollAngleAbsValue);
+        }
+        else if (_acMove.IsHovering)//滞空時
+        {
+            _thetaY = Mathf.Clamp(_thetaY, -_rollAngleAbsValue * 2, _rollAngleAbsValue * 2);
+        }
+        //回転の反転の符号の初期化
+        var signX = (_inverseRotationX) ? -1 : 1;
+        var signY = (_inverseRotationY) ? -1 : 1;
+        //座標更新
+        _parentObject.transform.position =
+            new Vector3(Mathf.Cos(_thetaX) * signX
+            , Mathf.Sin(_thetaY) * signY
+            , Mathf.Sin(_thetaX) * signX)
+            * _rotateRadius
+            + _centerTransform.position;
+        this.transform.localPosition =
+              (transform.forward * _offset.z)
+            + (transform.right * _offset.x)
+            + (transform.up * _offset.y);
     }
     private void StartTargetAssist()
     {
@@ -157,8 +159,9 @@ public class ACCAMComponent : MonoBehaviour
         if (isAssistingAim && _lockOnTargetTransform != null)
         {
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
+
             this.transform.rotation =
-                Quaternion.LookRotation(_lockOnTargetTransform[0].position - this.transform.position
+                Quaternion.LookRotation((_lockOnTargetTransform[0].position - this.transform.position) + _lookOffset + _offset
                 , Vector3.up);
             //正面ベクトルの初期化
             _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
@@ -167,8 +170,8 @@ public class ACCAMComponent : MonoBehaviour
         {
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
             this.transform.rotation =
-                Quaternion.LookRotation(followTransform.position - this.transform.position
-                , Vector3.up);
+            Quaternion.LookRotation((followTransform.position - this.transform.position) + _lookOffset + _offset
+            , Vector3.up);
             //正面ベクトルの初期化
             _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
         }
@@ -192,6 +195,6 @@ public class ACCAMComponent : MonoBehaviour
     }
     private void OnGUI()
     {
-        //_log.DisplayLog($"{_visibleTargets[0].name}");
+        _log.DisplayLog($"{Quaternion.Angle(_centerTransform.transform.rotation, this.transform.rotation)}");
     }
 }
