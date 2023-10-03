@@ -14,13 +14,11 @@ public class ACMovementComponent : MonoBehaviour
     /// <summary>ランタイムログ</summary>
     RuntimeLogComponent _log;
     /// <summary>移動速度</summary>
-    [SerializeField] float _moveSpeed;
+    [SerializeField] float _moveForce;
     /// <summary>ジャンプ力</summary>
     [SerializeField] float _jumpForce;
     /// <summary>速度最大値</summary>
     [SerializeField] float _velocityLim;
-    /// <summary>滞空時間</summary>
-    [SerializeField] float _hoveringTime;
     /// <summary>滞空してるかのフラグ</summary>
     bool _isHovering = false;
     /// <summary>滞空してるかのフラグ</summary>>
@@ -54,26 +52,26 @@ public class ACMovementComponent : MonoBehaviour
     private void FixedUpdate()
     {
         ACMoveSequence();
-        ACAddGravityAccelaration();
         ACHoveringSequence(_input.IsJumpHolding);
     }
     #region FixedUpdate内で呼び出し
     void ACMoveSequence()
     {
         this.transform.forward = _acCam.Forward;
+        _rb.AddForce(-this.transform.up * 80);
         if (_rb.velocity.magnitude > _velocityLim)
         {
             _rb.velocity = _rb.velocity.normalized * _velocityLim;
         }
         if (!_acCam.IsTargetAssisting)
         {
-            _rb.AddForce(this.transform.forward * _moveSpeed * _input.MoveInput.y);
-            _rb.AddForce(this.transform.right * _moveSpeed * _input.MoveInput.x);
+            _rb.AddForce(this.transform.forward * _moveForce * _input.MoveInput.y);
+            _rb.AddForce(this.transform.right * _moveForce * _input.MoveInput.x);
         }
         else
         {
-            _rb.AddForce(_acCam.Forward * _moveSpeed * _input.MoveInput.y);
-            _rb.AddForce(_acCam.transform.right * _moveSpeed * _input.MoveInput.x);
+            _rb.AddForce(_acCam.Forward * _moveForce * _input.MoveInput.y);
+            _rb.AddForce(_acCam.transform.right * _moveForce * _input.MoveInput.x);
         }
     }
     void ACHoveringSequence(bool isHovering)
@@ -81,7 +79,7 @@ public class ACMovementComponent : MonoBehaviour
         _isHovering = isHovering;
         if (isHovering && !_isGrounded)
         {
-            _rb.AddForce(this.transform.up * _jumpForce, ForceMode.Force);
+            _rb.AddForce(this.transform.up * _jumpForce * 5, ForceMode.Force);
         }
     }
     void ACBrakeSequence()
@@ -89,14 +87,6 @@ public class ACMovementComponent : MonoBehaviour
         _rb.Sleep();
         _rb.velocity = _rb.velocity * -.75f;
         _rb.WakeUp();
-    }
-    void ACAddGravityAccelaration()
-    {
-        if (!_isGrounded && !_isHovering && _rb.velocity.y < -9.81f * _hoveringTime)
-        {
-            _rb.velocity += (-this.transform.up) * _jumpForce;
-            Debug.Log("重力加速度あげちゃうよ！？");
-        }
     }
     #endregion
     #region デバイス入力イベント
@@ -109,7 +99,7 @@ public class ACMovementComponent : MonoBehaviour
     }
     void ACSideJumpSequence()
     {
-        _rb.AddForce(this.transform.up * _jumpForce * 2.5f, ForceMode.Impulse);
+        _rb.AddForce(this.transform.up * _jumpForce * 1.5f, ForceMode.Impulse);
         _rb.AddForce(this.transform.right * _input.MoveInput.x * _jumpForce * 5, ForceMode.Impulse);
         _rb.AddForce(this.transform.forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
     }

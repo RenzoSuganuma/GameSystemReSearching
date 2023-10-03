@@ -521,6 +521,7 @@ MonoBehaviour:
   _lookOffset: {x: 0, y: 0, z: 0}
   _sencitivity: {x: 1, y: 0.5}
   _rotateRadius: 40
+  _targettingLimitDistance: 100
   _rollAngleAbsValue: 0.3
   _inverseRotationY: 1
   _inverseRotationX: 0
@@ -801,22 +802,27 @@ PrefabInstance:
     - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}
       propertyPath: _jumpForce
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
-        type: 3}
-      propertyPath: _moveSpeed
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}
+      propertyPath: _moveForce
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+        type: 3}
+      propertyPath: _moveSpeed
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+        type: 3}
       propertyPath: _velocityLim
-      value: 50
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 457726416685894118, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}
       propertyPath: _hoveringTime
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1344074527997445870, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
         type: 3}

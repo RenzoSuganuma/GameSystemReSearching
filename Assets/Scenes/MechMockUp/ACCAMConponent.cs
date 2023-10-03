@@ -31,6 +31,9 @@ public class ACCAMComponent : MonoBehaviour
     [SerializeField] Vector2 _sencitivity = new(1, .5f);
     /// <summary>回転半径</summary>
     [SerializeField] float _rotateRadius;
+    /// <summary>回転半径</summary>
+    [SerializeField] float _targettingLimitDistance;
+    public float TargettingLimitDistance => _targettingLimitDistance;
     /// <summary>X軸回転角度のクランプするときの値の絶対値</summary>
     [SerializeField, Range(.1f, .5f)] float _rollAngleAbsValue = .3f;
     /// <summary>回転の反転を有効にするかのフラグ</summary>
@@ -73,7 +76,7 @@ public class ACCAMComponent : MonoBehaviour
     }
     void Update()
     {
-        RotateSequence(_isTargetAssisting);
+        RotateSequence(_isTargetAssisting, (_isTargetAssisting) ? _rotateRadius / 2 : _rotateRadius);
         TargettingSequence(_centerTransform
             , _isTargetAssisting
             && (_lockOnTargetTransform[0] != null
@@ -109,11 +112,10 @@ public class ACCAMComponent : MonoBehaviour
                     component.OverwriteMaterial(component.Material);
                 }
             }
-            //Debug.Log($"{nameof(OcculusionSequence)}:{hit.transform.gameObject.name}");
         }
     }
     /// <summary>Y軸回転処理</summary>
-    private void RotateSequence(bool isTargetAssisting)
+    private void RotateSequence(bool isTargetAssisting, float rotateRadius)
     {
         if (!isTargetAssisting)
         {
@@ -135,16 +137,23 @@ public class ACCAMComponent : MonoBehaviour
         var signX = (_inverseRotationX) ? -1 : 1;
         var signY = (_inverseRotationY) ? -1 : 1;
         //座標更新
-        _parentObject.transform.position =
-            new Vector3(Mathf.Cos(_thetaX) * signX
-            , Mathf.Sin(_thetaY) * signY
-            , Mathf.Sin(_thetaX) * signX)
-            * _rotateRadius
-            + _centerTransform.position;
-        this.transform.localPosition =
-              (transform.forward * _offset.z)
-            + (transform.right * _offset.x)
-            + (transform.up * _offset.y);
+        if (!_isTargetAssisting)
+        {
+            _parentObject.transform.position =
+                new Vector3(Mathf.Cos(_thetaX) * signX
+                , Mathf.Sin(_thetaY) * signY
+                , Mathf.Sin(_thetaX) * signX)
+                * rotateRadius
+                + _centerTransform.position;
+            this.transform.localPosition =
+                  (transform.forward * _offset.z)
+                + (transform.right * _offset.x)
+                + (transform.up * _offset.y);
+        }
+        else
+        {
+            _parentObject.transform.position = _centerTransform.position + (_centerTransform.forward * -_rotateRadius) + (_centerTransform.up * 5);
+        }
     }
     private void StartTargetAssist()
     {
@@ -156,10 +165,9 @@ public class ACCAMComponent : MonoBehaviour
     /// <summary>捕捉処理</summary>
     private void TargettingSequence(Transform followTransform, bool isAssistingAim)
     {
-        if (isAssistingAim && _lockOnTargetTransform != null)
+        if (isAssistingAim && _lockOnTargetTransform[0] != null)
         {
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
-
             this.transform.rotation =
                 Quaternion.LookRotation((_lockOnTargetTransform[0].position - this.transform.position) + _lookOffset + _offset
                 , Vector3.up);
@@ -192,9 +200,5 @@ public class ACCAMComponent : MonoBehaviour
         //回転半径の球メッシュ描写
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(_centerTransform.position, _rotateRadius);
-    }
-    private void OnGUI()
-    {
-        _log.DisplayLog($"{Quaternion.Angle(_centerTransform.transform.rotation, this.transform.rotation)}");
     }
 }
