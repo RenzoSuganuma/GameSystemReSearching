@@ -20,6 +20,8 @@ public class ACCAMComponent : MonoBehaviour
     ACMovementComponent _acMove;
     /// <summary>正面の方向のベクトル</summary>
     Vector3 _direction;
+    /// <summary>前フレームの正面の方向のベクトル</summary>
+    Vector3 _pDirection;
     /// <summary>正面の方向のベクトル(readonly)</summary>
     public Vector3 Forward => _direction;
     /// <summary>カメラの中心座標</summary>
@@ -161,7 +163,7 @@ public class ACCAMComponent : MonoBehaviour
     /// <summary>ターゲットアシスト入力が入ったときに呼び出される</summary>
     private void StartTargetAssist()
     {
-        if (_lockOnTargetTransform[0] != null)
+        if (_lockOnTargetTransform != null && _lockOnTargetTransform.Count > 0)
         {
             _isTargetAssisting = !_isTargetAssisting;
         }
@@ -181,23 +183,26 @@ public class ACCAMComponent : MonoBehaviour
     /// <param name="isCanLockOn"></param>
     private void LockOnSequence(bool isAssistingAim, bool isCanLockOn)
     {
-        if (isAssistingAim && _lockOnTargetTransform[0] != null && isCanLockOn)
+        if (isAssistingAim && _lockOnTargetTransform != null && _lockOnTargetTransform.Count > 0 && isCanLockOn)
         {
             _pLockOnState = isCanLockOn;
+            _pDirection = (_lockOnTargetTransform[0].transform.position - this.transform.position);
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
             this.transform.rotation =
                 Quaternion.LookRotation((_lockOnTargetTransform[0].position - this.transform.position) + _lookOffset + _offset
                 , Vector3.up);
             //正面ベクトルの初期化
             _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
-            if (Vector3.Distance(_lockOnTargetTransform[0].position, this.transform.position) > _targettingLimitDistance)
+            //アシスト解除処理
+            if (Mathf.Abs(_input.LookInput.x) > .5f || Mathf.Abs(_input.LookInput.y) > .5f)
             {
                 _isTargetAssisting = false;
             }
         }
-        else if(_pLockOnState)
+        else if (_pLockOnState)
         {
             Debug.Log("ターゲットアシスト解除");
+            _isTargetAssisting = false;
             _pLockOnState = false;
         }
     }

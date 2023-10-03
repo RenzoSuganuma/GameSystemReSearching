@@ -32,7 +32,6 @@ public class LockOnTarget : MonoBehaviour
         }
         else
         {
-
             if (cam.LockOnTargetList.Contains(this.transform))
             {
                 cam.RemoveLockOnTargetToList(this.transform);

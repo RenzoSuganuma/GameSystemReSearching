@@ -104,6 +104,12 @@ public class ACMovementComponent : MonoBehaviour
         _rb.AddForce(this.transform.forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
     }
     #endregion
+    #region publicÉÅÉ\ÉbÉh
+    public void AssignACForward(Vector3 forward)
+    {
+        this.transform.forward = forward;
+    }
+    #endregion
     private void OnGUI()
     {
         _log.DisplayLog($"RB-MAG:{_rb.velocity.magnitude}" +
