@@ -478,6 +478,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b4cde9c18be29419a12d281a1894da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &752400107 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3751426819011207828, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2118333452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1217725782
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,12 +516,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeaf276f9869bfb47891d27d84cc9990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _centerTransform: {fileID: 1296953869}
-  _offset: {x: 1, y: 15, z: 0}
+  _centerTransform: {fileID: 752400107}
+  _offset: {x: 0, y: 15, z: 0}
+  _lookOffset: {x: 0, y: 0, z: 0}
   _sencitivity: {x: 1, y: 0.5}
   _rotateRadius: 40
   _rollAngleAbsValue: 0.3
-  _inverseRotation: 1
+  _inverseRotationY: 1
+  _inverseRotationX: 0
   _transparentMat: {fileID: 2100000, guid: 16ae938cc1d509345bc69bb27e1ae01e, type: 2}
 --- !u!114 &1217725784
 MonoBehaviour:
@@ -664,12 +672,6 @@ CapsuleCollider:
   m_Height: 10
   m_Direction: 1
   m_Center: {x: 0, y: 5, z: 0}
---- !u!4 &1296953869 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4203947529019657629, guid: 9e963d9dd666e694a9bb4e4ca90600b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 2118333452}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1995243007
 GameObject:
   m_ObjectHideFlags: 0
