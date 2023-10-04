@@ -81,10 +81,10 @@ public class ACCAMComponent : MonoBehaviour
         this.gameObject.tag = "MainCamera";
         _acMove = GameObject.FindFirstObjectByType<ACMovementComponent>();
         _log = new(new Rect(0, 500, 300, 300));
+        //ÉJÉÅÉâç¿ïWäÓèÄ
         _parentObject = new GameObject("CameraPositionReference");
         this.transform.parent = _parentObject.transform;
         this.transform.localPosition = Vector3.zero;
-        ACCAMLookSequence(_centerTransform);
     }
     void Update()
     {
