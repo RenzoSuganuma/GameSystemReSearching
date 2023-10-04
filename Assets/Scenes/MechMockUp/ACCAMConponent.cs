@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DebugLogRecorder;
+using System;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class ACCAMComponent : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class ACCAMComponent : MonoBehaviour
     List<Transform> _lockOnTargetTransform = new();
     /// <summary>ロックオン可能なオブジェクトを格納しておく</summary>
     public List<Transform> LockOnTargetList => _lockOnTargetTransform;
+    /// <summary>ロックオン強制解除されたときに呼び出される</summary>
+    public event Action LockOnDeniedEvent = () => { Debug.Log("LockOnDenied"); };
     /// <summary>ランライムログ</summary>
     RuntimeLogComponent _log;
     /// <summary>プレイヤー</summary>
@@ -22,6 +25,8 @@ public class ACCAMComponent : MonoBehaviour
     Vector3 _direction;
     /// <summary>前フレームの正面の方向のベクトル</summary>
     Vector3 _pDirection;
+    /// <summary>前フレームの正面の方向のベクトル</summary>
+    public Vector3 PastFrameDirection => _pDirection;
     /// <summary>正面の方向のベクトル(readonly)</summary>
     public Vector3 Forward => _direction;
     /// <summary>カメラの中心座標</summary>
@@ -186,7 +191,6 @@ public class ACCAMComponent : MonoBehaviour
         if (isAssistingAim && _lockOnTargetTransform != null && _lockOnTargetTransform.Count > 0 && isCanLockOn)
         {
             _pLockOnState = isCanLockOn;
-            _pDirection = (_lockOnTargetTransform[0].transform.position - this.transform.position);
             //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
             this.transform.rotation =
                 Quaternion.LookRotation((_lockOnTargetTransform[0].position - this.transform.position) + _lookOffset + _offset
@@ -194,16 +198,18 @@ public class ACCAMComponent : MonoBehaviour
             //正面ベクトルの初期化
             _direction = new(this.transform.forward.x, 0, this.transform.forward.z);
             //アシスト解除処理
-            if (Mathf.Abs(_input.LookInput.x) > .5f || Mathf.Abs(_input.LookInput.y) > .5f)
+            if (Mathf.Abs(_input.LookInput.x) > .75f || Mathf.Abs(_input.LookInput.y) > .75f)
             {
                 _isTargetAssisting = false;
             }
         }
         else if (_pLockOnState)
         {
-            Debug.Log("ターゲットアシスト解除");
+            _pDirection = (_lockOnTargetTransform[0].transform.position - _parentObject.transform.position);
+            _pDirection.y = 0;
             _isTargetAssisting = false;
             _pLockOnState = false;
+            LockOnDeniedEvent();//強制ロックオン解除イベント
         }
     }
     #endregion

@@ -11,9 +11,9 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     bool _isJumpHolding = false;
     //公開プロパティ
     /// <summary>移動入力</summary>
-    public Vector2 MoveInput => _move;
+    public Vector2 MoveInput => _move.normalized;
     /// <summary>視点移動入力</summary>
-    public Vector2 LookInput => _look;
+    public Vector2 LookInput => _look.normalized;
     /// <summary>ジャンプホールド入力</summary>
     public bool IsJumpHolding => _isJumpHolding;
     //公開イベント

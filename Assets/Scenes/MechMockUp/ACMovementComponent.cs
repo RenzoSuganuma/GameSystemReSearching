@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DebugLogRecorder;
 /// <summary>ACの移動コンポーネント</summary>
@@ -30,23 +28,25 @@ public class ACMovementComponent : MonoBehaviour
     private void Awake()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
+        _acCam = GameObject.FindAnyObjectByType<ACCAMComponent>();
     }
     private void OnEnable()
     {
         _input.Jump += ACJumpSequence;
         _input.SideJump += ACSideJumpSequence;
+        _acCam.LockOnDeniedEvent += ACLockOnDeniedEvent;
     }
     private void OnDisable()
     {
         _input.Jump -= ACJumpSequence;
         _input.SideJump -= ACSideJumpSequence;
+        _acCam.LockOnDeniedEvent -= ACLockOnDeniedEvent;
     }
     private void Start()
     {
         this.gameObject.tag = "Player";
         Cursor.lockState = CursorLockMode.Locked;
         _rb = this.GetComponent<Rigidbody>();
-        _acCam = GameObject.FindAnyObjectByType<ACCAMComponent>();
         _log = new(new Rect(0, 0, 500, 250));
     }
     private void FixedUpdate()
@@ -87,6 +87,10 @@ public class ACMovementComponent : MonoBehaviour
         _rb.Sleep();
         _rb.velocity = _rb.velocity * -.75f;
         _rb.WakeUp();
+    }
+    void ACLockOnDeniedEvent()
+    {
+        this.transform.forward = _acCam.PastFrameDirection;
     }
     #endregion
     #region デバイス入力イベント
