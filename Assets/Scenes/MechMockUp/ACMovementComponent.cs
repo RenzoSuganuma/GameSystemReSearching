@@ -90,7 +90,7 @@ public class ACMovementComponent : MonoBehaviour
     }
     void ACLockOnDeniedEvent()
     {
-        this.transform.forward = _acCam.PastFrameDirection;
+        
     }
     #endregion
     #region デバイス入力イベント

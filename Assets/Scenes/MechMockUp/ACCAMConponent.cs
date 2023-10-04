@@ -23,10 +23,6 @@ public class ACCAMComponent : MonoBehaviour
     ACMovementComponent _acMove;
     /// <summary>正面の方向のベクトル</summary>
     Vector3 _direction;
-    /// <summary>前フレームの正面の方向のベクトル</summary>
-    Vector3 _pDirection;
-    /// <summary>前フレームの正面の方向のベクトル</summary>
-    public Vector3 PastFrameDirection => _pDirection;
     /// <summary>正面の方向のベクトル(readonly)</summary>
     public Vector3 Forward => _direction;
     /// <summary>カメラの中心座標</summary>
@@ -162,7 +158,7 @@ public class ACCAMComponent : MonoBehaviour
         }
         else
         {
-            _parentObject.transform.position = _centerTransform.position + (_centerTransform.forward * -_rotateRadius) + (_centerTransform.up * 5);
+            _parentObject.transform.position = _centerTransform.position + (_centerTransform.forward * -rotateRadius) + (_centerTransform.up * 5);
         }//座標更新
     }
     /// <summary>ターゲットアシスト入力が入ったときに呼び出される</summary>
@@ -205,8 +201,6 @@ public class ACCAMComponent : MonoBehaviour
         }
         else if (_pLockOnState)
         {
-            _pDirection = (_lockOnTargetTransform[0].transform.position - _parentObject.transform.position);
-            _pDirection.y = 0;
             _isTargetAssisting = false;
             _pLockOnState = false;
             LockOnDeniedEvent();//強制ロックオン解除イベント
