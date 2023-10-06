@@ -1,5 +1,6 @@
 using UnityEngine;
 using DebugLogRecorder;
+using DGW;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
 public class ACMovementComponent : MonoBehaviour
@@ -7,10 +8,12 @@ public class ACMovementComponent : MonoBehaviour
     Rigidbody _rb;
     /// <summary>入力ハンドラー</summary>
     ACInputHandler _input;
-    /// <summary>カメラ</summary>
-    ACCAMComponent _acCam;
     /// <summary>ランタイムログ</summary>
     RuntimeLogComponent _log;
+    /// <summary>カスタムメソッドが使えるクラス</summary>
+    CustomMethods _cutomMethods;
+    /// <summary>オービタルカメラクラス</summary>
+    OrbitalCameraComponent _orbitCam;
     /// <summary>移動速度</summary>
     [SerializeField] float _moveForce;
     /// <summary>ジャンプ力</summary>
@@ -28,19 +31,16 @@ public class ACMovementComponent : MonoBehaviour
     private void Awake()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
-        _acCam = GameObject.FindAnyObjectByType<ACCAMComponent>();
     }
     private void OnEnable()
     {
         _input.Jump += ACJumpSequence;
         _input.SideJump += ACSideJumpSequence;
-        _acCam.LockOnDeniedEvent += ACLockOnDeniedEvent;
     }
     private void OnDisable()
     {
         _input.Jump -= ACJumpSequence;
         _input.SideJump -= ACSideJumpSequence;
-        _acCam.LockOnDeniedEvent -= ACLockOnDeniedEvent;
     }
     private void Start()
     {
@@ -48,6 +48,7 @@ public class ACMovementComponent : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         _rb = this.GetComponent<Rigidbody>();
         _log = new(new Rect(0, 0, 500, 250));
+        _cutomMethods = new();
     }
     private void FixedUpdate()
     {
@@ -57,22 +58,10 @@ public class ACMovementComponent : MonoBehaviour
     #region FixedUpdate内で呼び出し
     void ACMoveSequence()
     {
-        this.transform.forward = _acCam.Forward;
         _rb.AddForce(-this.transform.up * 80);
-        if (_rb.velocity.magnitude > _velocityLim)
-        {
-            _rb.velocity = _rb.velocity.normalized * _velocityLim;
-        }
-        if (!_acCam.IsTargetAssisting)
-        {
-            _rb.AddForce(this.transform.forward * _moveForce * _input.MoveInput.y);
-            _rb.AddForce(this.transform.right * _moveForce * _input.MoveInput.x);
-        }
-        else
-        {
-            _rb.AddForce(_acCam.Forward * _moveForce * _input.MoveInput.y);
-            _rb.AddForce(_acCam.transform.right * _moveForce * _input.MoveInput.x);
-        }
+        _rb.AddForce(this.transform.forward * _moveForce * _input.MoveInput.y);
+        _rb.AddForce(this.transform.right * _moveForce * _input.MoveInput.x);
+        _cutomMethods.When(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
     }
     void ACHoveringSequence(bool isHovering)
     {
@@ -87,10 +76,6 @@ public class ACMovementComponent : MonoBehaviour
         _rb.Sleep();
         _rb.velocity = _rb.velocity * -.75f;
         _rb.WakeUp();
-    }
-    void ACLockOnDeniedEvent()
-    {
-        
     }
     #endregion
     #region デバイス入力イベント
@@ -109,10 +94,6 @@ public class ACMovementComponent : MonoBehaviour
     }
     #endregion
     #region publicメソッド
-    public void AssignACForward(Vector3 forward)
-    {
-        this.transform.forward = forward;
-    }
     #endregion
     private void OnGUI()
     {
