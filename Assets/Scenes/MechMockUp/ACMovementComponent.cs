@@ -47,6 +47,7 @@ public class ACMovementComponent : MonoBehaviour
         this.gameObject.tag = "Player";
         Cursor.lockState = CursorLockMode.Locked;
         _rb = this.GetComponent<Rigidbody>();
+        _orbitCam = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
         _log = new(new Rect(0, 0, 500, 250));
         _cutomMethods = new();
     }
@@ -54,13 +55,14 @@ public class ACMovementComponent : MonoBehaviour
     {
         ACMoveSequence();
         ACHoveringSequence(_input.IsJumpHolding);
+        ACTurnSequence();
     }
     #region FixedUpdate内で呼び出し
     void ACMoveSequence()
     {
         _rb.AddForce(-this.transform.up * 80);
-        _rb.AddForce(this.transform.forward * _moveForce * _input.MoveInput.y);
-        _rb.AddForce(this.transform.right * _moveForce * _input.MoveInput.x);
+        _rb.AddForce(_orbitCam.Forward * _moveForce * _input.MoveInput.y);
+        _rb.AddForce(_orbitCam.Right * _moveForce * _input.MoveInput.x);
         _cutomMethods.When(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
     }
     void ACHoveringSequence(bool isHovering)
@@ -76,6 +78,15 @@ public class ACMovementComponent : MonoBehaviour
         _rb.Sleep();
         _rb.velocity = _rb.velocity * -.75f;
         _rb.WakeUp();
+    }
+    void ACTurnSequence()
+    {
+        if (_input.MoveInput != Vector2.zero)
+        {
+            this.transform.forward = 
+                _orbitCam.Forward * _input.MoveInput.y
+                + _orbitCam.Right * _input.MoveInput.x;
+        }
     }
     #endregion
     #region デバイス入力イベント

@@ -12,6 +12,14 @@ public class OrbitalCameraComponent : MonoBehaviour
     ACMovementComponent _acMove;
     /// <summary>オクルージョン処理クラス</summary>
     Occulutioner _occ;
+    /// <summary>正面ベクトル</summary>
+    Vector3 _forward;
+    /// <summary>正面ベクトル</summary>
+    public Vector3 Forward => _forward;
+    /// <summary>右ベクトル</summary>
+    Vector3 _right;
+    /// <summary>右ベクトル</summary>
+    public Vector3 Right => _right;
     /// <summary>カメラの中心座標</summary>
     [SerializeField] Transform _centerTransform;
     /// <summary>入力感度</summary>
@@ -95,6 +103,12 @@ public class OrbitalCameraComponent : MonoBehaviour
         this.transform.rotation =
         Quaternion.LookRotation((followTransform.position - this.transform.position)
         , Vector3.up);
+        //各方向ベクトル値初期化
+        var f = this.transform.forward; f.y = 0;
+        _forward = f;
+        var r = this.transform.right; r.y = 0;
+        _right = r;
+
     }
     #endregion
     #region publicメソッド

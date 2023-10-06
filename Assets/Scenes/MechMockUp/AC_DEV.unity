@@ -400,8 +400,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _centerTransform: {fileID: 752400107}
-  _offset: {x: 0, y: 0, z: 0}
-  _lookOffset: {x: 0, y: 0, z: 0}
   _sencitivity: {x: 4, y: 1}
   _rotateRadius: 40
   _targettingLimitDistance: 500
