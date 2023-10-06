@@ -3,7 +3,7 @@ using DebugLogRecorder;
 using DGW;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
-public class ACMovementComponent : MonoBehaviour
+public class MechMovementComponent : MonoBehaviour
 {
     Rigidbody _rb;
     /// <summary>入力ハンドラー</summary>
@@ -100,8 +100,8 @@ public class ACMovementComponent : MonoBehaviour
     void ACSideJumpSequence()
     {
         _rb.AddForce(this.transform.up * _jumpForce * 1.5f, ForceMode.Impulse);
-        _rb.AddForce(this.transform.right * _input.MoveInput.x * _jumpForce * 5, ForceMode.Impulse);
-        _rb.AddForce(this.transform.forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
+        _rb.AddForce(_orbitCam.Right * _input.MoveInput.x * _jumpForce * 5, ForceMode.Impulse);
+        _rb.AddForce(_orbitCam.Forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
     }
     #endregion
     #region publicメソッド

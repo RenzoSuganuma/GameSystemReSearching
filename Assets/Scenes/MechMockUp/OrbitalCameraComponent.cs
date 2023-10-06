@@ -9,7 +9,7 @@ public class OrbitalCameraComponent : MonoBehaviour
     /// <summary>入力ハンドラー</summary>
     ACInputHandler _input;
     /// <summary>プレイヤー</summary>
-    ACMovementComponent _acMove;
+    MechMovementComponent _acMove;
     /// <summary>オクルージョン処理クラス</summary>
     Occulutioner _occ;
     /// <summary>正面ベクトル</summary>
@@ -50,7 +50,7 @@ public class OrbitalCameraComponent : MonoBehaviour
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
         if (_centerTransform == null) Debug.LogWarning("ターゲットの座標がnullだよ");
         this.gameObject.tag = "MainCamera";
-        _acMove = GameObject.FindFirstObjectByType<ACMovementComponent>();
+        _acMove = GameObject.FindFirstObjectByType<MechMovementComponent>();
         _occ = GetComponent<Occulutioner>();
     }
     void Update()
