@@ -1,19 +1,21 @@
 using UnityEngine;
 using DebugLogRecorder;
 using DGW;
+using TMPro;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
 public class MechMovementComponent : MonoBehaviour
 {
     Rigidbody _rb;
-    /// <summary>入力ハンドラー</summary>
     ACInputHandler _input;
-    /// <summary>ランタイムログ</summary>
     RuntimeLogComponent _log;
-    /// <summary>カスタムメソッドが使えるクラス</summary>
     CustomMethods _cutomMethods;
     /// <summary>オービタルカメラクラス</summary>
-    OrbitalCameraComponent _orbitCam;
+    OrbitalCameraComponent _orbitCAM;
+    /// <summary>エイムアシストカメラクラス</summary>
+    AimAssistCameraComponent _assistCAM;
+    /// <summary>カメラマネージャークラスクラス</summary>
+    ACCAMManager _camMan;
     /// <summary>移動速度</summary>
     [SerializeField] float _moveForce;
     /// <summary>ジャンプ力</summary>
@@ -47,7 +49,9 @@ public class MechMovementComponent : MonoBehaviour
         this.gameObject.tag = "Player";
         Cursor.lockState = CursorLockMode.Locked;
         _rb = this.GetComponent<Rigidbody>();
-        _orbitCam = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
+        _camMan = GameObject.FindAnyObjectByType<ACCAMManager>();
+        _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
+        _assistCAM = GameObject.FindAnyObjectByType<AimAssistCameraComponent>();
         _log = new(new Rect(0, 0, 500, 250));
         _cutomMethods = new();
     }
@@ -60,9 +64,20 @@ public class MechMovementComponent : MonoBehaviour
     #region FixedUpdate内で呼び出し
     void ACMoveSequence()
     {
+        switch (_camMan.CamMode)
+        {
+            case CameraMode.Normal:
+                {
+                    _rb.AddForce(_orbitCAM.Forward * _moveForce * _input.MoveInput.y);
+                    _rb.AddForce(_orbitCAM.Right * _moveForce * _input.MoveInput.x);
+                    break;
+                }
+            case CameraMode.AimAssist:
+                {
+                    break;
+                }
+        }
         _rb.AddForce(-this.transform.up * 80);
-        _rb.AddForce(_orbitCam.Forward * _moveForce * _input.MoveInput.y);
-        _rb.AddForce(_orbitCam.Right * _moveForce * _input.MoveInput.x);
         _cutomMethods.When(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
     }
     void ACHoveringSequence(bool isHovering)
@@ -83,9 +98,20 @@ public class MechMovementComponent : MonoBehaviour
     {
         if (_input.MoveInput != Vector2.zero)
         {
-            this.transform.forward = 
-                _orbitCam.Forward * _input.MoveInput.y
-                + _orbitCam.Right * _input.MoveInput.x;
+            switch (_camMan.CamMode)
+            {
+                case CameraMode.Normal:
+                    {
+                        this.transform.forward =
+                            _orbitCAM.Forward * _input.MoveInput.y
+                            + _orbitCAM.Right * _input.MoveInput.x;
+                        break;
+                    }
+                case CameraMode.AimAssist:
+                    {
+                        break;
+                    }
+            }
         }
     }
     #endregion
@@ -99,39 +125,50 @@ public class MechMovementComponent : MonoBehaviour
     }
     void ACSideJumpSequence()
     {
+        switch (_camMan.CamMode)
+        {
+            case CameraMode.Normal:
+                {
+                    _rb.AddForce(_orbitCAM.Right * _input.MoveInput.x * _jumpForce * 5, ForceMode.Impulse);
+                    _rb.AddForce(_orbitCAM.Forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
+                    break;
+                }
+            case CameraMode.AimAssist:
+                {
+                    break;
+                }
+        }
         _rb.AddForce(this.transform.up * _jumpForce * 1.5f, ForceMode.Impulse);
-        _rb.AddForce(_orbitCam.Right * _input.MoveInput.x * _jumpForce * 5, ForceMode.Impulse);
-        _rb.AddForce(_orbitCam.Forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
     }
-    #endregion
-    #region publicメソッド
-    #endregion
-    private void OnGUI()
-    {
-        _log.DisplayLog($"RB-MAG:{_rb.velocity.magnitude}" +
-            $"\nHEIGHT:{this.transform.position.y}" +
-            $"\nRB-VEL{_rb.velocity}");
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
+        #endregion
+        #region publicメソッド
+        #endregion
+        private void OnGUI()
         {
-            _isGrounded = true;
-            ACBrakeSequence();
+            _log.DisplayLog($"RB-MAG:{_rb.velocity.magnitude}" +
+                $"\nHEIGHT:{this.transform.position.y}" +
+                $"\nRB-VEL{_rb.velocity}");
+        }
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                _isGrounded = true;
+                ACBrakeSequence();
+            }
+        }
+        private void OnCollisionStay(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                _isGrounded = true;
+            }
+        }
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                _isGrounded = false;
+            }
         }
     }
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            _isGrounded = true;
-        }
-    }
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            _isGrounded = false;
-        }
-    }
-}

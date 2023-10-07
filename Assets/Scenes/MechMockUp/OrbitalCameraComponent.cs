@@ -6,9 +6,7 @@ using DGW;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class OrbitalCameraComponent : MonoBehaviour
 {
-    /// <summary>入力ハンドラー</summary>
     ACInputHandler _input;
-    /// <summary>プレイヤー</summary>
     MechMovementComponent _acMove;
     /// <summary>オクルージョン処理クラス</summary>
     Occulutioner _occ;
@@ -50,7 +48,7 @@ public class OrbitalCameraComponent : MonoBehaviour
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
         if (_centerTransform == null) Debug.LogWarning("ターゲットの座標がnullだよ");
         this.gameObject.tag = "MainCamera";
-        _acMove = GameObject.FindFirstObjectByType<MechMovementComponent>();
+        _acMove = GameObject.FindAnyObjectByType<MechMovementComponent>();
         _occ = GetComponent<Occulutioner>();
     }
     void Update()
@@ -74,7 +72,7 @@ public class OrbitalCameraComponent : MonoBehaviour
     {
         _occ.OcculusionSequence();
     }
-    /// <summary>Y軸回転処理</summary>
+    /// <summary>回転処理</summary>
     private void RotateSequence(float rotateRadius)
     {
         if (_acMove.IsGrounded)//接地時
@@ -113,10 +111,4 @@ public class OrbitalCameraComponent : MonoBehaviour
     #endregion
     #region publicメソッド
     #endregion
-    private void OnDrawGizmos()
-    {
-        //回転半径の球メッシュ描写
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(_centerTransform.position, _rotateRadius);
-    }
 }

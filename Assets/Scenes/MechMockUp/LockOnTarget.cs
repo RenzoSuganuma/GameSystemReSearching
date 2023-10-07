@@ -1,4 +1,3 @@
-using Cinemachine.Utility;
 using UnityEngine;
 public class LockOnTarget : MonoBehaviour
 {
@@ -23,5 +22,10 @@ public class LockOnTarget : MonoBehaviour
         float dx2 = dx * dx;
         float dy2 = dy * dy;
         _isTrasable = (dx2 < .05f) && (dy2 < .05f);
+        if (_isTrasable)
+        {
+            var camMan = GameObject.FindAnyObjectByType<ACCAMManager>();
+            camMan.AppendTargetToList(this.transform);
+        }
     }
 }
