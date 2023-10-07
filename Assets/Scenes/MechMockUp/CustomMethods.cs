@@ -35,6 +35,9 @@ namespace DGW
         {
             obj.transform.parent = null;
         }
+        /// <summary>子オブジェクトのみ取得する</summary>
+        /// <param name="parent"></param>
+        /// <returns></returns>
         public static List<Transform> GetChildObjects(this GameObject parent)
         {
             List<Transform> list = new();

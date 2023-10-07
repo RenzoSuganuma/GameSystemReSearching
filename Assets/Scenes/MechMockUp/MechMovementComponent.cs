@@ -1,7 +1,6 @@
 using UnityEngine;
 using DebugLogRecorder;
 using DGW;
-using TMPro;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
 public class MechMovementComponent : MonoBehaviour
@@ -74,6 +73,8 @@ public class MechMovementComponent : MonoBehaviour
                 }
             case CameraMode.AimAssist:
                 {
+                    _rb.AddForce(_assistCAM.Forward * _moveForce * _input.MoveInput.y);
+                    _rb.AddForce(_assistCAM.Right * _moveForce * _input.MoveInput.x);
                     break;
                 }
         }
@@ -109,6 +110,8 @@ public class MechMovementComponent : MonoBehaviour
                     }
                 case CameraMode.AimAssist:
                     {
+                        this.transform.forward =
+                        _assistCAM.Forward;
                         break;
                     }
             }
@@ -135,40 +138,42 @@ public class MechMovementComponent : MonoBehaviour
                 }
             case CameraMode.AimAssist:
                 {
+                    _rb.AddForce(_assistCAM.Right * _input.MoveInput.x * _jumpForce * 5, ForceMode.Impulse);
+                    _rb.AddForce(_assistCAM.Forward * _input.MoveInput.y * _jumpForce * 5, ForceMode.Impulse);
                     break;
                 }
         }
         _rb.AddForce(this.transform.up * _jumpForce * 1.5f, ForceMode.Impulse);
     }
-        #endregion
-        #region publicメソッド
-        #endregion
-        private void OnGUI()
+    #endregion
+    #region publicメソッド
+    #endregion
+    private void OnGUI()
+    {
+        _log.DisplayLog($"RB-MAG:{_rb.velocity.magnitude}" +
+            $"\nHEIGHT:{this.transform.position.y}" +
+            $"\nRB-VEL{_rb.velocity}");
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            _log.DisplayLog($"RB-MAG:{_rb.velocity.magnitude}" +
-                $"\nHEIGHT:{this.transform.position.y}" +
-                $"\nRB-VEL{_rb.velocity}");
-        }
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                _isGrounded = true;
-                ACBrakeSequence();
-            }
-        }
-        private void OnCollisionStay(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                _isGrounded = true;
-            }
-        }
-        private void OnCollisionExit(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                _isGrounded = false;
-            }
+            _isGrounded = true;
+            ACBrakeSequence();
         }
     }
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _isGrounded = true;
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _isGrounded = false;
+        }
+    }
+}

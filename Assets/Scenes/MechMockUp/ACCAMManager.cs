@@ -14,7 +14,7 @@ public class ACCAMManager : MonoBehaviour
     OrbitalCameraComponent _orbitCAM;
     AimAssistCameraComponent _aimAssistCAM;
     CustomMethods _customMethods;
-    List<AimAssistTarget> _assistTargets = new();
+    List<Transform> _assistTargets = new();
     bool _isAimAssist = false;
     CameraMode _mode = CameraMode.Normal;
     public CameraMode CamMode => _mode;
@@ -36,6 +36,10 @@ public class ACCAMManager : MonoBehaviour
     {
         _isAimAssist = !_isAimAssist;
     }
+    void ApplyTargetToAssistCam()
+    {
+        _aimAssistCAM.ApplyAimTarget(_assistTargets[0]);
+    }
     private void Start()
     {
         _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
@@ -48,16 +52,22 @@ public class ACCAMManager : MonoBehaviour
         _customMethods.When(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist
             , () =>
             {
-                SetCameraMode(CameraMode.Normal);
                 _isAimAssist = false;
-            }
-            );
+                SwitchCameraMode();
+            });
+        _customMethods.When(_isAimAssist, () =>
+        {
+            ApplyTargetToAssistCam();
+        });
     }
     /// <summary>捕捉対象リストに登録するメソッド</summary>
     /// <param name="target"></param>
     public void AppendTargetToList(Transform target)
     {
-        _assistTargets.Add(new(target));
+        _customMethods.When(!_assistTargets.Contains(target), () =>
+        {
+            _assistTargets.Add(target);
+        });
     }
     /// <summary>カメラモード切替入力がされたら呼び出される</summary>
     void SwitchCameraMode()
@@ -65,7 +75,7 @@ public class ACCAMManager : MonoBehaviour
         _mode = (_isAimAssist) ? CameraMode.AimAssist : CameraMode.Normal;
         SetCameraMode(_mode);//カメラモード切り替え
     }
-    /// <summary>カメラを切り替えるメソッド</summary>
+    /// <summary>カメラをモードの変数値に応じて切り替えるメソッド</summary>
     /// <param name="mode"></param>
     public void SetCameraMode(CameraMode mode)
     {
@@ -89,14 +99,4 @@ public class ACCAMManager : MonoBehaviour
                 }
         }
     }
-}
-/// <summary>エイムアシストターゲットクラス</summary>
-public class AimAssistTarget
-{
-    Transform _transform;
-    public AimAssistTarget(Transform transform)
-    {
-        this._transform = transform;
-    }
-    public Transform TargetTransform => _transform;
 }

@@ -106,7 +106,6 @@ public class OrbitalCameraComponent : MonoBehaviour
         _forward = f;
         var r = this.transform.right; r.y = 0;
         _right = r;
-
     }
     #endregion
     #region publicƒƒ\ƒbƒh

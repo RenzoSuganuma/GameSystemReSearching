@@ -262,9 +262,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc325bf1c0116ea4aaa0c6f2fbf53b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _aimTargetTransform: {fileID: 452532915}
   _centerTransform: {fileID: 752400107}
-  _offset: {x: 0, y: 0, z: -10}
+  _offset: {x: 0, y: 5, z: -40}
 --- !u!114 &239230607
 MonoBehaviour:
   m_ObjectHideFlags: 0
