@@ -9,6 +9,10 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     Vector2 _move = Vector2.zero;
     Vector2 _look = Vector2.zero;
     bool _isJumpHolding = false;
+    bool _isLfire = false;
+    bool _isLShift = false;
+    bool _isRFire = false;
+    bool _isRShift = false;
     //公開プロパティ
     /// <summary>移動入力</summary>
     public Vector2 MoveInput => _move.normalized;
@@ -16,6 +20,10 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     public Vector2 LookInput => _look.normalized;
     /// <summary>ジャンプホールド入力</summary>
     public bool IsJumpHolding => _isJumpHolding;
+    public bool IsLfire => _isLfire;
+    public bool ISLShift => _isLShift;
+    public bool IsRFire => _isRFire;
+    public bool IsRShift => _isRShift;
     //公開イベント
     /// <summary>ジャンプ入力時イベント</summary>
     public event Action Jump = () => { Debug.Log("Jump"); };
@@ -120,12 +128,20 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         {
             LFire();
         }
+        if (context.action.name == "LFire")
+        {
+            _isLfire = context.ReadValueAsButton();
+        }
     }
     public void OnLShift(InputAction.CallbackContext context)//左肩
     {
         if (context.action.name == "LShift" && context.ReadValueAsButton())
         {
             LShift();
+        }
+        if (context.action.name == "LShift")
+        {
+            _isLShift = context.ReadValueAsButton();
         }
     }
     public void OnRFire(InputAction.CallbackContext context)//右腕
@@ -134,12 +150,20 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         {
             RFire();
         }
+        if (context.action.name == "RFire")
+        {
+           _isRFire = context.ReadValueAsButton();
+        }
     }
     public void OnRShift(InputAction.CallbackContext context)//右肩
     {
         if (context.action.name == "RShift" && context.ReadValueAsButton())
         {
             RShift();
+        }
+        if (context.action.name == "RShift")
+        {
+            _isRShift = context.ReadValueAsButton();
         }
     }
     public void OnLockOn(InputAction.CallbackContext context)//ロックオン ターゲットアシスト 長押し
