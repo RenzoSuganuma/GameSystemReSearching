@@ -1,6 +1,6 @@
 using UnityEngine;
 using DebugLogRecorder;
-using DGW;
+using static DGW.OriginalMethods;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
 public class MechMovementComponent : MonoBehaviour
@@ -8,7 +8,6 @@ public class MechMovementComponent : MonoBehaviour
     Rigidbody _rb;
     ACInputHandler _input;
     RuntimeLogComponent _log;
-    CustomMethods _cutomMethods;
     /// <summary>オービタルカメラクラス</summary>
     OrbitalCameraComponent _orbitCAM;
     /// <summary>エイムアシストカメラクラス</summary>
@@ -52,7 +51,6 @@ public class MechMovementComponent : MonoBehaviour
         _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
         _assistCAM = GameObject.FindAnyObjectByType<AimAssistCameraComponent>();
         _log = new(new Rect(0, 0, 500, 250));
-        _cutomMethods = new();
     }
     private void FixedUpdate()
     {
@@ -79,7 +77,7 @@ public class MechMovementComponent : MonoBehaviour
                 }
         }
         _rb.AddForce(-this.transform.up * 80);
-        _cutomMethods.When(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
+        DoF(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
     }
     void ACHoveringSequence(bool isHovering)
     {

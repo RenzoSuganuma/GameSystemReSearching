@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DGW;
+using static DGW.OriginalMethods;
 /// <summary>ÉJÉÅÉâÉÇÅ[Éh</summary>
 public enum CameraMode
 {
@@ -13,7 +14,6 @@ public class ACCAMManager : MonoBehaviour
     ACInputHandler _input;
     OrbitalCameraComponent _orbitCAM;
     AimAssistCameraComponent _aimAssistCAM;
-    CustomMethods _customMethods;
     List<Transform> _assistTargets = new();
     bool _isAimAssist = false;
     CameraMode _mode = CameraMode.Normal;
@@ -44,18 +44,18 @@ public class ACCAMManager : MonoBehaviour
     {
         _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
         _aimAssistCAM = GameObject.FindAnyObjectByType<AimAssistCameraComponent>();
-        _customMethods = new();
+        
         SetCameraMode(CameraMode.Normal);
     }
     private void Update()
     {
-        _customMethods.When(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist
+        DoF(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist
             , () =>
             {
                 _isAimAssist = false;
                 SwitchCameraMode();
             });
-        _customMethods.When(_isAimAssist, () =>
+        DoF(_isAimAssist, () =>
         {
             ApplyTargetToAssistCam();
         });
@@ -64,7 +64,7 @@ public class ACCAMManager : MonoBehaviour
     /// <param name="target"></param>
     public void AppendTargetToList(Transform target)
     {
-        _customMethods.When(!_assistTargets.Contains(target), () =>
+        DoF(!_assistTargets.Contains(target), () =>
         {
             _assistTargets.Add(target);
         });

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace DGW
 {
-    public class CustomMethods
+    public static class OriginalMethods
     {
         #region ì∆é©ÉÅÉ\ÉbÉh
         /// <summary> 
@@ -13,9 +13,9 @@ namespace DGW
         /// </summary>
         /// <param name="condition"></param>
         /// <param name="action"></param>
-        public void When(bool condition , Action action)
+        public static void DoF(bool condition, Action action)// Do Function ÇÃ à”ñ° Method Name Means Do The Function
         {
-            if(condition) { action(); }
+            if (condition) { action(); }
         }
         /* ------------------------------------------------------------------ */
         #endregion
@@ -42,7 +42,7 @@ namespace DGW
         {
             List<Transform> list = new();
             var cnt = parent.transform.childCount;
-            for(int i = 0; i < cnt; i++)
+            for (int i = 0; i < cnt; i++)
             {
                 var child = parent.transform.GetChild(i);
                 list.Add(child);
