@@ -1,18 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static DGW.OriginalMethods;
 public class Weapon_Test : WeaponBase
 {
-    int _currentBullets;
-    private void Start()
+    ACInputHandler _input;
+    private void Awake()
     {
-        _currentBullets = base.MagCnt * base.MagSize;
+        _input = GameObject.FindAnyObjectByType<ACInputHandler>();
     }
-    void Fire(int decreseValue)
+    private void OnEnable()
     {
-        if (_currentBullets - decreseValue > 0)
+    }
+    private void OnDisable()
+    {
+    }
+    private void Update()
+    {
+        FiringNow();
+        CollingNow();
+        DoF(base.IsOverHeat, () =>
         {
-            _currentBullets -= decreseValue;
-        }
+            Debug.Log("オーバーヒーティング");
+        });
+    }
+
+    protected override void FiringNow()
+    {
+        if (_input.IsLfire && !base.IsCannotFire)
+            base.CallBehaviour(WeaponSequence.FiringSequence);
+    }
+
+    protected override void CollingNow()
+    {
+        if (base.IsOverHeat)
+            base.CallBehaviour(WeaponSequence.CoolingSequence);
     }
 }

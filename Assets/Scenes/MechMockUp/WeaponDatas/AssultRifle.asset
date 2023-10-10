@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df0b707ca56ce114480dec869f4a2ba0, type: 3}
   m_Name: AssultRifle
   m_EditorClassIdentifier: 
-  _bulletsCount: 120
+  _magazineAmounts: 4
   _magazineSize: 30
   _heatLimit: 1000
   _heatSpeed: 10
   _firingRate: 3
+  _firingAmounts: 1
+  _reloadingTime: 1

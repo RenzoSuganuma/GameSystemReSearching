@@ -22,6 +22,7 @@ namespace DGW
     }
     public static class Extentions
     {
+        /* GameObjects */
         /// <summary>指定されたトランスフォームの子オブジェクトにする</summary>
         /// <param name="obj"></param>
         /// <param name="parent"></param>
@@ -48,6 +49,27 @@ namespace DGW
                 list.Add(child);
             }
             return list;
+        }
+        /* Delegates */
+        /// <summary>
+        /// Actionにデリゲート登録をする
+        /// <para>Add Delegate To Action</para>
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="appendProcess"></param>
+        public static void Add(this Action action, Action appendProcess)
+        {
+            action += appendProcess;
+        }
+        /// <summary>
+        /// Actionにデリゲート登録した関数を登録解除する
+        /// <para>Remove Delegate From Action</para>
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="removeTarget"></param>
+        public static void Remove(this Action action, Action removeTarget)
+        {
+            action -= removeTarget;
         }
     }
 }
