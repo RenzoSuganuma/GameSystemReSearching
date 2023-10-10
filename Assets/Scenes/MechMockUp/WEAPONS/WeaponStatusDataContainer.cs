@@ -9,4 +9,5 @@ public class WeaponStatusDataContainer : ScriptableObject
     public int _firingRate;//”­ËƒŒ[ƒg[‰ñ/•b]
     public int _firingAmounts;//”­Ë’e”
     public int _reloadingTime;//ƒŠƒ[ƒhŠÔ
+    public int _coolingTime;//—â‹pŠÔ
 }

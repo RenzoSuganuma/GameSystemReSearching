@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _magazineAmounts: 4
   _magazineSize: 30
-  _heatLimit: 1000
+  _heatLimit: 20
   _heatSpeed: 10
   _firingRate: 3
   _firingAmounts: 1
   _reloadingTime: 1
+  _coolingTime: 5

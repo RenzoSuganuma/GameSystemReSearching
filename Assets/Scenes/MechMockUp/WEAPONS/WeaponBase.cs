@@ -31,6 +31,7 @@ public abstract class WeaponBase : MonoBehaviour
     int _firingRate;//”­ËƒŒ[ƒg[‰ñ/•b]
     int _firingAmounts;//”­Ë’e”
     int _reloadingTime;//ƒŠƒ[ƒhŠÔ
+    int _coolingTime;//—â‹pŠÔ
     //c’e”
     int _currentBullets;
     //”M—Ê
@@ -44,6 +45,8 @@ public abstract class WeaponBase : MonoBehaviour
     public bool IsOverHeat => _isOverHeating;
     bool _cannotFire = false;
     public bool IsCannotFire => _cannotFire;
+    bool _forcedCooling = false;
+    public bool IsForceCooling => _forcedCooling;
     //Temporary Properties
     float _countedTime = 0;
     private void Start()
@@ -56,6 +59,7 @@ public abstract class WeaponBase : MonoBehaviour
         this._firingRate = _weaponData._firingRate;
         this._firingAmounts = _weaponData._firingAmounts;
         this._reloadingTime = _weaponData._reloadingTime;
+        this._coolingTime = _weaponData._coolingTime;
         Reload();
         _currentHeats = 0;
     }
@@ -72,6 +76,19 @@ public abstract class WeaponBase : MonoBehaviour
         _isReloading = false;
         _cannotFire = false;
         OnReloadEnd();
+    }
+    /// <summary>‹­§—â‹pˆ—</summary>
+    IEnumerator ForceCollingWeapon(uint t)
+    {
+        if (!_forcedCooling)
+        {
+            Debug.Log("‹­§—â‹p");
+            _forcedCooling = true;
+            yield return new WaitForSeconds(t);
+            _currentHeats = 0;
+            _isOverHeating = false;
+            _forcedCooling = false;
+        }
     }
     void Fire(int decreseValue)
     {
@@ -99,7 +116,7 @@ public abstract class WeaponBase : MonoBehaviour
         }
     }
     /* ------------------------------------ */
-    /// <summary>”­–C‚Ü‚½‚ÍƒŠƒ[ƒhˆ—‚ğŒÄ‚Ño‚·</summary>
+    /// <summary>Šeˆ—‚ğŒÄ‚Ño‚·</summary>
     /// <param name="seq"></param>
     public void CallBehaviour(WeaponSequence seq)
     {
@@ -117,17 +134,10 @@ public abstract class WeaponBase : MonoBehaviour
                 }
             case WeaponSequence.CoolingSequence:
                 {
-                    StartCoroutine(ForceCollingWeapon(3));
+                    StartCoroutine(ForceCollingWeapon((uint)_coolingTime));
                     break;
                 }
         }
-    }
-    /// <summary>‹­§—â‹pˆ—</summary>
-    IEnumerator ForceCollingWeapon(uint t)
-    {
-        yield return new WaitForSeconds(t);
-        _currentHeats = 0;
-        _isOverHeating = false;
     }
     /* --------------------------------------------------------------- */
     /// <summary>”­Ë“ü—Í‚ª‚ ‚é‚ÉŒp‘±“I‚ÉŒÄ‚Ño‚³‚ê‚é</summary>

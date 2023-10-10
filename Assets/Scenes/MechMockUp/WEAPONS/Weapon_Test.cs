@@ -33,7 +33,7 @@ public class Weapon_Test : WeaponBase
 
     protected override void CollingNow()
     {
-        if (base.IsOverHeat)
+        if (base.IsOverHeat && !base.IsForceCooling)
             base.CallBehaviour(WeaponSequence.CoolingSequence);
     }
 }
