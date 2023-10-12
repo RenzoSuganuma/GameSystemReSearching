@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DGW;
+
 public enum WeaponSequence
 {
     FiringSequence,
@@ -47,6 +49,14 @@ public abstract class WeaponBase : MonoBehaviour
     public bool IsFireLocked => _isFiringLock;
     //Temporary Properties
     float _countedTime = 0;
+    private void OnEnable()
+    {
+        OnReloadEnd.Add(OnReloaded);
+    }
+    private void OnDisable()
+    {
+        OnReloadEnd.Remove(OnReloaded);
+    }
     private void Start()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
@@ -121,6 +131,7 @@ public abstract class WeaponBase : MonoBehaviour
         if (_countedTime >= sec)
         {
             Fire(_firingAmounts);
+            OnFired();
             _countedTime = 0;
         }
     }
@@ -144,4 +155,8 @@ public abstract class WeaponBase : MonoBehaviour
         }
     }
     /* --------------------------------------------------------------- */
+    /// <summary>毎発射処理時に呼び出す</summary>
+    protected abstract void OnFired();
+    /// <summary>毎リロード処理時に呼び出す</summary>
+    protected abstract void OnReloaded();
 }
