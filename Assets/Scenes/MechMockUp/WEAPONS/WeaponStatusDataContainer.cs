@@ -9,6 +9,7 @@ public enum WeaponStackPosition
 [CreateAssetMenu(menuName = "WeaponDataContainer/CreateTable", fileName = "WeaponDataTable")]
 public class WeaponStatusDataContainer : ScriptableObject
 {
+    public string name;
     public int _magazineAmounts;//マガジン数 → 装弾数 ＝ マガジン数 × マガジンサイズ
     public int _magazineSize;//マガジンサイズ
     public int _heatLimit;//熱量限界値
