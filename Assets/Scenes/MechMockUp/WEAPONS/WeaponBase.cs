@@ -7,7 +7,6 @@ public enum WeaponSequence
 {
     FiringSequence,
     ReloadSequence,
-    CoolingSequence,
 }
 public enum WeaponStackPosition
 {
@@ -23,6 +22,7 @@ public abstract class WeaponBase : MonoBehaviour
     //武器積載部位
     [SerializeField] WeaponStackPosition _wPosition;
     public WeaponStackPosition WeaponStackPosition => _wPosition;
+    ACInputHandler _input;
     int _magazineAmounts;//マガジン数
     int _magazineSize;//マガジンサイズ
     int _heatLimit;//熱量限界値
@@ -38,19 +38,18 @@ public abstract class WeaponBase : MonoBehaviour
     int _currentHeats;
     //リロードイベント
     public event Action OnReloadEnd = () => { Debug.Log("リロード完了！！！！！"); };
-    //発射入力イベント
-
     //フラグ
     bool _isReloading = false;
     public bool IsReloading => _isReloading;
     bool _isOverHeating = false;
     public bool IsOverHeat => _isOverHeating;
-    bool _firingLock = false;
-    public bool IsFireLocked => _firingLock;
+    bool _isFiringLock = false;
+    public bool IsFireLocked => _isFiringLock;
     //Temporary Properties
     float _countedTime = 0;
     private void Start()
     {
+        _input = GameObject.FindAnyObjectByType<ACInputHandler>();
         //データ抽出
         this._magazineAmounts = _weaponData._magazineAmounts;
         this._magazineSize = _weaponData._magazineSize;
@@ -63,6 +62,11 @@ public abstract class WeaponBase : MonoBehaviour
         Reload();
         _currentHeats = 0;
     }
+    private void Update()
+    {
+        if (_input.IsLfire && !_isFiringLock)
+            CallBehaviour(WeaponSequence.FiringSequence);
+    }
     void Reload()
     {
         _currentBullets = _magazineSize;
@@ -74,7 +78,7 @@ public abstract class WeaponBase : MonoBehaviour
         yield return new WaitForSeconds(t);
         Reload();
         _isReloading = false;
-        _firingLock = false;
+        _isFiringLock = false;
         OnReloadEnd();
     }
     /// <summary>強制冷却処理</summary>
@@ -84,11 +88,11 @@ public abstract class WeaponBase : MonoBehaviour
         {
             Debug.Log("強制冷却");
             //_forcedCooling = true;
-            if(!_firingLock) _firingLock = true;
+            if (!_isFiringLock) _isFiringLock = true;
             yield return new WaitForSeconds(t);
             _currentHeats = 0;
             _isOverHeating = false;
-            if (_firingLock) _firingLock = false;
+            if (_isFiringLock) _isFiringLock = false;
         }
     }
     void Fire(int decreseValue)
@@ -106,7 +110,7 @@ public abstract class WeaponBase : MonoBehaviour
         else if (_currentBullets == 0)
         {
             Debug.Log("リロードしろ！！！！！");
-            _firingLock = true;
+            _isFiringLock = true;
         }
         Debug.Log("武器発射！！！！！");
     }
@@ -137,16 +141,7 @@ public abstract class WeaponBase : MonoBehaviour
                     StartCoroutine(ReloadSequence((uint)_reloadingTime));
                     break;
                 }
-            case WeaponSequence.CoolingSequence:
-                {
-                    //StartCoroutine(ForceCollingWeapon((uint)_coolingTime));
-                    break;
-                }
         }
     }
     /* --------------------------------------------------------------- */
-    /// <summary>発射入力がある時に継続的に呼び出される</summary>
-    protected abstract void FiringCheck();
-    /// <summary>発射入力がないときに継続的に呼び出される</summary>
-    protected abstract void CollingCheck();
 }
