@@ -116,6 +116,15 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Hold(duration=1)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""4390aac1-482c-4e48-a721-072e731773c8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -424,6 +433,28 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""LockOn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""77c86e75-dd16-4787-9460-8391afbf96cc"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e503dd8c-96a2-43b5-a89c-d7dde5b038ef"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1021,6 +1052,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         m_Player_RShift = m_Player.FindAction("RShift", throwIfNotFound: true);
         m_Player_LShift = m_Player.FindAction("LShift", throwIfNotFound: true);
         m_Player_LockOn = m_Player.FindAction("LockOn", throwIfNotFound: true);
+        m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1104,6 +1136,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RShift;
     private readonly InputAction m_Player_LShift;
     private readonly InputAction m_Player_LockOn;
+    private readonly InputAction m_Player_Reload;
     public struct PlayerActions
     {
         private @AC_Input m_Wrapper;
@@ -1118,6 +1151,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         public InputAction @RShift => m_Wrapper.m_Player_RShift;
         public InputAction @LShift => m_Wrapper.m_Player_LShift;
         public InputAction @LockOn => m_Wrapper.m_Player_LockOn;
+        public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1157,6 +1191,9 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
             @LockOn.started += instance.OnLockOn;
             @LockOn.performed += instance.OnLockOn;
             @LockOn.canceled += instance.OnLockOn;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1191,6 +1228,9 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
             @LockOn.started -= instance.OnLockOn;
             @LockOn.performed -= instance.OnLockOn;
             @LockOn.canceled -= instance.OnLockOn;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1383,6 +1423,7 @@ public partial class @AC_Input: IInputActionCollection2, IDisposable
         void OnRShift(InputAction.CallbackContext context);
         void OnLShift(InputAction.CallbackContext context);
         void OnLockOn(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

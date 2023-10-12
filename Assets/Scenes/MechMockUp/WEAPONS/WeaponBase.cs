@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DGW;
-
 public enum WeaponSequence
 {
     FiringSequence,
@@ -23,7 +22,7 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField] WeaponStatusDataContainer _weaponData;
     //武器積載部位
     [SerializeField] WeaponStackPosition _wPosition;
-    public WeaponStackPosition WeaponStackPosition => _wPosition;
+    public WeaponStackPosition WeaponStackOnPosition => _wPosition;
     ACInputHandler _input;
     int _magazineAmounts;//マガジン数
     int _magazineSize;//マガジンサイズ
@@ -74,8 +73,30 @@ public abstract class WeaponBase : MonoBehaviour
     }
     private void Update()
     {
-        if (_input.IsLfire && !_isFiringLock)
-            CallBehaviour(WeaponSequence.FiringSequence);
+        //積載ポジに応じた入力チェック
+        switch (WeaponStackOnPosition)
+        {
+            case WeaponStackPosition.LArm:
+                {
+                    if (!_isFiringLock && _input.IsLfire) CallBehaviour(WeaponSequence.FiringSequence);
+                    break;
+                }
+            case WeaponStackPosition.LShoulder:
+                {
+                    if (!_isFiringLock && _input.ISLShift) CallBehaviour(WeaponSequence.FiringSequence);
+                    break;
+                } 
+            case WeaponStackPosition.RArm:
+                {
+                    if (!_isFiringLock && _input.IsRFire) CallBehaviour(WeaponSequence.FiringSequence);
+                    break;
+                } 
+            case WeaponStackPosition.RSHoulder:
+                {
+                    if (!_isFiringLock && _input.IsRShift) CallBehaviour(WeaponSequence.FiringSequence);
+                    break;
+                }
+        }
     }
     void Reload()
     {
@@ -96,8 +117,6 @@ public abstract class WeaponBase : MonoBehaviour
     {
         if (_isOverHeating)
         {
-            Debug.Log("強制冷却");
-            //_forcedCooling = true;
             if (!_isFiringLock) _isFiringLock = true;
             yield return new WaitForSeconds(t);
             _currentHeats = 0;
@@ -119,10 +138,8 @@ public abstract class WeaponBase : MonoBehaviour
         }
         else if (_currentBullets == 0)
         {
-            Debug.Log("リロードしろ！！！！！");
             _isFiringLock = true;
         }
-        Debug.Log("武器発射！！！！！");
     }
     void FiringSequence(uint rate)//bool が 真の時に呼び出される
     {

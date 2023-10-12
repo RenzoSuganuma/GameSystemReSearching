@@ -13,6 +13,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     bool _isLShift = false;
     bool _isRFire = false;
     bool _isRShift = false;
+    bool _isReload = false;
     //公開プロパティ
     /// <summary>移動入力</summary>
     public Vector2 MoveInput => _move.normalized;
@@ -24,6 +25,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     public bool ISLShift => _isLShift;
     public bool IsRFire => _isRFire;
     public bool IsRShift => _isRShift;
+    public bool IsReload => _isReload;
     //公開イベント
     /// <summary>ジャンプ入力時イベント</summary>
     public event Action Jump = () => { Debug.Log("Jump"); };
@@ -171,6 +173,13 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         if (context.action.name == "LockOn" && context.ReadValueAsButton())
         {
             LockOnAssist();
+        }
+    }
+    public void OnReload(InputAction.CallbackContext context)
+    {
+        if (context.action.name == "Reload")
+        {
+            _isReload = context.ReadValueAsButton();
         }
     }
 }
