@@ -63,6 +63,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         _input.onActionTriggered += OnRFire;
         _input.onActionTriggered += OnRShift;
         _input.actions.FindAction("LockOn").performed += OnLockOn;
+        _input.onActionTriggered += OnReload;
     }
     private void OnDisable()
     {
@@ -77,6 +78,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         _input.onActionTriggered -= OnRFire;
         _input.onActionTriggered -= OnRShift;
         _input.actions.FindAction("LockOn").performed -= OnLockOn;
+        _input.onActionTriggered -= OnReload;
     }
     public void OnMove(InputAction.CallbackContext context)//ˆÚ“®
     {

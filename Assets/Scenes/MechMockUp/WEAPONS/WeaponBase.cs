@@ -79,21 +79,25 @@ public abstract class WeaponBase : MonoBehaviour
             case WeaponStackPosition.LArm:
                 {
                     if (!_isFiringLock && _input.IsLfire) CallBehaviour(WeaponSequence.FiringSequence);
+                    if(_input.IsLfire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
                 }
             case WeaponStackPosition.LShoulder:
                 {
                     if (!_isFiringLock && _input.ISLShift) CallBehaviour(WeaponSequence.FiringSequence);
+                    if(_input.ISLShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
                 } 
             case WeaponStackPosition.RArm:
                 {
                     if (!_isFiringLock && _input.IsRFire) CallBehaviour(WeaponSequence.FiringSequence);
+                    if(_input.IsRFire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
                 } 
             case WeaponStackPosition.RSHoulder:
                 {
                     if (!_isFiringLock && _input.IsRShift) CallBehaviour(WeaponSequence.FiringSequence);
+                    if(_input.IsRShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
                 }
         }
