@@ -43,10 +43,8 @@ public abstract class WeaponBase : MonoBehaviour
     public bool IsReloading => _isReloading;
     bool _isOverHeating = false;
     public bool IsOverHeat => _isOverHeating;
-    bool _cannotFire = false;
-    public bool IsCannotFire => _cannotFire;
-    bool _forcedCooling = false;
-    public bool IsForceCooling => _forcedCooling;
+    bool _firingLock = false;
+    public bool IsFireLocked => _firingLock;
     //Temporary Properties
     float _countedTime = 0;
     private void Start()
@@ -74,20 +72,19 @@ public abstract class WeaponBase : MonoBehaviour
         yield return new WaitForSeconds(t);
         Reload();
         _isReloading = false;
-        _cannotFire = false;
+        _firingLock = false;
         OnReloadEnd();
     }
     /// <summary>強制冷却処理</summary>
     IEnumerator ForceCollingWeapon(uint t)
     {
-        if (!_forcedCooling)
+        if (_isOverHeating)
         {
             Debug.Log("強制冷却");
-            _forcedCooling = true;
+            //_forcedCooling = true;
             yield return new WaitForSeconds(t);
             _currentHeats = 0;
             _isOverHeating = false;
-            _forcedCooling = false;
         }
     }
     void Fire(int decreseValue)
@@ -101,7 +98,7 @@ public abstract class WeaponBase : MonoBehaviour
         else if (_currentBullets == 0)
         {
             Debug.Log("リロードしろ！！！！！");
-            _cannotFire = true;
+            _firingLock = true;
         }
         Debug.Log("武器発射！！！！！");
     }
@@ -141,7 +138,7 @@ public abstract class WeaponBase : MonoBehaviour
     }
     /* --------------------------------------------------------------- */
     /// <summary>発射入力がある時に継続的に呼び出される</summary>
-    protected abstract void FiringNow();
+    protected abstract void FiringCheck();
     /// <summary>発射入力がないときに継続的に呼び出される</summary>
-    protected abstract void CollingNow();
+    protected abstract void CollingCheck();
 }

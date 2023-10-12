@@ -17,23 +17,21 @@ public class Weapon_Test : WeaponBase
     }
     private void Update()
     {
-        FiringNow();
-        CollingNow();
+        FiringCheck();
+        CollingCheck();
         DoF(base.IsOverHeat, () =>
         {
             Debug.Log("オーバーヒーティング");
         });
     }
-
-    protected override void FiringNow()
+    protected override void FiringCheck()
     {
-        if (_input.IsLfire && !base.IsCannotFire)
+        if (_input.IsLfire && !base.IsFireLocked)
             base.CallBehaviour(WeaponSequence.FiringSequence);
     }
-
-    protected override void CollingNow()
+    protected override void CollingCheck()
     {
-        if (base.IsOverHeat && !base.IsForceCooling)
+        if (base.IsOverHeat)
             base.CallBehaviour(WeaponSequence.CoolingSequence);
     }
 }
