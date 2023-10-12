@@ -1,4 +1,4 @@
-using DGW;
+using static DGW.OriginalMethods;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +38,8 @@ public abstract class WeaponBase : MonoBehaviour
     int _currentHeats;
     //リロードイベント
     public event Action OnReloadEnd = () => { Debug.Log("リロード完了！！！！！"); };
+    //発射入力イベント
+
     //フラグ
     bool _isReloading = false;
     public bool IsReloading => _isReloading;
@@ -82,9 +84,11 @@ public abstract class WeaponBase : MonoBehaviour
         {
             Debug.Log("強制冷却");
             //_forcedCooling = true;
+            if(!_firingLock) _firingLock = true;
             yield return new WaitForSeconds(t);
             _currentHeats = 0;
             _isOverHeating = false;
+            if (_firingLock) _firingLock = false;
         }
     }
     void Fire(int decreseValue)
@@ -94,6 +98,10 @@ public abstract class WeaponBase : MonoBehaviour
             _currentBullets -= decreseValue;
             _currentHeats += _heatSpeed;
             _isOverHeating = (_currentHeats > _heatLimit) ? true : false;
+            DoF(_isOverHeating, () =>//強制冷却処理
+            {
+                StartCoroutine(ForceCollingWeapon((uint)_coolingTime));
+            });
         }
         else if (_currentBullets == 0)
         {
@@ -131,7 +139,7 @@ public abstract class WeaponBase : MonoBehaviour
                 }
             case WeaponSequence.CoolingSequence:
                 {
-                    StartCoroutine(ForceCollingWeapon((uint)_coolingTime));
+                    //StartCoroutine(ForceCollingWeapon((uint)_coolingTime));
                     break;
                 }
         }
