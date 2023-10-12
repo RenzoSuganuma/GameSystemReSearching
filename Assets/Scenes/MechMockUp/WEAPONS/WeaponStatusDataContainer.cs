@@ -1,4 +1,11 @@
 using UnityEngine;
+public enum WeaponStackPosition
+{
+    RArm,
+    LArm,
+    RSHoulder,
+    LShoulder,
+}
 [CreateAssetMenu(menuName = "WeaponDataContainer/CreateTable", fileName = "WeaponDataTable")]
 public class WeaponStatusDataContainer : ScriptableObject
 {
@@ -10,4 +17,5 @@ public class WeaponStatusDataContainer : ScriptableObject
     public int _firingAmounts;//発射弾数
     public int _reloadingTime;//リロード時間
     public int _coolingTime;//冷却時間
+    public WeaponStackPosition _wPosition;//積載ポジション
 }

@@ -9,19 +9,12 @@ public enum WeaponSequence
     FiringSequence,
     ReloadSequence,
 }
-public enum WeaponStackPosition
-{
-    RArm,
-    LArm,
-    RSHoulder,
-    LShoulder,
-}
 public abstract class WeaponBase : MonoBehaviour
 {
     //データ
     [SerializeField] WeaponStatusDataContainer _weaponData;
     //武器積載部位
-    [SerializeField] WeaponStackPosition _wPosition;
+    WeaponStackPosition _wPosition;
     public WeaponStackPosition WeaponStackOnPosition => _wPosition;
     ACInputHandler _input;
     int _magazineAmounts;//マガジン数
@@ -48,15 +41,15 @@ public abstract class WeaponBase : MonoBehaviour
     public bool IsFireLocked => _isFiringLock;
     //Temporary Properties
     float _countedTime = 0;
-    private void OnEnable()
+    void OnEnable()
     {
         OnReloadEnd.Add(OnReloaded);
     }
-    private void OnDisable()
+    void OnDisable()
     {
         OnReloadEnd.Remove(OnReloaded);
     }
-    private void Start()
+    void Start()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
         //データ抽出
@@ -68,10 +61,15 @@ public abstract class WeaponBase : MonoBehaviour
         this._firingAmounts = _weaponData._firingAmounts;
         this._reloadingTime = _weaponData._reloadingTime;
         this._coolingTime = _weaponData._coolingTime;
+        this._wPosition = _weaponData._wPosition;
         Reload();
         _currentHeats = 0;
     }
-    private void Update()
+    void Update()
+    {
+        InputChecker();
+    }
+    void InputChecker()
     {
         //積載ポジに応じた入力チェック
         switch (WeaponStackOnPosition)
@@ -79,25 +77,25 @@ public abstract class WeaponBase : MonoBehaviour
             case WeaponStackPosition.LArm:
                 {
                     if (!_isFiringLock && _input.IsLfire) CallBehaviour(WeaponSequence.FiringSequence);
-                    if(_input.IsLfire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    if (_input.IsLfire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
                 }
             case WeaponStackPosition.LShoulder:
                 {
                     if (!_isFiringLock && _input.ISLShift) CallBehaviour(WeaponSequence.FiringSequence);
-                    if(_input.ISLShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    if (_input.ISLShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
-                } 
+                }
             case WeaponStackPosition.RArm:
                 {
                     if (!_isFiringLock && _input.IsRFire) CallBehaviour(WeaponSequence.FiringSequence);
-                    if(_input.IsRFire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    if (_input.IsRFire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
-                } 
+                }
             case WeaponStackPosition.RSHoulder:
                 {
                     if (!_isFiringLock && _input.IsRShift) CallBehaviour(WeaponSequence.FiringSequence);
-                    if(_input.IsRShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    if (_input.IsRShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
                     break;
                 }
         }

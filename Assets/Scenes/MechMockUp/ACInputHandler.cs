@@ -45,12 +45,12 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     public event Action RShift = () => { Debug.Log("RShift"); };
     /// <summary>ロックオン入力イベント</summary>
     public event Action LockOnAssist = () => { Debug.Log("LockOnAssist"); };
-    private void Awake()
+    void Awake()
     {
         _input = GetComponent<PlayerInput>();
         _input.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
     }
-    private void OnEnable()
+    void OnEnable()
     {
         _input.onActionTriggered += OnMove;
         _input.onActionTriggered += OnLook;
@@ -65,7 +65,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         _input.actions.FindAction("LockOn").performed += OnLockOn;
         _input.onActionTriggered += OnReload;
     }
-    private void OnDisable()
+    void OnDisable()
     {
         _input.onActionTriggered -= OnMove;
         _input.onActionTriggered -= OnLook;
@@ -156,7 +156,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
         }
         if (context.action.name == "RFire")
         {
-           _isRFire = context.ReadValueAsButton();
+            _isRFire = context.ReadValueAsButton();
         }
     }
     public void OnRShift(InputAction.CallbackContext context)//右肩
