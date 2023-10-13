@@ -13,9 +13,6 @@ public abstract class WeaponBase : MonoBehaviour
 {
     //データ
     [SerializeField] WeaponStatusDataContainer _weaponData;
-    //武器積載部位
-    WeaponStackPosition _wPosition;
-    public WeaponStackPosition WeaponStackOnPosition => _wPosition;
     ACInputHandler _input;
     int _magazineAmounts;//マガジン数
     int _magazineSize;//マガジンサイズ
@@ -30,6 +27,9 @@ public abstract class WeaponBase : MonoBehaviour
     int _currentBullets;
     //熱量
     int _currentHeats;
+    //武器積載部位
+    WeaponStackPosition _wPosition;
+    public WeaponStackPosition WeaponStackOnPosition => _wPosition;
     //リロードイベント
     public event Action OnReloadEnd = () => { Debug.Log("リロード完了！！！！！"); };
     //フラグ
