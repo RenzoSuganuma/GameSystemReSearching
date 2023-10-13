@@ -21,7 +21,6 @@ public class ACCAMManager : MonoBehaviour
     //temporary
     int _targetIndex = 0;
     float _horizontalInput = 0;
-    float _elapsedT = 0;
     private void Awake()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
@@ -42,6 +41,19 @@ public class ACCAMManager : MonoBehaviour
     }
     void ApplyTargetToAssistCam()
     {
+        _horizontalInput += _input.LookInput.x;//“ü—Í’lŽó‚¯‚Æ‚è
+        if (Mathf.Abs(_horizontalInput) > 50)
+        {
+            if (_horizontalInput > 0 && _assistTargets.Count > _targetIndex + 1)
+            {
+                _targetIndex++;
+            }
+            else if (_horizontalInput < 0 && _targetIndex - 1 > -1)
+            {
+                _targetIndex--;
+            }
+            _horizontalInput = 0;
+        }
         _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex]);
     }
     private void Start()
@@ -52,13 +64,12 @@ public class ACCAMManager : MonoBehaviour
     }
     private void Update()
     {
-        _horizontalInput += _input.LookInput.x;
-        OneShot(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist
-            , () =>
-            {
-                _isAimAssist = false;
-                SwitchCameraMode();
-            });
+        OneShot(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist, () =>
+        {
+            _isAimAssist = false;
+            SwitchCameraMode();
+        });
+
         OneShot(_isAimAssist, () =>
         {
             ApplyTargetToAssistCam();
