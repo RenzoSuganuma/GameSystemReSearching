@@ -1,5 +1,4 @@
 using UnityEngine;
-using DebugLogRecorder;
 using static DGW.OriginalMethods;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
@@ -7,7 +6,6 @@ public class MechMovementComponent : MonoBehaviour
 {
     Rigidbody _rb;
     ACInputHandler _input;
-    RuntimeLogComponent _log;
     /// <summary>オービタルカメラクラス</summary>
     OrbitalCameraComponent _orbitCAM;
     /// <summary>エイムアシストカメラクラス</summary>
@@ -50,7 +48,6 @@ public class MechMovementComponent : MonoBehaviour
         _camMan = GameObject.FindAnyObjectByType<ACCAMManager>();
         _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
         _assistCAM = GameObject.FindAnyObjectByType<AimAssistCameraComponent>();
-        _log = new(new Rect(0, 0, 500, 250));
     }
     private void FixedUpdate()
     {
@@ -77,7 +74,7 @@ public class MechMovementComponent : MonoBehaviour
                 }
         }
         _rb.AddForce(-this.transform.up * 80);
-        DoF(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
+        OneShot(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
     }
     void ACHoveringSequence(bool isHovering)
     {
@@ -146,12 +143,6 @@ public class MechMovementComponent : MonoBehaviour
     #endregion
     #region publicメソッド
     #endregion
-    private void OnGUI()
-    {
-        _log.DisplayLog($"RB-MAG:{_rb.velocity.magnitude}" +
-            $"\nHEIGHT:{this.transform.position.y}" +
-            $"\nRB-VEL{_rb.velocity}");
-    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))

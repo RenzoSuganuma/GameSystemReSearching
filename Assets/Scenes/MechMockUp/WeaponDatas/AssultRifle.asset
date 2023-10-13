@@ -16,9 +16,10 @@ MonoBehaviour:
   _magazineAmounts: 4
   _magazineSize: 30
   _heatLimit: 20
-  _heatSpeed: 10
+  _heatSpeed: 1
+  _coolingRatio: 5
   _firingRate: 3
   _firingAmounts: 1
   _reloadingTime: 1
-  _coolingTime: 5
+  _coolingTime: 3
   _wPosition: 0

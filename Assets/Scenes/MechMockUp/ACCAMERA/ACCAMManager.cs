@@ -18,6 +18,10 @@ public class ACCAMManager : MonoBehaviour
     bool _isAimAssist = false;
     CameraMode _mode = CameraMode.Normal;
     public CameraMode CamMode => _mode;
+    //temporary
+    int _targetIndex = 0;
+    float _horizontalInput = 0;
+    float _elapsedT = 0;
     private void Awake()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
@@ -38,24 +42,24 @@ public class ACCAMManager : MonoBehaviour
     }
     void ApplyTargetToAssistCam()
     {
-        _aimAssistCAM.ApplyAimTarget(_assistTargets[0]);
+        _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex]);
     }
     private void Start()
     {
         _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
         _aimAssistCAM = GameObject.FindAnyObjectByType<AimAssistCameraComponent>();
-        
         SetCameraMode(CameraMode.Normal);
     }
     private void Update()
     {
-        DoF(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist
+        _horizontalInput += _input.LookInput.x;
+        OneShot(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist
             , () =>
             {
                 _isAimAssist = false;
                 SwitchCameraMode();
             });
-        DoF(_isAimAssist, () =>
+        OneShot(_isAimAssist, () =>
         {
             ApplyTargetToAssistCam();
         });
@@ -64,7 +68,7 @@ public class ACCAMManager : MonoBehaviour
     /// <param name="target"></param>
     public void AppendTargetToList(Transform target)
     {
-        DoF(!_assistTargets.Contains(target), () =>
+        OneShot(!_assistTargets.Contains(target), () =>
         {
             _assistTargets.Add(target);
         });
@@ -91,10 +95,6 @@ public class ACCAMManager : MonoBehaviour
                 {
                     _orbitCAM.gameObject.SetActive(false);
                     _aimAssistCAM.gameObject.SetActive(true);
-                    break;
-                }
-            default:
-                {
                     break;
                 }
         }

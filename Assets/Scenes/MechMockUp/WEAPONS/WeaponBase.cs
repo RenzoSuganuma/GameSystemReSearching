@@ -17,6 +17,7 @@ public abstract class WeaponBase : MonoBehaviour
     int _magazineAmounts;//ƒ}ƒKƒWƒ“”
     int _magazineSize;//ƒ}ƒKƒWƒ“ƒTƒCƒY
     int _heatLimit;//”M—ÊŒÀŠE’l
+    int _coolingRatio;//—â‹p‘¬“x
     int _heatSpeed;//”M—Ê‰ÁZ’l
     public int HeatSpd => _heatSpeed;
     int _firingRate;//”­ËƒŒ[ƒg[‰ñ/•b]
@@ -26,7 +27,7 @@ public abstract class WeaponBase : MonoBehaviour
     //c’e”
     int _currentBullets;
     //”M—Ê
-    int _currentHeats;
+    float _currentHeats;
     //•ŠíÏÚ•”ˆÊ
     WeaponStackPosition _wPosition;
     public WeaponStackPosition WeaponStackOnPosition => _wPosition;
@@ -41,6 +42,7 @@ public abstract class WeaponBase : MonoBehaviour
     public bool IsFireLocked => _isFiringLock;
     //Temporary Properties
     float _countedTime = 0;
+    bool _pInput = false;
     void OnEnable()
     {
         OnReloadEnd.Add(OnReloaded);
@@ -58,6 +60,7 @@ public abstract class WeaponBase : MonoBehaviour
         this._heatLimit = _weaponData._heatLimit;
         this._heatSpeed = _weaponData._heatSpeed;
         this._firingRate = _weaponData._firingRate;
+        this._coolingRatio = _weaponData._coolingRatio;
         this._firingAmounts = _weaponData._firingAmounts;
         this._reloadingTime = _weaponData._reloadingTime;
         this._coolingTime = _weaponData._coolingTime;
@@ -68,6 +71,7 @@ public abstract class WeaponBase : MonoBehaviour
     void Update()
     {
         InputChecker();
+        _currentHeats += (_currentHeats > 0 && !_pInput) ? -Time.deltaTime * _coolingRatio : 0;
     }
     void InputChecker()
     {
@@ -78,24 +82,28 @@ public abstract class WeaponBase : MonoBehaviour
                 {
                     if (!_isFiringLock && _input.IsLfire) CallBehaviour(WeaponSequence.FiringSequence);
                     if (_input.IsLfire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    _pInput = _input.IsLfire;
                     break;
                 }
             case WeaponStackPosition.LShoulder:
                 {
                     if (!_isFiringLock && _input.ISLShift) CallBehaviour(WeaponSequence.FiringSequence);
                     if (_input.ISLShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    _pInput = _input.ISLShift;
                     break;
                 }
             case WeaponStackPosition.RArm:
                 {
                     if (!_isFiringLock && _input.IsRFire) CallBehaviour(WeaponSequence.FiringSequence);
                     if (_input.IsRFire && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    _pInput = _input.IsRFire;
                     break;
                 }
             case WeaponStackPosition.RSHoulder:
                 {
                     if (!_isFiringLock && _input.IsRShift) CallBehaviour(WeaponSequence.FiringSequence);
                     if (_input.IsRShift && _input.IsReload) CallBehaviour(WeaponSequence.ReloadSequence);
+                    _pInput = _input.IsRShift;
                     break;
                 }
         }
@@ -133,7 +141,7 @@ public abstract class WeaponBase : MonoBehaviour
             _currentBullets -= decreseValue;
             _currentHeats += _heatSpeed;
             _isOverHeating = (_currentHeats > _heatLimit) ? true : false;
-            DoF(_isOverHeating, () =>//‹­§—â‹pˆ—
+            OneShot(_isOverHeating, () =>//‹­§—â‹pˆ—
             {
                 StartCoroutine(ForceCollingWeapon((uint)_coolingTime));
             });

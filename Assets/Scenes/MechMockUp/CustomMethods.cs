@@ -13,7 +13,7 @@ namespace DGW
         /// </summary>
         /// <param name="condition"></param>
         /// <param name="action"></param>
-        public static void DoF(bool condition, Action action)// Do Function ‚Ì ˆÓ–¡ Method Name Means Do The Function
+        public static void OneShot(bool condition, Action action)// Do Function ‚Ì ˆÓ–¡ Method Name Means Do The Function
         {
             if (condition) { action(); }
         }
