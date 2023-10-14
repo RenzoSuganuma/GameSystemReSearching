@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 public class LockOnTarget : MonoBehaviour
 {
     GameObject _targetPoint;
+    Vector2 _screenPosition;
+    public Vector2 ScreenPosition => _screenPosition;
     bool _isTrasable = false;
     public bool IsCanLockOn => _isTrasable;
     private void Start()
@@ -19,6 +21,7 @@ public class LockOnTarget : MonoBehaviour
         var cam = GameObject.FindAnyObjectByType<Camera>();
         var buff = cam.WorldToViewportPoint(_targetPoint.transform.position);
         Vector2 point = new(buff.x, buff.y);
+        _screenPosition = point;
         float dx = (point.x - cam.rect.center.x);
         float dy = (point.y - cam.rect.center.y);
         float dx2 = dx * dx;
@@ -27,8 +30,7 @@ public class LockOnTarget : MonoBehaviour
         if (_isTrasable)
         {
             var camMan = GameObject.FindAnyObjectByType<ACCAMManager>();
-            var data = new FocusableObject(this.transform, point);
-            camMan.AppendTargetToList(data);
+            camMan.AppendTargetToList(this.transform);
         }
     }
 }

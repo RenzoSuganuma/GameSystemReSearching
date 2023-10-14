@@ -3,29 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using DGW;
 using static DGW.OriginalMethods;
+using System.Linq;
 /// <summary>カメラモード</summary>
 public enum CameraMode
 {
     Normal,
     AimAssist
 }
-/// <summary>補足対象の情報構造体</summary>
-public struct FocusableObject
-{
-    public Transform Transform;
-    public Vector2 ScreenPosition;
-    public FocusableObject(Transform transform, Vector2 screenPos)
-    {
-        this.Transform = transform;
-        this.ScreenPosition = screenPos;
-    }
-}
 public class ACCAMManager : MonoBehaviour
 {
     ACInputHandler _input;
     OrbitalCameraComponent _orbitCAM;
     AimAssistCameraComponent _aimAssistCAM;
-    List<FocusableObject> _assistTargets = new();
+    List<Transform> _assistTargets = new();
     bool _isAimAssist = false;
     CameraMode _mode = CameraMode.Normal;
     public CameraMode CamMode => _mode;
@@ -53,19 +43,27 @@ public class ACCAMManager : MonoBehaviour
     void ApplyTargetToAssistCam()
     {
         _horizontalInput += _input.LookInput.x;//入力値受けとり
-        if (Mathf.Abs(_horizontalInput) > 50)
+        if (Mathf.Abs(_horizontalInput) > 60)
         {
-            if (_horizontalInput > 0 && _assistTargets.Count > _targetIndex + 1)
+            if (_horizontalInput > 0)
             {
                 _targetIndex++;
+                if (_targetIndex > _assistTargets.Count - 1) _targetIndex = _assistTargets.Count - 1;
+                _horizontalInput = 0;
+                _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
             }
-            else if (_horizontalInput < 0 && _targetIndex - 1 > -1)
+            else if (_horizontalInput < 0)
             {
                 _targetIndex--;
+                if (_targetIndex <= 0) _targetIndex = 0;
+                _horizontalInput = 0;
+                _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
             }
-            _horizontalInput = 0;
         }
-        _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].Transform);
+        else if (_horizontalInput == 0)
+        {
+            _aimAssistCAM.ApplyAimTarget(_assistTargets[0].transform);
+        }
     }
     private void Start()
     {
@@ -75,12 +73,6 @@ public class ACCAMManager : MonoBehaviour
     }
     private void Update()
     {
-        OneShot(_input.LookInput.magnitude > 0 && _mode == CameraMode.AimAssist, () =>
-        {
-            _isAimAssist = false;
-            SwitchCameraMode();
-        });
-
         OneShot(_isAimAssist, () =>
         {
             ApplyTargetToAssistCam();
@@ -88,7 +80,7 @@ public class ACCAMManager : MonoBehaviour
     }
     /// <summary>捕捉対象リストに登録するメソッド</summary>
     /// <param name="target"></param>
-    public void AppendTargetToList(FocusableObject target)
+    public void AppendTargetToList(Transform target)
     {
         OneShot(!_assistTargets.Contains(target), () =>
         {
