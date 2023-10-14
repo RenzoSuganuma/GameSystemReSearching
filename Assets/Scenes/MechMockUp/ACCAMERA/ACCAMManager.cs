@@ -47,17 +47,38 @@ public class ACCAMManager : MonoBehaviour
         {
             if (_horizontalInput > 0)
             {
-                _targetIndex++;
-                if (_targetIndex > _assistTargets.Count - 1) _targetIndex = _assistTargets.Count - 1;
-                _horizontalInput = 0;
-                _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
+                //_targetIndex++;
+                //if (_targetIndex > _assistTargets.Count - 1) _targetIndex = _assistTargets.Count - 1;
+                //_horizontalInput = 0;
+                var currentTarget = _assistTargets[_targetIndex];
+                for (int i = 0; i < _assistTargets.Count; i++)
+                {
+                    if (currentTarget.GetComponent<LockOnTarget>().ScreenPosition.x
+                        < _assistTargets[i].GetComponent<LockOnTarget>().ScreenPosition.x)
+                    {
+                        _aimAssistCAM.ApplyAimTarget(_assistTargets[i].transform);
+                        _targetIndex = i;
+                    }
+                    _horizontalInput = 0;
+                }
             }
             else if (_horizontalInput < 0)
             {
-                _targetIndex--;
-                if (_targetIndex <= 0) _targetIndex = 0;
-                _horizontalInput = 0;
-                _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
+                //_targetIndex--;
+                //if (_targetIndex <= 0) _targetIndex = 0;
+                //_horizontalInput = 0;
+                //_aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
+                var currentTarget = _assistTargets[_targetIndex];
+                for (int i = 0; i < _assistTargets.Count; i++)
+                {
+                    if (currentTarget.GetComponent<LockOnTarget>().ScreenPosition.x
+                        > _assistTargets[i].GetComponent<LockOnTarget>().ScreenPosition.x)
+                    {
+                        _aimAssistCAM.ApplyAimTarget(_assistTargets[i].transform);
+                        _targetIndex = i;
+                    }
+                    _horizontalInput = 0;
+                }
             }
         }
         else if (_horizontalInput == 0)
