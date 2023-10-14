@@ -74,7 +74,7 @@ public class MechMovementComponent : MonoBehaviour
                 }
         }
         _rb.AddForce(-this.transform.up * 80);
-        OneShot(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
+        DOnce(_rb.velocity.magnitude > _velocityLim, () => _rb.velocity = _rb.velocity.normalized * _velocityLim);
     }
     void ACHoveringSequence(bool isHovering)
     {

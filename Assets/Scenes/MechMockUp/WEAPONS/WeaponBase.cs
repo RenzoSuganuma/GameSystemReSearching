@@ -141,7 +141,7 @@ public abstract class WeaponBase : MonoBehaviour
             _currentBullets -= decreseValue;
             _currentHeats += _heatSpeed;
             _isOverHeating = (_currentHeats > _heatLimit) ? true : false;
-            OneShot(_isOverHeating, () =>//‹­§—â‹pˆ—
+            DOnce(_isOverHeating, () =>//‹­§—â‹pˆ—
             {
                 StartCoroutine(ForceCollingWeapon((uint)_coolingTime));
             });

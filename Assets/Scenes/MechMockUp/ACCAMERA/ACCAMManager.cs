@@ -43,13 +43,10 @@ public class ACCAMManager : MonoBehaviour
     void ApplyTargetToAssistCam()
     {
         _horizontalInput += _input.LookInput.x;//入力値受けとり
-        if (Mathf.Abs(_horizontalInput) > 60)
-        {
+        if (Mathf.Abs(_horizontalInput) > 80)
+        {//左右入力に応じてターゲット更新
             if (_horizontalInput > 0)
             {
-                //_targetIndex++;
-                //if (_targetIndex > _assistTargets.Count - 1) _targetIndex = _assistTargets.Count - 1;
-                //_horizontalInput = 0;
                 var currentTarget = _assistTargets[_targetIndex];
                 for (int i = 0; i < _assistTargets.Count; i++)
                 {
@@ -64,10 +61,6 @@ public class ACCAMManager : MonoBehaviour
             }
             else if (_horizontalInput < 0)
             {
-                //_targetIndex--;
-                //if (_targetIndex <= 0) _targetIndex = 0;
-                //_horizontalInput = 0;
-                //_aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
                 var currentTarget = _assistTargets[_targetIndex];
                 for (int i = 0; i < _assistTargets.Count; i++)
                 {
@@ -94,7 +87,7 @@ public class ACCAMManager : MonoBehaviour
     }
     private void Update()
     {
-        OneShot(_isAimAssist, () =>
+        DOnce(_isAimAssist, () =>
         {
             ApplyTargetToAssistCam();
         });
@@ -103,7 +96,7 @@ public class ACCAMManager : MonoBehaviour
     /// <param name="target"></param>
     public void AppendTargetToList(Transform target)
     {
-        OneShot(!_assistTargets.Contains(target), () =>
+        DOnce(!_assistTargets.Contains(target), () =>
         {
             _assistTargets.Add(target);
         });
