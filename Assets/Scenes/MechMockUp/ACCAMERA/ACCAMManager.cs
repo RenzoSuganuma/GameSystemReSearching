@@ -9,12 +9,23 @@ public enum CameraMode
     Normal,
     AimAssist
 }
+/// <summary>補足対象の情報構造体</summary>
+public struct FocusableObject
+{
+    public Transform Transform;
+    public Vector2 ScreenPosition;
+    public FocusableObject(Transform transform, Vector2 screenPos)
+    {
+        this.Transform = transform;
+        this.ScreenPosition = screenPos;
+    }
+}
 public class ACCAMManager : MonoBehaviour
 {
     ACInputHandler _input;
     OrbitalCameraComponent _orbitCAM;
     AimAssistCameraComponent _aimAssistCAM;
-    List<Transform> _assistTargets = new();
+    List<FocusableObject> _assistTargets = new();
     bool _isAimAssist = false;
     CameraMode _mode = CameraMode.Normal;
     public CameraMode CamMode => _mode;
@@ -54,7 +65,7 @@ public class ACCAMManager : MonoBehaviour
             }
             _horizontalInput = 0;
         }
-        _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex]);
+        _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].Transform);
     }
     private void Start()
     {
@@ -77,7 +88,7 @@ public class ACCAMManager : MonoBehaviour
     }
     /// <summary>捕捉対象リストに登録するメソッド</summary>
     /// <param name="target"></param>
-    public void AppendTargetToList(Transform target)
+    public void AppendTargetToList(FocusableObject target)
     {
         OneShot(!_assistTargets.Contains(target), () =>
         {

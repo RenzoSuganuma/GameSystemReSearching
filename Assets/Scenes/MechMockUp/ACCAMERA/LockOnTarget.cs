@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UIElements;
+
 public class LockOnTarget : MonoBehaviour
 {
     GameObject _targetPoint;
@@ -25,7 +27,8 @@ public class LockOnTarget : MonoBehaviour
         if (_isTrasable)
         {
             var camMan = GameObject.FindAnyObjectByType<ACCAMManager>();
-            camMan.AppendTargetToList(this.transform);
+            var data = new FocusableObject(this.transform, point);
+            camMan.AppendTargetToList(data);
         }
     }
 }
