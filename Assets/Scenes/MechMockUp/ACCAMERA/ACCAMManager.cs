@@ -21,7 +21,9 @@ public class ACCAMManager : MonoBehaviour
     public CameraMode CamMode => _mode;
     //temporary
     int _targetIndex = 0;
+    float _targetChangeInputTimeCount = 0;
     float _horizontalInput = 0;
+    bool _targetChanged = false;
     private void Awake()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
@@ -42,8 +44,10 @@ public class ACCAMManager : MonoBehaviour
     }
     void ApplyTargetToAssistCam()
     {
+        if(_assistTargets == null) { return; }
+        _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
         _horizontalInput += _input.LookInput.x;//入力値受けとり
-        if (Mathf.Abs(_horizontalInput) > 80)
+        if (Mathf.Abs(_horizontalInput) > 0 && !_targetChanged)
         {//左右入力に応じてターゲット更新
             if (_horizontalInput > 0)
             {
@@ -55,6 +59,7 @@ public class ACCAMManager : MonoBehaviour
                     {
                         _aimAssistCAM.ApplyAimTarget(_assistTargets[i].transform);
                         _targetIndex = i;
+                        _targetChanged = true;
                     }
                     _horizontalInput = 0;
                 }
@@ -69,14 +74,16 @@ public class ACCAMManager : MonoBehaviour
                     {
                         _aimAssistCAM.ApplyAimTarget(_assistTargets[i].transform);
                         _targetIndex = i;
+                        _targetChanged = true;
                     }
                     _horizontalInput = 0;
                 }
             }
         }
-        else if (_horizontalInput == 0)
+        else if (_horizontalInput != 0 && _targetChanged && _input.LookInput.x == 0)
         {
-            _aimAssistCAM.ApplyAimTarget(_assistTargets[0].transform);
+            _horizontalInput = 0;
+            _targetChanged = false;
         }
     }
     private void Start()

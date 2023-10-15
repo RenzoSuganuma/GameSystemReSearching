@@ -874,7 +874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _centerTransform: {fileID: 752400107}
-  _sencitivity: {x: 4, y: 1}
+  _sencitivity: {x: 2, y: 0.5}
   _rotateRadius: 40
   _targettingLimitDistance: 500
   _rollAngleAbsValue: 0.3
