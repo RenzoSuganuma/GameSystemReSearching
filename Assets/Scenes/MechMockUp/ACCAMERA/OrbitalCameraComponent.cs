@@ -50,7 +50,7 @@ public class OrbitalCameraComponent : MonoBehaviour
         _acMove = GameObject.FindAnyObjectByType<MechMovementComponent>();
         _occ = GetComponent<Occulutioner>();
     }
-    void Update()
+    void FixedUpdate()
     {
         GetLookInput();
         RotateSequence(_rotateRadius);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using DGW;
 using static DGW.OriginalMethods;
-using System.Linq;
 /// <summary>カメラモード</summary>
 public enum CameraMode
 {
@@ -19,11 +18,6 @@ public class ACCAMManager : MonoBehaviour
     bool _isAimAssist = false;
     CameraMode _mode = CameraMode.Normal;
     public CameraMode CamMode => _mode;
-    //temporary
-    int _targetIndex = 0;
-    float _targetChangeInputTimeCount = 0;
-    float _horizontalInput = 0;
-    bool _targetChanged = false;
     private void Awake()
     {
         _input = GameObject.FindAnyObjectByType<ACInputHandler>();
@@ -42,61 +36,17 @@ public class ACCAMManager : MonoBehaviour
     {
         _isAimAssist = !_isAimAssist;
     }
-    void ApplyTargetToAssistCam()
-    {
-        if(_assistTargets == null) { return; }
-        _aimAssistCAM.ApplyAimTarget(_assistTargets[_targetIndex].transform);
-        _horizontalInput += _input.LookInput.x;//入力値受けとり
-        if (Mathf.Abs(_horizontalInput) > 0 && !_targetChanged)
-        {//左右入力に応じてターゲット更新
-            if (_horizontalInput > 0)
-            {
-                var currentTarget = _assistTargets[_targetIndex];
-                for (int i = 0; i < _assistTargets.Count; i++)
-                {
-                    if (currentTarget.GetComponent<LockOnTarget>().ScreenPosition.x
-                        < _assistTargets[i].GetComponent<LockOnTarget>().ScreenPosition.x)
-                    {
-                        _aimAssistCAM.ApplyAimTarget(_assistTargets[i].transform);
-                        _targetIndex = i;
-                        _targetChanged = true;
-                    }
-                    _horizontalInput = 0;
-                }
-            }
-            else if (_horizontalInput < 0)
-            {
-                var currentTarget = _assistTargets[_targetIndex];
-                for (int i = 0; i < _assistTargets.Count; i++)
-                {
-                    if (currentTarget.GetComponent<LockOnTarget>().ScreenPosition.x
-                        > _assistTargets[i].GetComponent<LockOnTarget>().ScreenPosition.x)
-                    {
-                        _aimAssistCAM.ApplyAimTarget(_assistTargets[i].transform);
-                        _targetIndex = i;
-                        _targetChanged = true;
-                    }
-                    _horizontalInput = 0;
-                }
-            }
-        }
-        else if (_horizontalInput != 0 && _targetChanged && _input.LookInput.x == 0)
-        {
-            _horizontalInput = 0;
-            _targetChanged = false;
-        }
-    }
     private void Start()
     {
         _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
         _aimAssistCAM = GameObject.FindAnyObjectByType<AimAssistCameraComponent>();
         SetCameraMode(CameraMode.Normal);
     }
-    private void Update()
+    private void FixedUpdate()
     {
         DOnce(_isAimAssist, () =>
         {
-            ApplyTargetToAssistCam();
+            _aimAssistCAM.UpdateAimTarget(_assistTargets);
         });
     }
     /// <summary>捕捉対象リストに登録するメソッド</summary>

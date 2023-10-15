@@ -49,6 +49,7 @@ public class ACInputHandler : MonoBehaviour, AC_Input.IPlayerActions
     {
         _input = GetComponent<PlayerInput>();
         _input.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
+        GameObject.DontDestroyOnLoad(this.gameObject);
     }
     void OnEnable()
     {
