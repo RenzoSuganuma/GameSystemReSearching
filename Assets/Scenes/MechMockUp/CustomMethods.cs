@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace DGW
 {
+    #region 独自メソッド Original Methods
     public static class OriginalMethods
     {
-        #region 独自メソッド
         /// <summary> 
         /// <para>第１引数が真の時のみ第２引数の処理を実行する </para>
         /// When 1st Argument is True, Do 2nd Arguments Process
@@ -18,8 +18,9 @@ namespace DGW
             if (condition) { action(); }
         }
         /* ------------------------------------------------------------------ */
-        #endregion
     }
+    #endregion
+    #region Extentions
     public static class Extentions
     {
         /* GameObjects */
@@ -72,4 +73,5 @@ namespace DGW
             action -= removeTarget;
         }
     }
+    #endregion
 }

@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
-
 public class LockOnTarget : MonoBehaviour
 {
     GameObject _targetPoint;
@@ -8,14 +6,14 @@ public class LockOnTarget : MonoBehaviour
     public Vector2 ScreenPosition => _screenPosition;
     bool _isTrasable = false;
     public bool IsCanLockOn => _isTrasable;
-    private void Start()
+    void Start()
     {
         //捕捉用のオブジェクトの生成
         _targetPoint = new();
         _targetPoint.transform.parent = this.transform;
         _targetPoint.transform.localPosition = Vector3.zero;
     }
-    private void Update()
+    void Update()
     {
         //カメラの中心からの距離がロックオン範囲内か判定
         var cam = GameObject.FindAnyObjectByType<Camera>();

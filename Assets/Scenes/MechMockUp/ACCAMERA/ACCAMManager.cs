@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DGW;
 using static DGW.OriginalMethods;
 /// <summary>カメラモード</summary>
 public enum CameraMode
@@ -14,20 +12,19 @@ public class ACCAMManager : MonoBehaviour
     ACInputHandler _input;
     OrbitalCameraComponent _orbitCAM;
     AimAssistCameraComponent _aimAssistCAM;
+    /// <summary> エイムアシストターゲット </summary>
     List<Transform> _assistTargets = new();
     bool _isAimAssist = false;
+    /// <summary> 通常かエイムアシストを実行中かのフラグ </summary>
     CameraMode _mode = CameraMode.Normal;
     public CameraMode CamMode => _mode;
-    private void Awake()
-    {
-        _input = GameObject.FindAnyObjectByType<ACInputHandler>();
-    }
-    private void OnEnable()
+    void Awake() => _input = GameObject.FindAnyObjectByType<ACInputHandler>();
+    void OnEnable()
     {
         _input.LockOnAssist += OnAimAssist;
         _input.LockOnAssist += SwitchCameraMode;
     }
-    private void OnDisable()
+    void OnDisable()
     {
         _input.LockOnAssist -= OnAimAssist;
         _input.LockOnAssist -= SwitchCameraMode;
@@ -36,15 +33,15 @@ public class ACCAMManager : MonoBehaviour
     {
         _isAimAssist = !_isAimAssist;
     }
-    private void Start()
+    void Start()
     {
         _orbitCAM = GameObject.FindAnyObjectByType<OrbitalCameraComponent>();
         _aimAssistCAM = GameObject.FindAnyObjectByType<AimAssistCameraComponent>();
         SetCameraMode(CameraMode.Normal);
     }
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        DOnce(_isAimAssist, () =>
+        DOnce(_isAimAssist && _mode == CameraMode.AimAssist, () =>
         {
             _aimAssistCAM.UpdateAimTarget(_assistTargets);
         });

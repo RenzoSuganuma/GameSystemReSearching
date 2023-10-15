@@ -33,19 +33,17 @@ public class OrbitalCameraComponent : MonoBehaviour
     [SerializeField] bool _inverseRotationY;
     /// <summary>回転の反転を有効にするかのフラグ</summary>
     [SerializeField] bool _inverseRotationX;
-    /// <summary>カメラ移動に必要な三角関数のシータに対応する値X軸</summary>
+    /// <summary>カメラ移動に必要な三角関数のシータに相当する値X軸</summary>
     float _thetaX = 0;
-    /// <summary>カメラ移動に必要な三角関数のシータに対応する値Y軸</summary>
+    /// <summary>カメラ移動に必要な三角関数のシータに相当する値Y軸</summary>
     float _thetaY = 0;
-    private void Awake()
-    {
-        _input = GameObject.FindFirstObjectByType<ACInputHandler>();
-    }
+    void Awake() => _input = GameObject.FindFirstObjectByType<ACInputHandler>();
     void Start()
     {
         //NULLだったら警告ログを吐き出す
         if (GetComponent<Camera>() == null) Debug.LogWarning("プレイヤーカメラが見つからない");
         if (_centerTransform == null) Debug.LogWarning("ターゲットの座標がnullだよ");
+        //Update Name
         this.gameObject.tag = "MainCamera";
         _acMove = GameObject.FindAnyObjectByType<MechMovementComponent>();
         _occ = GetComponent<Occulutioner>();
@@ -59,7 +57,7 @@ public class OrbitalCameraComponent : MonoBehaviour
     }
     #region privateメソッド
     /// <summary>視点移動入力受け取り、格納処理</summary>
-    private void GetLookInput()
+    void GetLookInput()
     {
         float inputX = _input.LookInput.x * _sencitivity.x * .01f;
         _thetaX += inputX;
@@ -67,12 +65,12 @@ public class OrbitalCameraComponent : MonoBehaviour
         _thetaY += inputY;
     }
     /// <summary>オクルージョン処理</summary>
-    private void OcculusionSequence()
+    void OcculusionSequence()
     {
         _occ.OcculusionSequence();
     }
     /// <summary>回転処理</summary>
-    private void RotateSequence(float rotateRadius)
+    void RotateSequence(float rotateRadius)
     {
         if (_acMove.IsGrounded)//接地時
         {
@@ -94,7 +92,7 @@ public class OrbitalCameraComponent : MonoBehaviour
             + _centerTransform.position;
     }
     /// <summary>プレイヤー捕捉処理</summary>
-    private void TargettingSequence(Transform followTransform)
+    void TargettingSequence(Transform followTransform)
     {
         //LookRotationの第一引数に正面方向のベクトルを指定してターゲットのオブジェクトを向く
         this.transform.rotation =
