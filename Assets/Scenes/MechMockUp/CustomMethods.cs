@@ -190,9 +190,9 @@ namespace DiscoveryGameWorks
             this._value = value;
         }
         /// <summary> Key‚ÌŒ^‚ð•Ô‚· </summary>
-        public Type KeyType => typeof(TKey);
+        public Type KeyType => _key.GetType();
         /// <summary> Value‚ÌŒ^‚ð•Ô‚· </summary>
-        public Type ValueType => typeof(TValue);
+        public Type ValueType => _value.GetType();
     }
     #endregion
     #endregion
