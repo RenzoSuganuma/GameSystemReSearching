@@ -73,7 +73,7 @@ public class DataDictionary<TDataKey, TDataValue>
         }//Serach Pairs
         if (OnDataAdded != null) OnDataRemoved();
     }
-    /// <summary>  </summary>
+    /// <summary> Dictionary‚ÌValue‚©‚çKey‚ğ•Ô‚· </summary>
     /// <param name="value"></param>
     /// <returns></returns>
     public TDataKey Find(TDataValue value)
@@ -87,7 +87,7 @@ public class DataDictionary<TDataKey, TDataValue>
         }
         return default(TDataKey);
     }
-    /// <summary>  </summary>
+    /// <summary> Dictionary‚ÌKey‚©‚çValue‚ğ•Ô‚· </summary>
     /// <param name="key"></param>
     /// <returns></returns>
     public TDataValue Find(TDataKey key)
@@ -101,6 +101,9 @@ public class DataDictionary<TDataKey, TDataValue>
         }
         return default(TDataValue);
     }
+    /// <summary> Key‚©‚çValue‚ğ‰Šú‰» </summary>
+    /// <param name="value"></param>
+    /// <param name="key"></param>
     public void SetAt(TDataValue value, TDataKey key)//Set Key By Value
     {
         for (int i = 0; i < _coreDataBase.Length; i++)
@@ -112,6 +115,7 @@ public class DataDictionary<TDataKey, TDataValue>
             }
         }
     }
+    /// <summary> Value‚©‚çKey‚ğ‰Šú‰» </summary>
     public void SetAt(TDataKey key, TDataValue value)//Set Value By Key
     {
         for (int i = 0; i < _coreDataBase.Length; i++)
