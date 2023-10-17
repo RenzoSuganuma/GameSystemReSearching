@@ -1,5 +1,5 @@
 using UnityEngine;
-using DGW;
+using DiscoveryGameWorks;
 /*
 * 特定のインスタンスのプロパティ値プールクラス
 * のプロパティを監視するクラス
@@ -14,6 +14,10 @@ public class PropertyInfoHandler : MonoBehaviour
     public void UnResist(string resistedName)
     {
         _dataMap.Remove(resistedName, _dataMap[resistedName]);
+    }
+    public bool GetExist(string resistName)
+    {
+        return _dataMap[resistName] != null;
     }
     private void Awake()
     {

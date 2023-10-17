@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace DGW
+namespace DiscoveryGameWorks
 {
     #region 独自メソッド Original Methods
     public static class OriginalMethods
@@ -26,8 +25,7 @@ namespace DGW
     /// <summary> 特定の登録名に対応した値を格納するための機能を提供するクラス辞書っぽいもの </summary>
     public class DataDictionary<TDataKey, TDataValue>
     {
-        //List<DataPair<文字列プロパティ登録名型,object型のプロパティ値保持用の型>>
-        //監視対象のプロパティの登録名と名前のデータベース
+        //汎用データペア
         DataPair<TDataKey, TDataValue>[] _coreDataBase;
         public event Action OnDataAdded;
         public event Action OnDataRemoved;

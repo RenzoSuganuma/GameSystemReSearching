@@ -1,5 +1,5 @@
 using UnityEngine;
-using static DGW.OriginalMethods;
+using static DiscoveryGameWorks.OriginalMethods;
 /// <summary>ACの移動コンポーネント</summary>
 [RequireComponent(typeof(Rigidbody))]
 public class MechMovementComponent : MonoBehaviour
