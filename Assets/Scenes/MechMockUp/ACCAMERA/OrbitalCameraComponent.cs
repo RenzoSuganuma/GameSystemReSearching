@@ -23,10 +23,6 @@ public class OrbitalCameraComponent : MonoBehaviour
     [SerializeField] Vector2 _sencitivity = new(1, .5f);
     /// <summary>‰ñ“]”¼Œa</summary>
     [SerializeField] float _rotateRadius;
-    /// <summary>‰ñ“]”¼Œa</summary>
-    [SerializeField] float _targettingLimitDistance;
-    /// <summary>‰ñ“]”¼Œa</summary>
-    public float TargettingLimitDistance => _targettingLimitDistance;
     /// <summary>X²‰ñ“]Šp“x‚ÌƒNƒ‰ƒ“ƒv‚·‚é‚Æ‚«‚Ì’l‚Ìâ‘Î’l</summary>
     [SerializeField, Range(.1f, .5f)] float _rollAngleAbsValue = .3f;
     /// <summary>‰ñ“]‚Ì”½“]‚ğ—LŒø‚É‚·‚é‚©‚Ìƒtƒ‰ƒO</summary>

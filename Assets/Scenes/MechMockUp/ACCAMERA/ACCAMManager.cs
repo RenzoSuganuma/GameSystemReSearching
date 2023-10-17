@@ -1,3 +1,5 @@
+using DGW;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static DGW.OriginalMethods;
@@ -12,6 +14,7 @@ public class ACCAMManager : MonoBehaviour
     ACInputHandler _input;
     OrbitalCameraComponent _orbitCAM;
     AimAssistCameraComponent _aimAssistCAM;
+    public Action act = () => { };
     /// <summary> エイムアシストターゲット </summary>
     List<Transform> _assistTargets = new();
     bool _isAimAssist = false;

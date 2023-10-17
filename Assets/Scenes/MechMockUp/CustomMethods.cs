@@ -20,6 +20,8 @@ namespace DGW
         /* ------------------------------------------------------------------ */
     }
     #endregion
+    #region “ÆŽ©ƒ‰ƒCƒuƒ‰ƒŠ
+    #endregion
     #region Extentions
     public static class Extentions
     {
