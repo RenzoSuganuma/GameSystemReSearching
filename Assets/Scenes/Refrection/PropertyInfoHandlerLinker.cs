@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using DiscoveryGameWorks;
 public class PropertyInfoHandlerLinker : MonoBehaviour
 {
@@ -61,7 +62,8 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     }
     public object ExtractDataFromSender(string resisterName)
     {
-        return ExtractData(_sender, resisterName);
+        var ret = ExtractData(_sender, resisterName);
+        return (ret != null) ? ret : throw new Exception("Data Wasnt Found");
     }
     #endregion
     #region プロパティ情報初期化先
@@ -82,7 +84,8 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     }
     public object ExtractDataFromReceiver(string resisterName)
     {
-        return ExtractData(_receiver, resisterName);
+        var ret = ExtractData(_receiver, resisterName);
+        return (ret != null) ? ret : throw new Exception("Data Wasnt Found");
     }
     #endregion
 }

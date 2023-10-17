@@ -11,5 +11,12 @@ public class TestClassB : MonoBehaviour, IPropInfoHandler<string>
     {
         _propDataBase = GetComponent<PropertyInfoHandler>();
         var linker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
+        _propNames.Add("ClassBTestProp");
+        _propDataBase.Resist(_propNames[0], 222);
+        linker.ApplyReceiverResisterList(_propNames);
+    }
+    private void Update()
+    {
+        
     }
 }

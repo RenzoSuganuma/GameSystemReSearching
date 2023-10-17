@@ -11,5 +11,8 @@ public class TestClassA : MonoBehaviour, IPropInfoHandler<string>
     {
         _propDataBase = GetComponent<PropertyInfoHandler>();
         var linker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
+        _propNames.Add("ClassATestProp");
+        _propDataBase.Resist(_propNames[0], 111);
+        linker.ApplySenderResisterList(_propNames);
     }
 }
