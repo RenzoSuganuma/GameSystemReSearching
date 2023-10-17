@@ -434,8 +434,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c8b04718177aa94cab52ff32001c05d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _propInfoHandler: {fileID: 1829029091}
-  _targetChangedPropInfoHandler: {fileID: 383804823}
+  _sender: {fileID: 1829029091}
+  _receiver: {fileID: 383804823}
 --- !u!1 &1829029090
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,5 +500,5 @@ SceneRoots:
   - {fileID: 418131758}
   - {fileID: 519050761}
   - {fileID: 1829029092}
-  - {fileID: 383804824}
   - {fileID: 1195835371}
+  - {fileID: 383804824}

@@ -1,6 +1,7 @@
 using DiscoveryGameWorks;
 using System.Collections.Generic;
 using UnityEngine;
+//Sender
 public class TestClassA : MonoBehaviour, IPropInfoHandler<string>
 {
     PropertyInfoHandler _propDataBase; // ← プロパティ値プールのDB
@@ -12,8 +13,9 @@ public class TestClassA : MonoBehaviour, IPropInfoHandler<string>
         _propDataBase = GetComponent<PropertyInfoHandler>();
         _propDataBase.Resist("ClassATestProp", 1.0f);
         _propNames.Add("ClassATestProp");
+        var linker =
         GameObject.FindAnyObjectByType
-            <PropertyInfoHandlerLinker>()
-            .ApplyResisterList(_propNames);
+            <PropertyInfoHandlerLinker>();
+        linker.ApplyResisterList(_propNames);
     }
 }
