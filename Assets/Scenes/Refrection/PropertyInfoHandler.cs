@@ -1,30 +1,27 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DGW;
-using Unity.VisualScripting;
 /*
 * 特定のインスタンスのプロパティ値プールクラス
 * のプロパティを監視するクラス
 */
 public class PropertyInfoHandler : MonoBehaviour
 {
-    [SerializeField] DataDictionary<string, object> _dataBase = new();
+    [SerializeField] DataDictionary<string, object> _dataMap = new();
     public void Resist<T>(string resistName, T value)
     {
-        _dataBase.Add(resistName, value);
+        _dataMap.Add(resistName, value);
     }
     public void UnResist(string resistedName)
     {
-        _dataBase.Remove(resistedName, _dataBase[resistedName]);
+        _dataMap.Remove(resistedName, _dataMap[resistedName]);
     }
     private void Awake()
     {
-        Resist<int>("TestData", 0);
+        Resist("TestData_", 256);
+        Debug.Log($"{_dataMap["TestData_"]}");
     }
     private void Start()
     {
-        UnResist("TestData");
+        UnResist("TestData_");
     }
 }
