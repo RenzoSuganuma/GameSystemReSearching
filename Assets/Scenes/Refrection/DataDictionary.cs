@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using DGW;
 using System;
 using System.Collections;
+using TMPro.EditorUtilities;
 /*
 * 
 */
@@ -24,6 +24,16 @@ public class DataDictionary<TDataKey, TDataValue>
         _coreDataBase = null;
         OnDataAdded = null;
         OnDataRemoved = null;
+    }
+    public TDataValue this[TDataKey key]
+    {
+        get { return this.Find(key); }
+        set { this.SetAt(key, value); }
+    }
+    public TDataKey this[TDataValue dataValue]
+    {
+        get { return this.Find(dataValue); }
+        set { this.SetAt(dataValue, value); }
     }
     /// <summary> データの登録 </summary>
     /// <param name="key"></param>
@@ -63,6 +73,70 @@ public class DataDictionary<TDataKey, TDataValue>
         }//Serach Pairs
         if (OnDataAdded != null) OnDataRemoved();
     }
+    /// <summary>  </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public TDataKey Find(TDataValue value)
+    {
+        for (int i = 0; i < _coreDataBase.Length; i++)
+        {
+            if (_coreDataBase[i].Value.Equals(value))
+            {
+                return _coreDataBase[i].Key;
+            }
+        }
+        return default(TDataKey);
+    }
+    /// <summary>  </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public TDataValue Find(TDataKey key)
+    {
+        for (int i = 0; i < _coreDataBase.Length; i++)
+        {
+            if (_coreDataBase[i].Key.Equals(key))
+            {
+                return _coreDataBase[i].Value;
+            }
+        }
+        return default(TDataValue);
+    }
+    public void SetAt(TDataValue value, TDataKey key)//Set Key By Value
+    {
+        for (int i = 0; i < _coreDataBase.Length; i++)
+        {
+            if (_coreDataBase[i].Value.Equals(value))
+            {
+                _coreDataBase[i].SetKey(key);
+                break;
+            }
+        }
+    }
+    public void SetAt(TDataKey key, TDataValue value)//Set Value By Key
+    {
+        for (int i = 0; i < _coreDataBase.Length; i++)
+        {
+            if (_coreDataBase[i].Key.Equals(key))
+            {
+                _coreDataBase[i].SetValue(value);
+                break;
+            }
+        }
+    }
+    /// <summary> データペアを返す </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public DataPair<TDataKey, TDataValue> GetDataPair(int index)
+    {
+        return (_coreDataBase[index] != null) ? _coreDataBase[index] : null;
+    }
+    /// <summary> 特定のインデックスにデータを初期化 </summary>
+    /// <param name="pair"></param>
+    /// <param name="index"></param>
+    public void SetDataPair(DataPair<TDataKey, TDataValue> pair, int index)
+    {
+        _coreDataBase[index] = pair;
+    }
 }
 /// <summary> 
 /// Dictionaryみたいなデータペアのクラス。
@@ -81,10 +155,21 @@ public class DataPair<TKey, TValue>
     public string SKey => _key.ToString();
     /// <summary> 文字列型のValueの値 </summary>
     public string SValue => _value.ToString();
-    public DataPair(TKey key, TValue value)
+    public DataPair(TKey key, TValue value)//コンストラクタ
     {
         _key = key;
         _value = value;
+    }
+    /// <summary> Keyをセット </summary>
+    /// <param name="key"></param>
+    public void SetKey(TKey key)
+    {
+        this._key = key;
+    }
+    /// <summary> Valueをセット </summary>
+    public void SetValue(TValue value)
+    {
+        this._value = value;
     }
     /// <summary> Keyの型を返す </summary>
     public Type KeyType => typeof(TKey);
