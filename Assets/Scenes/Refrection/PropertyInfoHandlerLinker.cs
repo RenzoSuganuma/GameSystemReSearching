@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DiscoveryGameWorks;
-using UnityEngine.EventSystems;
-
 public class PropertyInfoHandlerLinker : MonoBehaviour
 {
     /// <summary> プロパティ参照元の情報ハンドラー </summary>
@@ -14,6 +12,8 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     List<string> _receiverResisters = new();
     private void Update()
     {
+        Debug.Log($"ClassA->{ExtractDataFromSender("ClassATestProp")}");
+        Debug.Log($"ClassB->{ExtractDataFromReceiver("ClassBTestProp")}");
     }
     /// <summary> 登録名リストの登録 </summary>
     /// <param name="resisterNames"></param>
@@ -41,6 +41,17 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     }
     #endregion
     #region プロパティ情報参照元
+    public void SendDataToSender(string targetResistName, object passingData) // 指定した初期化先の登録名へ指定したデータを送る
+    {
+        if (_sender.DataMap.Find(targetResistName) != null)
+        {
+            _sender.DataMap[targetResistName] = passingData;
+        }
+        else
+        {
+            _sender.Resist(targetResistName, passingData);
+        }
+    }
     /// <summary>  </summary>
     /// <param name="resisterName"></param>
     /// <param name="value"></param>

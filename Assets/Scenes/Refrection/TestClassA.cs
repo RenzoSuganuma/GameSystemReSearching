@@ -1,4 +1,3 @@
-using DiscoveryGameWorks;
 using System.Collections.Generic;
 using UnityEngine;
 //Sender
@@ -11,11 +10,6 @@ public class TestClassA : MonoBehaviour, IPropInfoHandler<string>
     private void Start()
     {
         _propDataBase = GetComponent<PropertyInfoHandler>();
-        _propDataBase.Resist("ClassATestProp", 1.0f);
-        _propNames.Add("ClassATestProp");
-        var linker =
-        GameObject.FindAnyObjectByType
-            <PropertyInfoHandlerLinker>();
-        linker.ApplyResisterList(_propNames);
+        var linker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
     }
 }
