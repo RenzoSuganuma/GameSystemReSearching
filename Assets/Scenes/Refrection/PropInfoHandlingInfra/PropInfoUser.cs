@@ -8,4 +8,7 @@ public interface IPropInfoUser
 }
 [RequireComponent(typeof(PropertyInfoHandler))]
 /// <summary> プロパティ情報インフラ利用部 </summary>
-public class PropInfoUser : MonoBehaviour { }
+public abstract class PropInfoUser : MonoBehaviour
+{
+    protected abstract void SetUpPropInfoUser();
+}

@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using DiscoveryGameWorks;
 /// <summary> プロパティ情報ハンドラーどうしのリンカの機能を提供する </summary>
 public class PropertyInfoHandlerLinker : MonoBehaviour
 {

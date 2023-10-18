@@ -1,6 +1,5 @@
 using UnityEngine;
 using DiscoveryGameWorks;
-using System.Collections.Generic;
 using System;
 /*
 * 特定のインスタンスのプロパティ値プールクラス
