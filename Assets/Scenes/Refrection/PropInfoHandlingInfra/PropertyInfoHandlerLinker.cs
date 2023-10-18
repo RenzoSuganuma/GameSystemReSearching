@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using DiscoveryGameWorks;
+/// <summary> プロパティ情報ハンドラーどうしのリンカの機能を提供する </summary>
 public class PropertyInfoHandlerLinker : MonoBehaviour
 {
     /// <summary> プロパティ参照元の情報ハンドラー </summary>
@@ -98,7 +99,7 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     public void UpdateReceiverData(string resisterName, object value)
     {
         UpdateData(_receiver, resisterName, value);
-        if(OnReceiverDataUpdated != null) { OnReceiverDataUpdated(); }
+        if (OnReceiverDataUpdated != null) { OnReceiverDataUpdated(); }
     }
     /// <summary> リンカに指定されているレシーバーからデータの抽出をする </summary>
     /// <param name="resisterName"> レシーバーのレジスタ名 </param>

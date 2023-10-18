@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 //Sender
-public class TestClassA : MonoBehaviour, IPropInfoHandler<string>
+public class TestClassA : PropInfoUser, IPropInfoUser
 {
-    PropertyInfoHandler _propDataBase; // ← プロパティ値プールのDB
-    List<string> _propNames = new(); // ← 登録名リスト
-    public List<string> PropResisterList => _propNames;
-    public PropertyInfoHandler PropHandler => _propDataBase;
+    public PropertyInfoHandlerLinker PropertyInfoHandlerLinker { get; set; }
+    public PropertyInfoHandler PropertyInfoHandler { get;set; }
+    public List<string> ResisterNameList { get; set; } = new();
     private void Start()
     {
-        _propDataBase = GetComponent<PropertyInfoHandler>();
-        var linker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
-        _propNames.Add("ClassATestProp");
-        _propDataBase.Resist(_propNames[0], 1.0f);
-        linker.ApplySenderResisterList(_propNames);
-        linker.UpdateSenderData(_propNames[0], (object)222);
+        PropertyInfoHandler = GetComponent<PropertyInfoHandler>();
+        PropertyInfoHandlerLinker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
+        ResisterNameList.Add("ClassATestProp");
+        PropertyInfoHandler.Resist(ResisterNameList[0], 1.0f);
+        PropertyInfoHandlerLinker.ApplySenderResisterList(ResisterNameList);
+        PropertyInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], 222);
     }
 }
