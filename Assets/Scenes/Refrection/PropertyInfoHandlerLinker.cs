@@ -7,25 +7,40 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
 {
     /// <summary> プロパティ参照元の情報ハンドラー </summary>
     [SerializeField] PropertyInfoHandler _sender; // プロパティ参照元
+    public PropertyInfoHandler Sender => _sender;
     /// <summary> プロパティ参照元のデータの初期化先（ターゲット） </summary>
     [SerializeField] PropertyInfoHandler _receiver; // プロパティ参照値の初期化先
+    public PropertyInfoHandler Receiver => _receiver;
     List<string> _senderResisters = new();
+    public List<string> SenderResisters => _senderResisters;
     List<string> _receiverResisters = new();
-    private void Update()
-    {
-        Debug.Log($"ClassA->{ExtractDataFromSender("ClassATestProp")}");
-        Debug.Log($"ClassB->{ExtractDataFromReceiver("ClassBTestProp")}");
-    }
-    /// <summary> 登録名リストの登録 </summary>
+    public List<string> ReceiverResisters => _receiverResisters;
+    public event Action OnSenderDataUpdated;
+    public event Action OnSenderDataSendedToReceiver;
+    public event Action OnReceiverDataUpdated;
+    public event Action OnReceiverrDataSendedToSender;
+    /// <summary> センダー登録名リストの登録 </summary>
     /// <param name="resisterNames"></param>
     public void ApplySenderResisterList(List<string> resisterNames) // 参照元から呼び出される
     {
         _senderResisters = resisterNames;
-    }public void ApplyReceiverResisterList(List<string> resisterNames) // 参照元から呼び出される
+    }
+    /// <summary> レシーバー登録名のリストの登録 </summary>
+    /// <param name="resisterNames"></param>
+    public void ApplyReceiverResisterList(List<string> resisterNames) // 参照元から呼び出される
     {
         _receiverResisters = resisterNames;
     }
     #region 共通部
+    /// <summary> データの横流しをサポートするメソッドSenderからReceiverへ流す </summary>
+    /// <param name="senderPropHandler"></param>
+    /// <param name="senderReristerName"></param>
+    /// <param name="receiverPropHandler"></param>
+    /// <param name="receiverResisterName"></param>
+    void PassData(PropertyInfoHandler senderPropHandler, string senderReristerName, PropertyInfoHandler receiverPropHandler, string receiverResisterName)
+    {
+        receiverPropHandler.DataMap[receiverResisterName] = senderPropHandler.DataMap[senderReristerName];
+    }
     /// <summary> 登録した値の更新 </summary>
     /// <param name="resisterName"></param>
     /// <param name="value"></param>
@@ -42,24 +57,26 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     }
     #endregion
     #region プロパティ情報参照元
-    public void SendDataToSender(string targetResistName, object passingData) // 指定した初期化先の登録名へ指定したデータを送る
+    /// <summary> リンカに指定されたレシーバーのデータをセンダーに登録されてる値にする </summary>
+    /// <param name="senderResisterName"> リンカに指定されているセンダーの保持するレジスタ名 </param>
+    /// <param name="receiverResisterName"> リンカに指定されてるレシーバーの保持するレジスタ名 </param>
+    public void SendDataSenderToReceiver(string senderResisterName, string receiverResisterName)
     {
-        if (_sender.DataMap.Find(targetResistName) != null)
-        {
-            _sender.DataMap[targetResistName] = passingData;
-        }
-        else
-        {
-            _sender.Resist(targetResistName, passingData);
-        }
+        PassData(_sender, senderResisterName, _receiver, receiverResisterName);
+        if (OnSenderDataSendedToReceiver != null) { OnSenderDataSendedToReceiver(); }
     }
-    /// <summary>  </summary>
-    /// <param name="resisterName"></param>
-    /// <param name="value"></param>
+    /// <summary> リンカに指定されているセンダーのレジスタのデータを更新する </summary>
+    /// <param name="resisterName"> センダーのレジスタ名 </param>
+    /// <param name="value"> 更新後の値 </param>
     public void UpdateSenderData(string resisterName, object value)
     {
         UpdateData(_sender, resisterName, value);
+        if (OnSenderDataUpdated != null) { OnSenderDataUpdated(); }
     }
+    /// <summary> リンカに指定されているセンダーから値を抽出する </summary>
+    /// <param name="resisterName"> センダー側のレジスタ名 </param>
+    /// <returns></returns>
+    /// <exception cref="Exception"> データが見つからない場合に投げられる </exception>
     public object ExtractDataFromSender(string resisterName)
     {
         var ret = ExtractData(_sender, resisterName);
@@ -67,21 +84,26 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     }
     #endregion
     #region プロパティ情報初期化先
-    public void SendDataToReceiver(string targetResistName, object passingData) // 指定した初期化先の登録名へ指定したデータを送る
+    /// <summary> リンカに指定されたセンダーのレジスタの登録値をレシーバーのレジスタに登録されてる値にする </summary>
+    /// <param name="receiverResisterName"> リンカに指定されてるレシーバーの保持するレジスタ名 </param>
+    /// <param name="senderResisterName"> リンカに指定されているセンダーの保持するレジスタ名 </param>
+    public void SendDataReceiverToSender(string receiverResisterName, string senderResisterName)
     {
-        if (_receiver.DataMap.Find(targetResistName) != null)
-        {
-            _receiver.DataMap[targetResistName] = passingData;
-        }
-        else
-        {
-            _receiver.Resist(targetResistName, passingData);
-        }
+        PassData(_receiver, receiverResisterName, _sender, senderResisterName);
+        if (OnReceiverrDataSendedToSender != null) { OnReceiverrDataSendedToSender(); }
     }
+    /// <summary> リンカに指定されているレシーバーのデータの更新 </summary>
+    /// <param name="resisterName"> リンカに指定されているレシーバーのレジスタ名 </param>
+    /// <param name="value"> 更新後の値 </param>
     public void UpdateReceiverData(string resisterName, object value)
     {
         UpdateData(_receiver, resisterName, value);
+        if(OnReceiverDataUpdated != null) { OnReceiverDataUpdated(); }
     }
+    /// <summary> リンカに指定されているレシーバーからデータの抽出をする </summary>
+    /// <param name="resisterName"> レシーバーのレジスタ名 </param>
+    /// <returns></returns>
+    /// <exception cref="Exception"> データが見つからない場合に投げられる </exception>
     public object ExtractDataFromReceiver(string resisterName)
     {
         var ret = ExtractData(_receiver, resisterName);

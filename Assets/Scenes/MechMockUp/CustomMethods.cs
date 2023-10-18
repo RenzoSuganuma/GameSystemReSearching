@@ -27,8 +27,6 @@ namespace DiscoveryGameWorks
     {
         //汎用データペア
         DataPair<TDataKey, TDataValue>[] _coreDataBase;
-        public event Action OnDataAdded;
-        public event Action OnDataRemoved;
         public DataDictionary()//コンストラクタ
         {
             _coreDataBase = new DataPair<TDataKey, TDataValue>[0];//データベースのインスタンス化
@@ -36,8 +34,6 @@ namespace DiscoveryGameWorks
         ~DataDictionary()//デコンストラクタ
         {
             _coreDataBase = null;
-            OnDataAdded = null;
-            OnDataRemoved = null;
         }
         public TDataValue this[TDataKey key]
         {
@@ -64,7 +60,6 @@ namespace DiscoveryGameWorks
             Array.Resize<DataPair<TDataKey, TDataValue>>(ref _coreDataBase, _coreDataBase.Length + 1);
             //Append Element
             _coreDataBase[_coreDataBase.Length - 1] = new DataPair<TDataKey, TDataValue>(key, value);
-            if (OnDataAdded != null) OnDataAdded();
         }
         /// <summary> データの登録解除 </summary>
         /// <param name="key"></param>
@@ -85,7 +80,6 @@ namespace DiscoveryGameWorks
                     }//Make No Gap
                 }
             }//Serach Pairs
-            if (OnDataAdded != null) OnDataRemoved();
         }
         /// <summary> DictionaryのValueからKeyを返す </summary>
         /// <param name="value"></param>
