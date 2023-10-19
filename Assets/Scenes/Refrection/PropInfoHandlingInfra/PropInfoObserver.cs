@@ -23,7 +23,7 @@ public class PropInfoObserver : MonoBehaviour, IPropInfoObserver
     public Action OnSenderResistersValueChanged { get; set; } = () => { Debug.Log("センダデータ更新された"); };
     public Action OnReceiverResistersValueChanged { get; set; }
     // temp
-    DataDictionary<string , object> tempSenderDataPair = new();
+    DataDictionary<string, object> _pastSenderDataPair = new();
     private void Start()
     {
         TargetPropertyInfoHandlerLinker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
@@ -34,20 +34,27 @@ public class PropInfoObserver : MonoBehaviour, IPropInfoObserver
     {
         foreach (var item in TargetSenderResisterList)
         {
-            if (tempSenderDataPair[item] == null)
+            if (_pastSenderDataPair[item] == null)
             {
-                tempSenderDataPair.Add(item, TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item));
+                _pastSenderDataPair.Add(item, TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item));
             }
             Debug.Log($"Linker Data : {item} - {TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item)}");
-            Debug.Log($"Observer Data : {item} - {tempSenderDataPair[item]}");
-            if ((int)TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item) != (int)tempSenderDataPair[item])
+            Debug.Log($"Observer Data : {item} - {_pastSenderDataPair[item]}");
+            Debug.Log($"Data Type Is {_pastSenderDataPair[item].GetType()}");
+            if (!TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item).Equals(_pastSenderDataPair[item]))
             {
                 OnSenderResistersValueChanged();
-                tempSenderDataPair[item] = TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item);
-            }else
-            {
-                Debug.Log("データが等しい！");
+                _pastSenderDataPair[item] = TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item);
             }
-        }
+            //if ((string)TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item) != (string)_pastSenderDataPair[item])
+            //{
+            //    OnSenderResistersValueChanged();
+            //    _pastSenderDataPair[item] = TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item);
+            //}else
+            //{
+            //    Debug.Log("データが等しい！");
+            //}
+        } // Compare Data Between This Obeserver To Linker Property Info
     }
 }
+// (object)int -> System.Int32 : (object)float -> System.Single : (object)string -> System.String

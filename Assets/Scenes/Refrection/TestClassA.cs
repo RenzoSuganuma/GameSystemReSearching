@@ -7,19 +7,19 @@ public class TestClassA : PropInfoUser, IPropInfoUser
     public PropertyInfoHandler PropInfoHandler { get; set; }
     public List<string> ResisterNameList { get; set; } = new();
     //temp 
-    int count = 0;
+    int tmp = 0;
     private void Start()
     {
         SetUpPropInfoUser();
         ResisterNameList.Add("ClassATestProp");
         PropInfoHandler.Resist(ResisterNameList[0], 1.0f);
         PropInfoHandlerLinker.ApplySenderResisterList(ResisterNameList);
-        PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], 222);
+        PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], 0);
     }
     private void Update()
     {
-        PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], count);
-        if(count < 1)count++;
+        PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], tmp);
+        if (tmp < 1) tmp++;
     }
     protected override void SetUpPropInfoUser()
     {
