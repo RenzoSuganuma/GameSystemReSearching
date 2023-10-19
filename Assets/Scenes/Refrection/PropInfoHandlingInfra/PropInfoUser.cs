@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public interface IPropInfoUser
 {
-    PropertyInfoHandlerLinker PropertyInfoHandlerLinker { get; set; }
-    PropertyInfoHandler PropertyInfoHandler { get; set; }
+    PropertyInfoHandlerLinker PropInfoHandlerLinker { get; set; }
+    PropertyInfoHandler PropInfoHandler { get; set; }
     List<string> ResisterNameList { get; set; }
 }
 [RequireComponent(typeof(PropertyInfoHandler))]

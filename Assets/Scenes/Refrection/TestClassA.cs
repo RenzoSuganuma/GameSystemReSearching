@@ -3,20 +3,27 @@ using UnityEngine;
 //Sender
 public class TestClassA : PropInfoUser, IPropInfoUser
 {
-    public PropertyInfoHandlerLinker PropertyInfoHandlerLinker { get; set; }
-    public PropertyInfoHandler PropertyInfoHandler { get;set; }
+    public PropertyInfoHandlerLinker PropInfoHandlerLinker { get; set; }
+    public PropertyInfoHandler PropInfoHandler { get; set; }
     public List<string> ResisterNameList { get; set; } = new();
-    protected override void SetUpPropInfoUser()
-    {
-        PropertyInfoHandler = GetComponent<PropertyInfoHandler>();
-        PropertyInfoHandlerLinker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
-    }
+    //temp 
+    int count = 0;
     private void Start()
     {
         SetUpPropInfoUser();
         ResisterNameList.Add("ClassATestProp");
-        PropertyInfoHandler.Resist(ResisterNameList[0], 1.0f);
-        PropertyInfoHandlerLinker.ApplySenderResisterList(ResisterNameList);
-        PropertyInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], 222);
+        PropInfoHandler.Resist(ResisterNameList[0], 1.0f);
+        PropInfoHandlerLinker.ApplySenderResisterList(ResisterNameList);
+        PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], 222);
+    }
+    private void Update()
+    {
+        PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], count);
+        count++;
+    }
+    protected override void SetUpPropInfoUser()
+    {
+        PropInfoHandler = GetComponent<PropertyInfoHandler>();
+        PropInfoHandlerLinker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
     }
 }
