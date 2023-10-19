@@ -2,28 +2,40 @@ using DiscoveryGameWorks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-public struct PropInfoCallBackContext
+public struct PropInfoCallBackContext // ← どのレジスタ名のデータが変化したかの構造体
 {
-
+    public string _resisterName;
+    public object _resisterData;
+    public Type _resisterDataType;
+    public PropInfoCallBackContext(string resisterName, object resisterData)
+    {
+        _resisterData = resisterData;
+        _resisterName = resisterName;
+        _resisterDataType = resisterData.GetType();
+    }
+    public override string ToString()
+    {
+        return $"[{_resisterName} : {_resisterData} : {_resisterDataType}]";
+    }
 }
 public interface IPropInfoObserver
 {
-    PropertyInfoHandlerLinker TargetPropertyInfoHandlerLinker { get; set; }
-    List<string> TargetSenderResisterList { get; set; }
-    List<string> TargetReceiverResisterList { get; set; }
-    Action OnSenderResistersValueChanged { get; set; }
-    Action OnReceiverResistersValueChanged { get; set; }
+    void OnSenderPropertyValueChanged(PropInfoCallBackContext context);
+    void OnReciverPropertyValueChanged(PropInfoCallBackContext context);
 }
-public class PropInfoObserver : MonoBehaviour, IPropInfoObserver
+public class PropInfoObserver : MonoBehaviour
 {
     public PropertyInfoHandlerLinker TargetPropertyInfoHandlerLinker { get; set; }
     public List<string> TargetSenderResisterList { get; set; } = new();
     public List<string> TargetReceiverResisterList { get; set; } = new();
-    public Action OnSenderResistersValueChanged { get; set; } = () => { Debug.Log("センダデータ更新された"); };
-    public Action OnReceiverResistersValueChanged { get; set; }
-    // temp
+    public delegate void ChangedValueDalegate(PropInfoCallBackContext context);
+    public event ChangedValueDalegate OnSenderResistersValueChanged;
+    public event ChangedValueDalegate OnReceiverResistersValueChanged;
+    // Use For Compare Data
     DataDictionary<string, object> _pastSenderDataPair = new();
+    DataDictionary<string, object> _pastReceiverDataPair = new();
     private void Start()
     {
         TargetPropertyInfoHandlerLinker = GameObject.FindAnyObjectByType<PropertyInfoHandlerLinker>();
@@ -32,28 +44,41 @@ public class PropInfoObserver : MonoBehaviour, IPropInfoObserver
     }
     private void Update()
     {
-        foreach (var item in TargetSenderResisterList)
+        CheckSenderDataChange();
+        CheckReceiverDataChange();
+    }
+    private void CheckSenderDataChange()
+    {
+        foreach (var item in TargetSenderResisterList) // <- SENDER
         {
             if (_pastSenderDataPair[item] == null)
             {
                 _pastSenderDataPair.Add(item, TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item));
             }
-            Debug.Log($"Linker Data : {item} - {TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item)}");
-            Debug.Log($"Observer Data : {item} - {_pastSenderDataPair[item]}");
-            Debug.Log($"Data Type Is {_pastSenderDataPair[item].GetType()}");
             if (!TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item).Equals(_pastSenderDataPair[item]))
             {
-                OnSenderResistersValueChanged();
+                var cntxt = new PropInfoCallBackContext(item, TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item));
+                //OnSenderResistersValueChanged.Invoke(cntxt);
+                OnSenderResistersValueChanged(cntxt);
                 _pastSenderDataPair[item] = TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item);
             }
-            //if ((string)TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item) != (string)_pastSenderDataPair[item])
-            //{
-            //    OnSenderResistersValueChanged();
-            //    _pastSenderDataPair[item] = TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item);
-            //}else
-            //{
-            //    Debug.Log("データが等しい！");
-            //}
+        } // Compare Data Between This Obeserver To Linker Property Info
+    }
+    private void CheckReceiverDataChange()
+    {
+        foreach (var item in TargetReceiverResisterList) // <- RECEIVER
+        {
+            if (_pastReceiverDataPair[item] == null)
+            {
+                _pastReceiverDataPair.Add(item, TargetPropertyInfoHandlerLinker.ExtractDataFromReceiver(item));
+            }
+            if (!TargetPropertyInfoHandlerLinker.ExtractDataFromReceiver(item).Equals(_pastReceiverDataPair[item]))
+            {
+                var cntxt = new PropInfoCallBackContext(item, TargetPropertyInfoHandlerLinker.ExtractDataFromReceiver(item));
+                //OnReceiverResistersValueChanged.Invoke(cntxt);
+                OnReceiverResistersValueChanged(cntxt);
+                _pastReceiverDataPair[item] = TargetPropertyInfoHandlerLinker.ExtractDataFromReceiver(item);
+            }
         } // Compare Data Between This Obeserver To Linker Property Info
     }
 }

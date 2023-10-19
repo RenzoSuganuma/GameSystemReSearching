@@ -12,7 +12,7 @@ public class TestClassA : PropInfoUser, IPropInfoUser
     {
         SetUpPropInfoUser();
         ResisterNameList.Add("ClassATestProp");
-        PropInfoHandler.Resist(ResisterNameList[0], 1.0f);
+        PropInfoHandler.Resist(ResisterNameList[0], 1);
         PropInfoHandlerLinker.ApplySenderResisterList(ResisterNameList);
         PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], 0);
     }
