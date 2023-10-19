@@ -19,7 +19,7 @@ public class TestClassA : PropInfoUser, IPropInfoUser
     private void Update()
     {
         PropInfoHandlerLinker.UpdateSenderData(ResisterNameList[0], count);
-        count++;
+        if(count < 1)count++;
     }
     protected override void SetUpPropInfoUser()
     {

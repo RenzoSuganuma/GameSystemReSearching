@@ -40,6 +40,14 @@ public class PropInfoObserver : MonoBehaviour, IPropInfoObserver
             }
             Debug.Log($"Linker Data : {item} - {TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item)}");
             Debug.Log($"Observer Data : {item} - {tempSenderDataPair[item]}");
+            if ((int)TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item) != (int)tempSenderDataPair[item])
+            {
+                OnSenderResistersValueChanged();
+                tempSenderDataPair[item] = TargetPropertyInfoHandlerLinker.ExtractDataFromSender(item);
+            }else
+            {
+                Debug.Log("データが等しい！");
+            }
         }
     }
 }
