@@ -1,28 +1,10 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 namespace DiscoveryGameWorks
 {
-    #region 独自メソッド Original Methods
-    public static class OriginalMethods
-    {
-        /// <summary> 
-        /// <para>第１引数が真の時のみ第２引数の処理を実行する </para>
-        /// When 1st Argument is True, Do 2nd Arguments Process
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="action"></param>
-        public static void DOnce(bool condition, Action action)// Function Name Means Do Once
-        {
-            if (condition) { action(); }
-        }
-        /* ------------------------------------------------------------------ */
-    }
-    #endregion
-    #region 独自ライブラリ
-    #region オリジナル辞書
+    /// <summary> 特定の登録名に対応した値を格納するための機能を提供するクラスで、辞書っぽい機能を提供する </summary>
+    /// <typeparam name="TDataKey"></typeparam>
+    /// <typeparam name="TDataValue"></typeparam>
     [Serializable]
-    /// <summary> 特定の登録名に対応した値を格納するための機能を提供するクラス辞書っぽいもの </summary>
     public class DataDictionary<TDataKey, TDataValue>
     {
         //汎用データペア
@@ -109,7 +91,7 @@ namespace DiscoveryGameWorks
             }
             return default(TDataValue);
         }
-        /// <summary> KeyからValueを初期化 </summary>
+        /// <summary> Valueに対応するデータを渡されたKeyの値にする </summary>
         /// <param name="value"></param>
         /// <param name="key"></param>
         public void SetAt(TDataValue value, TDataKey key)//Set Key By Value
@@ -123,7 +105,9 @@ namespace DiscoveryGameWorks
                 }
             }
         }
-        /// <summary> ValueからKeyを初期化 </summary>
+        /// <summary> Keyに対応するデータを渡されたValueの値にする </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void SetAt(TDataKey key, TDataValue value)//Set Value By Key
         {
             for (int i = 0; i < _coreDataBase.Length; i++)
@@ -188,60 +172,4 @@ namespace DiscoveryGameWorks
         /// <summary> Valueの型を返す </summary>
         public Type ValueType => _value.GetType();
     }
-    #endregion
-    #endregion
-    #region Extentions
-    public static class Extentions
-    {
-        /* GameObjects */
-        /// <summary>指定されたトランスフォームの子オブジェクトにする</summary>
-        /// <param name="obj"></param>
-        /// <param name="parent"></param>
-        public static void ToChildObject(this GameObject obj, Transform parent)
-        {
-            obj.transform.parent = parent;
-        }
-        /// <summary>オブジェクトの親子関係を切る</summary>
-        /// <param name="obj"></param>
-        public static void ToParenObject(this GameObject obj)
-        {
-            obj.transform.parent = null;
-        }
-        /// <summary>子オブジェクトのみ取得する</summary>
-        /// <param name="parent"></param>
-        /// <returns></returns>
-        public static List<Transform> GetChildObjects(this GameObject parent)
-        {
-            List<Transform> list = new();
-            var cnt = parent.transform.childCount;
-            for (int i = 0; i < cnt; i++)
-            {
-                var child = parent.transform.GetChild(i);
-                list.Add(child);
-            }
-            return list;
-        }
-        /* Delegates */
-        /// <summary>
-        /// Actionにデリゲート登録をする
-        /// <para>Add Delegate To Action</para>
-        /// </summary>
-        /// <param name="action"></param>
-        /// <param name="appendProcess"></param>
-        public static void Add(this Action action, Action appendProcess)
-        {
-            action += appendProcess;
-        }
-        /// <summary>
-        /// Actionにデリゲート登録した関数を登録解除する
-        /// <para>Remove Delegate From Action</para>
-        /// </summary>
-        /// <param name="action"></param>
-        /// <param name="removeTarget"></param>
-        public static void Remove(this Action action, Action removeTarget)
-        {
-            action -= removeTarget;
-        }
-    }
-    #endregion
 }

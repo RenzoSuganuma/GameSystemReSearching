@@ -1,6 +1,6 @@
+using System;
 using UnityEngine;
 using DiscoveryGameWorks;
-using System;
 /*
 * 特定のインスタンスのプロパティ値プールクラス
 * のプロパティを監視するクラス
@@ -9,10 +9,10 @@ using System;
 /// レジスタ名に応じたデータをためておくデータベース </summary>
 public class PropertyInfoHandler : MonoBehaviour
 {
-    [SerializeField] DataDictionary<string, object> _dataMap = new();
+    DataDictionary<string, object> _dataMap = new();
     public DataDictionary<string, object> DataMap => _dataMap;
-    public event Action OnPropResisted;
-    public event Action OnPropUnResisted;
+    public event Action OnPropResisted = () => {Debug.Log("プロパティがレジストされた"); };
+    public event Action OnPropUnResisted = () => { Debug.Log("プロパティがアンレジストされた"); };
     /// <summary> レジスタ名とデータの登録 </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="resistName"></param>
@@ -21,6 +21,7 @@ public class PropertyInfoHandler : MonoBehaviour
     {
         _dataMap.Add(resistName, value);
         if (OnPropResisted != null) { OnPropResisted(); }
+        else { throw new Exception("Assing Some Function!"); }
     }
     /// <summary> レジスタ名を指定して、 そのレジスタ名にあった登録情報をデータベースから消す</summary>
     /// <param name="resistedName"></param>
@@ -28,6 +29,7 @@ public class PropertyInfoHandler : MonoBehaviour
     {
         _dataMap.Remove(resistedName, _dataMap[resistedName]);
         if (OnPropUnResisted != null) { OnPropUnResisted(); }
+        else { throw new Exception("Assing Some Function!"); }
     }
     /// <summary> 指定したレジスタ名に対応したデータペアがデータベースに存在するか検索する </summary>
     /// <param name="resistName"></param>

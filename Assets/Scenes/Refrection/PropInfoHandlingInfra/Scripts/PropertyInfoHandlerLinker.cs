@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 /// <summary> プロパティ情報ハンドラーどうしのリンカの機能を提供する </summary>
 public class PropertyInfoHandlerLinker : MonoBehaviour
 {
@@ -18,17 +18,14 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
     public event Action OnSenderDataSendedToReceiver;
     public event Action OnReceiverDataUpdated;
     public event Action OnReceiverrDataSendedToSender;
-    /// <summary> センダー登録名リストの登録 </summary>
-    /// <param name="resisterNames"></param>
-    public void ApplySenderResisterList(List<string> resisterNames) // 参照元から呼び出される
+    private void Start()
     {
-        _senderResisters = resisterNames;
-    }
-    /// <summary> レシーバー登録名のリストの登録 </summary>
-    /// <param name="resisterNames"></param>
-    public void ApplyReceiverResisterList(List<string> resisterNames) // 参照元から呼び出される
-    {
-        _receiverResisters = resisterNames;
+        if (_sender == null)
+        { Debug.LogWarning("You Need Assing Sender PropInfoHandler"); }
+        if (_sender == null)
+        { Debug.LogWarning("You Need Assing Receiver PropInfoHandler"); }
+        if (_sender == null && _receiver == null)
+        { throw new Exception("You Need Assing Both Sender And Receiver"); }
     }
     #region 共通部
     /// <summary> データの横流しをサポートするメソッドSenderからReceiverへ流す </summary>
@@ -55,7 +52,13 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
         return propHandler.DataMap[resisterName];
     }
     #endregion
-    #region プロパティ情報参照元
+    #region プロパティ情報センダ
+    /// <summary> センダー登録名リストの登録 </summary>
+    /// <param name="resisterNames"></param>
+    public void ApplySenderResisterList(List<string> resisterNames) // 参照元から呼び出される
+    {
+        _senderResisters = resisterNames;
+    }
     /// <summary> リンカに指定されたレシーバーのデータをセンダーに登録されてる値にする </summary>
     /// <param name="senderResisterName"> リンカに指定されているセンダーの保持するレジスタ名 </param>
     /// <param name="receiverResisterName"> リンカに指定されてるレシーバーの保持するレジスタ名 </param>
@@ -82,7 +85,13 @@ public class PropertyInfoHandlerLinker : MonoBehaviour
         return (ret != null) ? ret : throw new Exception("Data Wasnt Found");
     }
     #endregion
-    #region プロパティ情報初期化先
+    #region プロパティ情報レシーバ
+    /// <summary> レシーバー登録名のリストの登録 </summary>
+    /// <param name="resisterNames"></param>
+    public void ApplyReceiverResisterList(List<string> resisterNames) // 参照元から呼び出される
+    {
+        _receiverResisters = resisterNames;
+    }
     /// <summary> リンカに指定されたセンダーのレジスタの登録値をレシーバーのレジスタに登録されてる値にする </summary>
     /// <param name="receiverResisterName"> リンカに指定されてるレシーバーの保持するレジスタ名 </param>
     /// <param name="senderResisterName"> リンカに指定されているセンダーの保持するレジスタ名 </param>

@@ -1,13 +1,15 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+/// <summary> プロパティ情報インフラの利用部のクラスが継承するべきインターフェイス </summary>
 public interface IPropInfoUser
 {
     PropertyInfoHandlerLinker PropInfoHandlerLinker { get; set; }
     PropertyInfoHandler PropInfoHandler { get; set; }
     List<string> ResisterNameList { get; set; }
 }
+/// <summary> プロパティ情報インフラ利用部の基底クラス。機能を利用するためにこれを継承する </summary>
 [RequireComponent(typeof(PropertyInfoHandler))]
-/// <summary> プロパティ情報インフラ利用部 </summary>
 public abstract class PropInfoUser : MonoBehaviour
 {
     protected abstract void SetUpPropInfoUser();
