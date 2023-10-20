@@ -37,13 +37,10 @@ public class PropertyInfoObserver : MonoBehaviour
     // Use For Compare Data
     DataDictionary<string, object> _pastSenderDataPair = new();
     DataDictionary<string, object> _pastReceiverDataPair = new();
-    private void Start()
+    private void Update()
     {
         _targetSenderResisterList = _targetPropInfoHandlerLinker.SenderResisters;
         _targetReceiverResisterList = _targetPropInfoHandlerLinker.ReceiverResisters;
-    }
-    private void Update()
-    {
         CheckSenderDataChange();
         CheckReceiverDataChange();
     }
