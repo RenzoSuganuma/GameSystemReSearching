@@ -58,7 +58,8 @@ public class PropertyInfoObserver : MonoBehaviour
             if (!_targetPropInfoHandlerLinker.ExtractDataFromSender(item).Equals(_pastSenderDataPair[item]))
             {
                 var cntxt = new PropInfoCallBackContext(item, _targetPropInfoHandlerLinker.ExtractDataFromSender(item));
-                OnSenderDataHasChanged(cntxt);
+                if (OnSenderDataHasChanged != null) { OnSenderDataHasChanged(cntxt); }
+                else { Debug.Log("Sender Data Changed Event Is NULL"); }
                 _pastSenderDataPair[item] = _targetPropInfoHandlerLinker.ExtractDataFromSender(item);
             }
         } // Compare Data Between This Obeserver To Linker Property Info
@@ -74,7 +75,8 @@ public class PropertyInfoObserver : MonoBehaviour
             if (!_targetPropInfoHandlerLinker.ExtractDataFromReceiver(item).Equals(_pastReceiverDataPair[item]))
             {
                 var cntxt = new PropInfoCallBackContext(item, _targetPropInfoHandlerLinker.ExtractDataFromReceiver(item));
-                OnReceiverDataHasChanged(cntxt);
+                if (OnReceiverDataHasChanged != null) { OnReceiverDataHasChanged(cntxt); }
+                else { Debug.Log("Sender Data Changed Event Is NULL"); }
                 _pastReceiverDataPair[item] = _targetPropInfoHandlerLinker.ExtractDataFromReceiver(item);
             }
         } // Compare Data Between This Obeserver To Linker Property Info
