@@ -26,7 +26,7 @@ public interface IPropInfoObserver
     void OnReciverPropertyValueChanged(PropInfoCallBackContext context);
 }
 /// <summary> プロパティ情報の変化を監視するクラス。監視に必要な機能を提供する </summary>
-public class PropInfoObserver : MonoBehaviour
+public class PropertyInfoObserver : MonoBehaviour
 {
     [SerializeField] PropertyInfoHandlerLinker _targetPropInfoHandlerLinker;
     List<string> _targetSenderResisterList = new();

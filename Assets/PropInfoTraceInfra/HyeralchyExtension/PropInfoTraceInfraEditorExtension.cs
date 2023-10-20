@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-public class PropInfoHandlingInfraEditorExtension
+public class PropInfoTraceInfraEditorExtension
 {
     [MenuItem("GameObject/PropInfoTraceInfra/Observer", false, 10)]
     static void CreateObserverGameObject(MenuCommand menuCommand)
@@ -14,7 +12,7 @@ public class PropInfoHandlingInfraEditorExtension
         // Register the creation in the undo system
         Undo.RegisterCreatedObjectUndo(go, "Create " + go.name);
         Selection.activeObject = go;
-        go.AddComponent<PropInfoObserver>();
+        go.AddComponent<PropertyInfoObserver>();
     }
     [MenuItem("GameObject/PropInfoTraceInfra/UserLinker", false, 10)]
     static void CreateLinkerGameObject(MenuCommand menuCommand)
