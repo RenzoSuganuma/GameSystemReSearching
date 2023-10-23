@@ -1,8 +1,8 @@
-using DiscoveryGameWorks;
+using RS;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static DiscoveryGameWorks.OriginalMethods;
+using static RS.OriginalMethods;
 /// <summary>ƒJƒƒ‰ƒ‚[ƒh</summary>
 public enum CameraMode
 {

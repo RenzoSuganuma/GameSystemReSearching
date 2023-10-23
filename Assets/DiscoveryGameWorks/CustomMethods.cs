@@ -1,5 +1,5 @@
 using System;
-namespace DiscoveryGameWorks
+namespace RS
 {
     #region 独自メソッド Original Methods
     /// <summary> 独自のメソッドを提供するクラス </summary>

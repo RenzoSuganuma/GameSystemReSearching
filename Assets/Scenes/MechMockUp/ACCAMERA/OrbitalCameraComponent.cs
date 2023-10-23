@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using DiscoveryGameWorks;
+using RS;
 /// <summary>ACのカメラ動作コンポーネント</summary>
 public class OrbitalCameraComponent : MonoBehaviour
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-namespace DiscoveryGameWorks
+namespace RS
 {
     /// <summary> 拡張メソッドを提供するクラス </summary>
     public static class MethodsExtention

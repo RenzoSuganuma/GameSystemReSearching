@@ -1,5 +1,5 @@
-using DiscoveryGameWorks;
-using static DiscoveryGameWorks.OriginalMethods;
+using RS;
+using static RS.OriginalMethods;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static DiscoveryGameWorks.OriginalMethods;
+using static RS.OriginalMethods;
 public class Weapon_Test : WeaponBase
 {
     [SerializeField] Transform _muzzlePosition;

@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using DiscoveryGameWorks;
+using RS;
 /*
 * 特定のインスタンスのプロパティ値プールクラス
 * のプロパティを監視するクラス
