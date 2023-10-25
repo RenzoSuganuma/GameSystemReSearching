@@ -275,7 +275,7 @@ MonoBehaviour:
   _targetDetectBufferRangeRadius: 1
   _attackingRangeRadius: 1
   _moveSpeed: 11.6
-  _fallSpeed: 19.8
+  _fallSpeed: 10
   _targetsList: []
   _targetObjectLayer:
     serializedVersion: 2

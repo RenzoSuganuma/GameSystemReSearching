@@ -9,7 +9,7 @@ public class GeneralAICore : MonoBehaviour
     [SerializeField, Range(0, 5)] float _targetDetectBufferRangeRadius;
     [SerializeField, Range(1f, 50f)] float _attackingRangeRadius;
     [SerializeField, Range(1f, 100f)] float _moveSpeed;
-    [SerializeField, Range(1f, 100f)] float _fallSpeed;
+    [SerializeField, Range(1f, 10f)] float _fallSpeed;
     [SerializeField] List<GameObject> _targetsList = new();
     [SerializeField] LayerMask _targetObjectLayer;
     [SerializeField] LayerMask _groundLayer;
@@ -17,8 +17,12 @@ public class GeneralAICore : MonoBehaviour
     [SerializeField] int _currentTargetIndex;
     bool _isGrounded = false;
     bool _isPlayerApproaching = false;
+    void AddGravityToThis() => _rb.AddForce((!_isGrounded) ? -transform.up * _fallSpeed * 100 : Vector3.zero);
     /// <summary> ê⁄ínåüèo </summary>
-    void CheckGrounded() => _isGrounded = Physics.CheckSphere(transform.position, 1, _targetObjectLayer);
+    void CheckGrounded()
+    {
+        _isGrounded = Physics.Raycast(transform.position, -transform.up, 1f, _groundLayer);
+    }
     /// <summary> Ç∑Ç◊ÇƒÇÃìGÇÃåüçı </summary>
     void SearchTargets()
     {
@@ -54,10 +58,6 @@ public class GeneralAICore : MonoBehaviour
             _rb.velocity = v;
         }
     }
-    void AddGravityToThis()
-    {
-
-    }
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -66,11 +66,12 @@ public class GeneralAICore : MonoBehaviour
     }
     void Update()
     {
-        AddGravityToThis();
+
     }
     void FixedUpdate()
     {
         CheckGrounded();
+        AddGravityToThis();
 
         _isPlayerApproaching = CheckTargetApproach(transform.position, _targetDetectRangeRadius, _targetDetectBufferRangeRadius);
 
