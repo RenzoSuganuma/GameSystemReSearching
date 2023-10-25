@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 149190383}
   - component: {fileID: 149190382}
   - component: {fileID: 149190381}
-  - component: {fileID: 149190384}
+  - component: {fileID: 149190387}
   - component: {fileID: 149190380}
   - component: {fileID: 149190385}
   m_Layer: 0
@@ -226,32 +226,12 @@ Transform:
   m_GameObject: {fileID: 149190379}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.95, z: 0}
+  m_LocalPosition: {x: 0, y: 9.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &149190384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 149190379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19aa0f5821097bd41a2a8887085bf5f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _moveSpeed: 1
-  _targettingSightRangeRadius: 10
-  _attackingRangeRadius: 3
-  _targetLayerNumber: 3
-  _targetObjects: []
-  _targetObjIndex: 0
-  _isFound: 0
-  _isCanAttack: 0
 --- !u!54 &149190385
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -279,6 +259,32 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &149190387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149190379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b63abdf695fdd9d41aa4e15b0ab917cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetDetectRangeRadius: 30
+  _targetDetectBufferRangeRadius: 1
+  _attackingRangeRadius: 2
+  _moveSpeed: 11.6
+  _fallSpeed: 75.9
+  _targetsList: []
+  _targetObjectLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  _targetsLayerNumber: 3
+  _currentTargetIndex: 0
 --- !u!1 &714501585
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,7 +297,7 @@ GameObject:
   - component: {fileID: 714501588}
   - component: {fileID: 714501587}
   - component: {fileID: 714501586}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
