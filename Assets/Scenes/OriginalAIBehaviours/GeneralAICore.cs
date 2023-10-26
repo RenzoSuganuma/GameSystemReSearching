@@ -36,10 +36,8 @@ public class GeneralAICore : MonoBehaviour
     /// <param name="limitDistance"> 検知半径 </param>
     /// <param name="limitOffset"> 検知距離誤差許容値 </param>
     /// <returns></returns>
-    bool CheckTargetApproach(Vector3 start, float limitDistance, float limitOffset)// 距離ベースプレイヤ検知
+    bool CheckTargetApproach(Vector3 start, Vector3 end, float limitDistance, float limitOffset)// 距離ベースプレイヤ検知
     {
-        if (_targetsList.Count == 0) return false;
-        var end = _targetsList[_currentTargetIndex].transform.position;
         float dx = end.x - start.x;
         float dy = end.y - start.y;
         float dz = end.z - start.z;
@@ -47,12 +45,11 @@ public class GeneralAICore : MonoBehaviour
         float lim = limitDistance * limitDistance;
         return dd < lim + limitOffset;
     }
-    void ChaseWithTarget(bool isTargetInSight)
+    void ChaseWithTarget(bool isTargetInSight, GameObject target)
     {
-        if (_targetsList.Count == 0) return;
         if (isTargetInSight)
         {
-            var dir = (_targetsList[_currentTargetIndex].transform.position - transform.position).normalized;
+            var dir = (target.transform.position - transform.position).normalized;
             dir.y = 0;
             var v = dir * _moveSpeed;
             _rb.velocity = v;
@@ -73,9 +70,9 @@ public class GeneralAICore : MonoBehaviour
         CheckGrounded();
         AddGravityToThis();
 
-        _isPlayerApproaching = CheckTargetApproach(transform.position, _targetDetectRangeRadius, _targetDetectBufferRangeRadius);
+        _isPlayerApproaching = CheckTargetApproach(transform.position, _targetsList[_currentTargetIndex].transform.position, _targetDetectRangeRadius, _targetDetectBufferRangeRadius);
 
-        ChaseWithTarget(_isPlayerApproaching);
+        ChaseWithTarget(_isPlayerApproaching, _targetsList[_currentTargetIndex]);
     }
     void OnDrawGizmos()
     {
