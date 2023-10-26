@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,33 +11,37 @@ public class GeneralAICore : MonoBehaviour
     [SerializeField, Range(1f, 50f)] float _attackingRangeRadius;
     [SerializeField, Range(1f, 100f)] float _moveSpeed;
     [SerializeField, Range(1f, 10f)] float _fallSpeed;
+    [SerializeField] Transform[] _patrollPath;
     [SerializeField] List<GameObject> _targetsList = new();
     [SerializeField] LayerMask _targetObjectLayer;
     [SerializeField] LayerMask _groundLayer;
     [SerializeField] int _targetsLayerNumber;
     [SerializeField] int _currentTargetIndex;
+    int _currentPatrollPathIndex = 0;
     bool _isGrounded = false;
-    bool _isPlayerApproaching = false;
+    bool _isArrivedInTargetPoint = false;
     void AddGravityToThis() => _rb.AddForce((!_isGrounded) ? -transform.up * _fallSpeed * 100 : Vector3.zero);
     /// <summary> 接地検出 </summary>
-    void CheckGrounded()
+    bool CheckGrounded()
     {
-        _isGrounded = Physics.Raycast(transform.position, -transform.up, 1f, _groundLayer);
+        return Physics.Raycast(transform.position, -transform.up, 1f, _groundLayer);
     }
-    /// <summary> すべての敵の検索 </summary>
-    void SearchTargets()
+    bool IsTargetInLevel()
     {
-        var list = GameObject.FindObjectsOfType<GameObject>().Where(x => x.layer == _targetsLayerNumber).ToList();
-        if (list.Count == 0) return;
-        _targetsList = list;
+        return GameObject.FindObjectsOfType<GameObject>().Where(x => x.layer == _targetsLayerNumber).ToList().Count > 0;
     }
-    /// <summary> 任意の敵が検知圏内にいるか判定 </summary>
+    /// <summary> 追跡可能なすべての敵の検索 </summary>
+    List<GameObject> DetectChasableTargets()
+    {
+        return GameObject.FindObjectsOfType<GameObject>().Where(x => x.layer == _targetsLayerNumber).ToList();
+    }
+    /// <summary> 任意のオブジェクトが検知圏内にいるか判定 </summary>
     /// <param name="start"> 始点 </param>
     /// <param name="end"> 終点 </param>
     /// <param name="limitDistance"> 検知半径 </param>
     /// <param name="limitOffset"> 検知距離誤差許容値 </param>
     /// <returns></returns>
-    bool CheckTargetApproach(Vector3 start, Vector3 end, float limitDistance, float limitOffset)// 距離ベースプレイヤ検知
+    bool CheckInsideBorder(Vector3 start, Vector3 end, float limitDistance, float limitOffset)// 距離ベースプレイヤ検知
     {
         float dx = end.x - start.x;
         float dy = end.y - start.y;
@@ -44,6 +49,20 @@ public class GeneralAICore : MonoBehaviour
         float dd = dx * dx + dy * dy + dz * dz;
         float lim = limitDistance * limitDistance;
         return dd < lim + limitOffset;
+    }
+    #region 行動ルーチン
+    void PatrollNow(int patrollPointIndex, Transform[] patrollPath)
+    {
+        var dir = (patrollPath[patrollPointIndex].position - transform.position).normalized;
+        dir.y = 0;
+        var v = dir * _moveSpeed;
+        _rb.velocity = v;
+        var b = CheckInsideBorder(transform.position, patrollPath[patrollPointIndex].position, 1, 1);
+        if(b && !_isArrivedInTargetPoint) 
+        {
+            _currentTargetIndex++; 
+            _isArrivedInTargetPoint = true;
+        }
     }
     void ChaseWithTarget(bool isTargetInSight, GameObject target)
     {
@@ -55,11 +74,12 @@ public class GeneralAICore : MonoBehaviour
             _rb.velocity = v;
         }
     }
+    #endregion
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
-        SearchTargets();
+        _targetsList = DetectChasableTargets();
     }
     void Update()
     {
@@ -67,19 +87,28 @@ public class GeneralAICore : MonoBehaviour
     }
     void FixedUpdate()
     {
-        CheckGrounded();
+        _isGrounded = CheckGrounded();
         AddGravityToThis();
-
-        _isPlayerApproaching = CheckTargetApproach(transform.position, _targetsList[_currentTargetIndex].transform.position, _targetDetectRangeRadius, _targetDetectBufferRangeRadius);
-
-        ChaseWithTarget(_isPlayerApproaching, _targetsList[_currentTargetIndex]);
+        if (IsTargetInLevel())
+        {
+            var b = CheckInsideBorder(transform.position, _targetsList[_currentTargetIndex].transform.position, _targetDetectRangeRadius, _targetDetectBufferRangeRadius);
+            ChaseWithTarget(b, _targetsList[_currentTargetIndex]);
+        }
+        else
+        {
+            PatrollNow(_currentPatrollPathIndex, _patrollPath);
+        }
     }
     void OnDrawGizmos()
     {
+        // Sightable Target Detect Range
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _targetDetectRangeRadius);
+        // Sightable Attack Range
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _attackingRangeRadius);
-        Gizmos.color = Color.green;
+        // Sightable Patroll Path
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLineStrip(Array.ConvertAll(_patrollPath, x => x.position), true);
     }
 }
